@@ -1,0 +1,1 @@
+export { ManufacturerFormDialog } from './ManufacturerFormDialog';

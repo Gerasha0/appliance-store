@@ -1,0 +1,5 @@
+java.lang.Long,id,1
+java.lang.String,firstName,1
+java.lang.String,lastName,1
+java.lang.String,email,1
+java.lang.String,password,1
