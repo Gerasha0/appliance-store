@@ -45,7 +45,8 @@ export const clientSchema = yup.object({
     ),
   password: yup
     .string()
-    .required('Password is required')
+    .transform((value) => (value === '' ? undefined : value))
+    .optional()
     .min(8, 'Password must be at least 8 characters')
     .max(128, 'Password must not exceed 128 characters')
     .matches(
@@ -68,6 +69,7 @@ export const clientSchema = yup.object({
     .max(255, 'Address must not exceed 255 characters'),
   card: yup
     .string()
+    .transform((value) => (value === '' ? undefined : value))
     .optional()
     .matches(
       /^(\d{16}|\d{4}-\d{4}-\d{4}-\d{4})$/,

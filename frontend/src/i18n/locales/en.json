@@ -52,6 +52,18 @@
     "filters": "Filters",
     "clearFilters": "Clear Filters"
   },
+  "app": {
+    "title": "Appliance Store"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "appliances": "Appliances",
+    "orders": "Orders",
+    "manufacturers": "Manufacturers",
+    "employees": "Employees",
+    "clients": "Clients",
+    "profile": "Profile"
+  },
   "auth": {
     "login": "Login",
     "logout": "Logout",
@@ -90,22 +102,6 @@
     "nameRequired": "Name is required",
     "phoneRequired": "Phone is required",
     "addressRequired": "Address is required"
-  },
-  "nav": {
-    "dashboard": "Dashboard",
-    "appliances": "Appliances",
-    "orders": "Orders",
-    "manufacturers": "Manufacturers",
-    "employees": "Employees",
-    "clients": "Clients",
-    "profile": "Profile",
-    "settings": "Settings",
-    "home": "Home",
-    "about": "About",
-    "contact": "Contact",
-    "catalog": "Catalog",
-    "myOrders": "My Orders",
-    "cart": "Shopping Cart"
   },
   "employee": {
     "title": "Employees",
@@ -338,7 +334,8 @@
     "updateSuccess": "Profile updated successfully",
     "updateError": "Failed to update profile",
     "passwordChangeSuccess": "Password changed successfully",
-    "passwordChangeError": "Failed to change password"
+    "passwordChangeError": "Failed to change password",
+    "role": "Role"
   },
   "cart": {
     "title": "Shopping Cart",

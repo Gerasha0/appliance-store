@@ -33,6 +33,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
+import { useSearchParams } from 'react-router-dom';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { ApplianceFormDialog, ApplianceDetailDialog, ApplianceCard } from '@/components/appliances';
@@ -54,8 +55,15 @@ const AppliancesPage: React.FC = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const role = useAppSelector(state => state.auth.role);
+  const isEmployee = role === UserRole.EMPLOYEE;
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { data: appliancesData, isLoading } = useGetAllAppliancesQuery({ page: 0, size: 1000 });
-  const { data: manufacturersData } = useGetAllManufacturersQuery({ page: 0, size: 1000 });
+  // Only fetch manufacturers for employees (for creating/editing appliances)
+  const { data: manufacturersData } = useGetAllManufacturersQuery(
+    { page: 0, size: 1000 },
+    { skip: !isEmployee }
+  );
   const [createAppliance] = useCreateApplianceMutation();
   const [updateAppliance] = useUpdateApplianceMutation();
   const [deleteAppliance] = useDeleteApplianceMutation();
@@ -88,6 +96,17 @@ const AppliancesPage: React.FC = () => {
 
   // View mode state
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+
+  // Read category filter from URL on mount
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam && (categoryParam === 'BIG' || categoryParam === 'SMALL')) {
+      setCategoryFilter(categoryParam);
+      // Clear the URL parameter after applying the filter
+      searchParams.delete('category');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Adjust rowsPerPage when switching view modes
   useEffect(() => {
@@ -255,7 +274,6 @@ const AppliancesPage: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  const isEmployee = role === UserRole.EMPLOYEE;
   const hasActiveFilters =
     searchQuery !== '' ||
     categoryFilter !== 'ALL' ||

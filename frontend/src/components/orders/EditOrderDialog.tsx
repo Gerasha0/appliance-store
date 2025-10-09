@@ -53,10 +53,11 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
-  const { data: appliancesData } = useGetAllAppliancesQuery({
-    page: 0,
-    size: 1000,
-  });
+  // Only fetch appliances when dialog is open
+  const { data: appliancesData } = useGetAllAppliancesQuery(
+    { page: 0, size: 1000 },
+    { skip: !open }
+  );
   const appliances = appliancesData?.content || [];
 
   // Filter appliances based on search

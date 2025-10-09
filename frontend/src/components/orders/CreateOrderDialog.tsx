@@ -58,7 +58,11 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
 
   // Step 1: Client selection
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
-  const { data: clientsData } = useGetClientsPageQuery({ page: 0, size: 1000 });
+  // Only fetch clients when dialog is open to avoid 403 errors for clients
+  const { data: clientsData } = useGetClientsPageQuery(
+    { page: 0, size: 1000 },
+    { skip: !open }
+  );
   const clients = clientsData?.content || [];
 
   // Step 2: Items selection
@@ -67,10 +71,11 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
-  const { data: appliancesData } = useGetAllAppliancesQuery({
-    page: 0,
-    size: 1000,
-  });
+  // Only fetch appliances when dialog is open
+  const { data: appliancesData } = useGetAllAppliancesQuery(
+    { page: 0, size: 1000 },
+    { skip: !open }
+  );
   const appliances = appliancesData?.content || [];
 
   // Filter appliances based on search

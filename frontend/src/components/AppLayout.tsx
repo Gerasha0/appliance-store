@@ -33,13 +33,17 @@ import {
   AccountCircle,
 } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, logout, toggleTheme, setLocale, toggleSidebar, toggleCart, selectCartItemsCount } from '@/store';
 import { UserRole } from '@/types/models';
 import { CartDrawer } from './CartDrawer';
+import { useI18nSync } from '@/i18n/useI18nSync';
 
 const drawerWidth = 240;
 
 export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const { t, i18n } = useTranslation();
+  useI18nSync(); // Sync language with Redux store
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -66,7 +70,8 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     setLangAnchorEl(null);
   };
 
-  const handleLanguageChange = (lang: 'en' | 'uk') => {
+  const handleLanguageChange = async (lang: 'en' | 'uk') => {
+    await i18n.changeLanguage(lang);
     dispatch(setLocale(lang));
     handleLanguageClose();
   };
@@ -86,37 +91,37 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const menuItems = [
     {
-      text: 'Dashboard',
+      text: t('menu.dashboard'),
       icon: <Dashboard />,
       path: '/dashboard',
       roles: [UserRole.EMPLOYEE, UserRole.CLIENT]
     },
     {
-      text: 'Appliances',
+      text: t('menu.appliances'),
       icon: <Devices />,
       path: '/appliances',
       roles: [UserRole.EMPLOYEE, UserRole.CLIENT]
     },
     {
-      text: 'Orders',
+      text: t('menu.orders'),
       icon: <ShoppingCart />,
       path: '/orders',
       roles: [UserRole.EMPLOYEE, UserRole.CLIENT]
     },
     {
-      text: 'Manufacturers',
+      text: t('menu.manufacturers'),
       icon: <Business />,
       path: '/manufacturers',
       roles: [UserRole.EMPLOYEE]
     },
     {
-      text: 'Employees',
+      text: t('menu.employees'),
       icon: <People />,
       path: '/employees',
       roles: [UserRole.EMPLOYEE]
     },
     {
-      text: 'Clients',
+      text: t('menu.clients'),
       icon: <PersonOutline />,
       path: '/clients',
       roles: [UserRole.EMPLOYEE]
@@ -147,7 +152,7 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
           </IconButton>
 
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Appliance Store
+            {t('app.title')}
           </Typography>
 
           {/* Language Selector */}
@@ -221,7 +226,7 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
             </MenuItem>
             <MenuItem disabled>
               <Typography variant="caption" color="text.secondary">
-                Role: {role}
+                {t('profile.role')}: {role}
               </Typography>
             </MenuItem>
             <Divider />
@@ -229,13 +234,13 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
               <ListItemIcon>
                 <AccountCircle fontSize="small" />
               </ListItemIcon>
-              Profile
+              {t('menu.profile')}
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
-              Logout
+              {t('auth.logout')}
             </MenuItem>
           </Menu>
         </Toolbar>

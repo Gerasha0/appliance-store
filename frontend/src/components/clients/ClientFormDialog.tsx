@@ -13,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import type { Client, ClientRequestDTO } from '@/types/models';
 import { clientSchema } from '@/types/validation';
+import * as yup from 'yup';
 
 interface ClientFormDialogProps {
   open: boolean;
@@ -21,6 +22,68 @@ interface ClientFormDialogProps {
   client?: Client | null;
   isLoading?: boolean;
 }
+
+// Schema for creating new client - password is required
+const createClientSchema = yup.object({
+  firstName: yup
+    .string()
+    .required('First name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must not exceed 50 characters')
+    .matches(
+      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      'First name must contain only letters, spaces, hyphens, and apostrophes'
+    ),
+  lastName: yup
+    .string()
+    .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must not exceed 50 characters')
+    .matches(
+      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      'Last name must contain only letters, spaces, hyphens, and apostrophes'
+    ),
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Email must be valid')
+    .max(255, 'Email must not exceed 255 characters')
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      'Email format is invalid'
+    ),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password must not exceed 128 characters')
+    .matches(
+      /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\S+$).{8,}$/,
+      'Password must contain at least one digit, one lowercase, one uppercase letter, one special character, and no whitespace'
+    ),
+  phone: yup
+    .string()
+    .required('Phone is required')
+    .matches(
+      /^[\d\s\-+()]+$/,
+      'Phone number must contain only digits, spaces, hyphens, plus signs, and parentheses'
+    )
+    .min(10, 'Phone number must be at least 10 characters')
+    .max(20, 'Phone number must not exceed 20 characters'),
+  address: yup
+    .string()
+    .required('Address is required')
+    .min(5, 'Address must be at least 5 characters')
+    .max(255, 'Address must not exceed 255 characters'),
+  card: yup
+    .string()
+    .transform((value) => (value === '' ? undefined : value))
+    .optional()
+    .matches(
+      /^(\d{16}|\d{4}-\d{4}-\d{4}-\d{4})$/,
+      'Card must be 16 digits or formatted as XXXX-XXXX-XXXX-XXXX'
+    ),
+});
 
 export const ClientFormDialog: React.FC<ClientFormDialogProps> = ({
   open,
@@ -37,7 +100,7 @@ export const ClientFormDialog: React.FC<ClientFormDialogProps> = ({
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ClientRequestDTO>({
-    resolver: yupResolver(clientSchema) as any,
+    resolver: yupResolver(client ? clientSchema : createClientSchema) as any,
     defaultValues: {
       email: '',
       password: '',

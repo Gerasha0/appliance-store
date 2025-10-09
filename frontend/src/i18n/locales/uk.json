@@ -52,6 +52,18 @@
     "filters": "Фільтри",
     "clearFilters": "Очистити фільтри"
   },
+  "app": {
+    "title": "Магазин побутової техніки"
+  },
+  "menu": {
+    "dashboard": "Головна",
+    "appliances": "Техніка",
+    "orders": "Замовлення",
+    "manufacturers": "Виробники",
+    "employees": "Співробітники",
+    "clients": "Клієнти",
+    "profile": "Профіль"
+  },
   "auth": {
     "login": "Увійти",
     "logout": "Вийти",
@@ -338,7 +350,8 @@
     "updateSuccess": "Профіль успішно оновлено",
     "updateError": "Не вдалося оновити профіль",
     "passwordChangeSuccess": "Пароль успішно змінено",
-    "passwordChangeError": "Не вдалося змінити пароль"
+    "passwordChangeError": "Не вдалося змінити пароль",
+    "role": "Роль"
   },
   "cart": {
     "title": "Кошик покупок",

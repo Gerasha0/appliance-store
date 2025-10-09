@@ -10,6 +10,7 @@ import { LoginPage } from '@/pages/LoginPage';
 import { RegisterClientPage } from '@/pages/RegisterClientPage';
 import { RegisterEmployeePage } from '@/pages/RegisterEmployeePage';
 import { UserRole } from '@/types/models';
+import { useI18nSync } from '@/i18n/useI18nSync';
 
 // Lazy load pages for better performance
 const DashboardPage = React.lazy(() => import('@/pages/DashboardPage'));
@@ -37,6 +38,7 @@ const LoadingFallback = () => (
 
 const App: React.FC = () => {
   const themeMode = useAppSelector(state => state.ui.theme);
+  useI18nSync(); // Sync language with Redux store
 
   const theme = createTheme({
     palette: {
