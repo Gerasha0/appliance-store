@@ -13,21 +13,8 @@ interface CartState {
   isOpen: boolean;
 }
 
-const loadCartFromStorage = (): CartItem[] => {
-  try {
-    const cart = localStorage.getItem('cart');
-    return cart ? JSON.parse(cart) : [];
-  } catch {
-    return [];
-  }
-};
-
-const saveCartToStorage = (items: CartItem[]) => {
-  localStorage.setItem('cart', JSON.stringify(items));
-};
-
 const initialState: CartState = {
-  items: loadCartFromStorage(),
+  items: [],
   isOpen: false,
 };
 
@@ -45,15 +32,12 @@ const cartSlice = createSlice({
       } else {
         state.items.push({ appliance: action.payload, quantity: 1 });
       }
-
-      saveCartToStorage(state.items);
     },
 
     removeFromCart: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(
         (item) => item.appliance.id !== action.payload
       );
-      saveCartToStorage(state.items);
     },
 
     updateQuantity: (
@@ -73,13 +57,10 @@ const cartSlice = createSlice({
           item.quantity = action.payload.quantity;
         }
       }
-
-      saveCartToStorage(state.items);
     },
 
     clearCart: (state) => {
       state.items = [];
-      saveCartToStorage(state.items);
     },
 
     toggleCart: (state) => {

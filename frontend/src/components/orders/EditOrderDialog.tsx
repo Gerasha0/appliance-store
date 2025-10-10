@@ -149,11 +149,11 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
   const handleSubmit = async () => {
     if (order && orderItems.length > 0) {
       const orderData: OrderRequestDTO = {
-        clientId: order.clientId,
+        clientId: order.client?.id || order.clientId,
         orderRows: orderItems.map(item => ({
           applianceId: item.appliance.id,
           quantity: item.quantity,
-          amount: item.subtotal, // Add amount field (price * quantity)
+          amount: item.subtotal,
         })),
       };
 

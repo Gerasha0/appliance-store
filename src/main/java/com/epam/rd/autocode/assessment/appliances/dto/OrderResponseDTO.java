@@ -18,4 +18,3 @@ public class OrderResponseDTO {
     private Boolean approved;
     private BigDecimal totalAmount;
 }
-

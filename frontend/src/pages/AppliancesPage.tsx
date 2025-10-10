@@ -30,6 +30,7 @@ import {
   FilterList as FilterIcon,
   ViewList as ViewListIcon,
   ViewModule as ViewModuleIcon,
+  AddShoppingCart,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -46,7 +47,8 @@ import {
 } from '@/store/api/apiSlice';
 import type { Appliance, ApplianceRequestDTO } from '@/types/models';
 import { Category, PowerType, UserRole } from '@/types/models';
-import { useAppSelector } from '@/store';
+import { useAppSelector, useAppDispatch } from '@/store';
+import { addToCart } from '@/store/slices/cartSlice';
 
 type SortOrder = 'asc' | 'desc';
 type SortField = 'name' | 'category' | 'powerType' | 'price' | 'manufacturer';
@@ -59,10 +61,10 @@ const AppliancesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: appliancesData, isLoading } = useGetAllAppliancesQuery({ page: 0, size: 1000 });
-  // Only fetch manufacturers for employees (for creating/editing appliances)
+  // Fetch manufacturers only for employees (needed for form dropdown and filters)
   const { data: manufacturersData } = useGetAllManufacturersQuery(
     { page: 0, size: 1000 },
-    { skip: !isEmployee }
+    { skip: !isEmployee } // Skip this query if user is not an employee
   );
   const [createAppliance] = useCreateApplianceMutation();
   const [updateAppliance] = useUpdateApplianceMutation();
@@ -72,6 +74,21 @@ const AppliancesPage: React.FC = () => {
   const appliances = appliancesData?.content || [];
   const manufacturers = manufacturersData?.content || [];
 
+  // For clients, extract unique manufacturers from appliances
+  const clientManufacturers = useMemo(() => {
+    if (isEmployee) return [];
+    const uniqueManufacturers = new Map();
+    appliances.forEach(appliance => {
+      if (appliance.manufacturer && !uniqueManufacturers.has(appliance.manufacturer.id)) {
+        uniqueManufacturers.set(appliance.manufacturer.id, appliance.manufacturer);
+      }
+    });
+    return Array.from(uniqueManufacturers.values());
+  }, [appliances, isEmployee]);
+
+  // Use appropriate manufacturers list based on role
+  const availableManufacturers = isEmployee ? manufacturers : clientManufacturers;
+
   // Dialog states
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAppliance, setEditingAppliance] = useState<Appliance | null>(null);
@@ -79,6 +96,13 @@ const AppliancesPage: React.FC = () => {
   const [applianceToDelete, setApplianceToDelete] = useState<number | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [viewingAppliance, setViewingAppliance] = useState<Appliance | null>(null);
+
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = (appliance: Appliance) => {
+    dispatch(addToCart(appliance));
+    enqueueSnackbar(t('cart.itemAdded') || 'Item added to cart', { variant: 'success' });
+  };
 
   // Filter and search states
   const [searchQuery, setSearchQuery] = useState('');
@@ -208,10 +232,10 @@ const AppliancesPage: React.FC = () => {
       filtered = filtered.filter(appliance => appliance.powerType === powerTypeFilter);
     }
 
-    // Manufacturer filter
+    // Manufacturer filter - use manufacturer.id from nested object
     if (manufacturerFilter !== 'ALL') {
       filtered = filtered.filter(
-        appliance => appliance.manufacturerId === parseInt(manufacturerFilter)
+        appliance => appliance.manufacturer?.id === parseInt(manufacturerFilter)
       );
     }
 
@@ -221,10 +245,11 @@ const AppliancesPage: React.FC = () => {
       let bValue: string | number;
 
       if (sortField === 'manufacturer') {
-        aValue =
-          manufacturers?.find((m) => m.id === a.manufacturerId)?.name.toLowerCase() || '';
-        bValue =
-          manufacturers?.find((m) => m.id === b.manufacturerId)?.name.toLowerCase() || '';
+        // For both employees and clients, use the manufacturer from appliance object first
+        aValue = a.manufacturer?.name.toLowerCase() ||
+          availableManufacturers?.find((m) => m.id === a.manufacturer?.id)?.name.toLowerCase() || '';
+        bValue = b.manufacturer?.name.toLowerCase() ||
+          availableManufacturers?.find((m) => m.id === b.manufacturer?.id)?.name.toLowerCase() || '';
       } else {
         const aFieldValue = a[sortField];
         const bFieldValue = b[sortField];
@@ -252,7 +277,7 @@ const AppliancesPage: React.FC = () => {
     manufacturerFilter,
     sortField,
     sortOrder,
-    manufacturers,
+    availableManufacturers,
   ]);
 
   const paginatedAppliances = useMemo(() => {
@@ -382,7 +407,7 @@ const AppliancesPage: React.FC = () => {
                   onChange={e => setManufacturerFilter(e.target.value)}
                 >
                   <MenuItem value="ALL">{t('common.all')}</MenuItem>
-                  {manufacturers?.map(m => (
+                  {availableManufacturers?.map(m => (
                     <MenuItem key={m.id} value={m.id.toString()}>
                       {m.name}
                     </MenuItem>
@@ -426,7 +451,7 @@ const AppliancesPage: React.FC = () => {
                     label={
                       t('appliance.manufacturer') +
                       ': ' +
-                      (manufacturers?.find(m => m.id === parseInt(manufacturerFilter))?.name || '')
+                      (availableManufacturers?.find(m => m.id === parseInt(manufacturerFilter))?.name || '')
                     }
                     size="small"
                     onDelete={() => setManufacturerFilter('ALL')}
@@ -459,6 +484,7 @@ const AppliancesPage: React.FC = () => {
                       {t('appliance.name')}
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>{t('appliance.model')}</TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortField === 'category'}
@@ -501,7 +527,7 @@ const AppliancesPage: React.FC = () => {
               <TableBody>
                 {paginatedAppliances.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} align="center">
+                    <TableCell colSpan={8} align="center">
                       <Typography variant="body2" color="text.secondary" sx={{ py: 4 }}>
                         {t('appliance.noAppliances')}
                       </Typography>
@@ -512,6 +538,7 @@ const AppliancesPage: React.FC = () => {
                     <TableRow key={appliance.id} hover>
                       <TableCell>{appliance.id}</TableCell>
                       <TableCell>{appliance.name}</TableCell>
+                      <TableCell>{appliance.model}</TableCell>
                       <TableCell>
                         <Chip
                           label={t(`appliance.categories.${appliance.category}`)}
@@ -528,13 +555,13 @@ const AppliancesPage: React.FC = () => {
                       </TableCell>
                       <TableCell>${appliance.price.toFixed(2)}</TableCell>
                       <TableCell>
-                        {manufacturers?.find(m => m.id === appliance.manufacturerId)?.name || 'N/A'}
+                        {appliance.manufacturer?.name || manufacturers?.find(m => m.id === appliance.manufacturerId)?.name || 'N/A'}
                       </TableCell>
                       <TableCell align="right">
                         <IconButton size="small" onClick={() => handleViewDetails(appliance)}>
                           <ViewIcon />
                         </IconButton>
-                        {isEmployee && (
+                        {isEmployee ? (
                           <>
                             <IconButton size="small" onClick={() => handleOpenDialog(appliance)}>
                               <Edit />
@@ -543,6 +570,15 @@ const AppliancesPage: React.FC = () => {
                               <Delete />
                             </IconButton>
                           </>
+                        ) : (
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleAddToCart(appliance)}
+                            title={t('cart.addToCart')}
+                          >
+                            <AddShoppingCart />
+                          </IconButton>
                         )}
                       </TableCell>
                     </TableRow>

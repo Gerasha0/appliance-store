@@ -12,5 +12,5 @@ public class UserResponseDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private String role; // ROLE_CLIENT or ROLE_EMPLOYEE
+    private String role;
 }

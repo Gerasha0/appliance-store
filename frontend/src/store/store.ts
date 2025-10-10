@@ -6,9 +6,15 @@ import { employeesApi } from './api/employeesApi';
 import { clientsApi } from './api/clientsApi';
 import { ordersApi } from './api/ordersApi';
 import { localeApi } from './api/localeApi';
+import { profileApi } from './api/profileApi';
 import authReducer from './slices/authSlice';
 import uiReducer from './slices/uiSlice';
 import cartReducer from './slices/cartSlice';
+import { authMiddleware } from './middleware/authMiddleware';
+
+// Clear ALL localStorage on app load for in-memory database
+// When server restarts, all data is recreated and old tokens/IDs are invalid
+localStorage.clear();
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +25,7 @@ export const store = configureStore({
     [clientsApi.reducerPath]: clientsApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
     [localeApi.reducerPath]: localeApi.reducer,
+    [profileApi.reducerPath]: profileApi.reducer,
     auth: authReducer,
     ui: uiReducer,
     cart: cartReducer,
@@ -31,7 +38,9 @@ export const store = configureStore({
       .concat(employeesApi.middleware)
       .concat(clientsApi.middleware)
       .concat(ordersApi.middleware)
-      .concat(localeApi.middleware),
+      .concat(localeApi.middleware)
+      .concat(profileApi.middleware)
+      .concat(authMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -11,12 +11,15 @@ import {
   TextField,
   Typography,
   Alert,
+  Divider,
+  Stack,
 } from '@mui/material';
+import { PersonAdd, Work } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLoginMutation } from '@/store/api/apiSlice';
-import { useAppDispatch, setCredentials, logout } from '@/store';
+import { useAppDispatch, setCredentials, useAppSelector } from '@/store';
 import { loginSchema } from '@/types/validation';
-import { LanguageSwitcher } from '@/components';
+import { LanguageSwitcher, ThemeToggle } from '@/components';
 import { showSuccess, showError } from '@/utils';
 import type { LoginRequest } from '@/types/models';
 
@@ -25,11 +28,14 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [login, { isLoading, error }] = useLoginMutation();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  // Clear any old authentication data when landing on login page (run once)
+  // Redirect to dashboard if already authenticated
   useEffect(() => {
-    dispatch(logout());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     control,
@@ -43,12 +49,10 @@ export const LoginPage: React.FC = () => {
     },
   });
 
-  // Don't auto-redirect if already on login page to avoid infinite loops
-  // User will be redirected after successful login in onSubmit
-
   const onSubmit = async (data: LoginRequest) => {
     try {
       const response = await login(data).unwrap();
+      console.log('Login response:', response); // Debug: check userId
       dispatch(setCredentials(response));
       showSuccess(t('auth.loginSuccess') || 'Successfully logged in!');
       setTimeout(() => {
@@ -71,20 +75,23 @@ export const LoginPage: React.FC = () => {
           position: 'relative',
         }}
       >
-        {/* Language Switcher - positioned at top right */}
+        {/* Language Switcher and Theme Toggle - positioned at top right */}
         <Box
           sx={{
             position: 'absolute',
             top: 16,
             right: 16,
+            display: 'flex',
+            gap: 1,
           }}
         >
+          <ThemeToggle size="medium" />
           <LanguageSwitcher color="primary" />
         </Box>
 
         <Card sx={{ width: '100%' }}>
           <CardContent sx={{ p: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom align="center">
+            <Typography variant="h4" component="h1" gutterBottom align="center" fontWeight="bold">
               {t('auth.loginTitle')}
             </Typography>
 
@@ -137,19 +144,45 @@ export const LoginPage: React.FC = () => {
               >
                 {isLoading ? t('common.loading') : t('auth.login')}
               </Button>
-
-              <Box sx={{ textAlign: 'center', mt: 2 }}>
-                <Typography variant="body2">
-                  <Link to="/register/client" style={{ textDecoration: 'none' }}>
-                    {t('auth.registerClient')}
-                  </Link>
-                  {' | '}
-                  <Link to="/register/employee" style={{ textDecoration: 'none' }}>
-                    {t('auth.registerEmployee')}
-                  </Link>
-                </Typography>
-              </Box>
             </form>
+
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" color="text.secondary">
+                {t('auth.noAccount')}
+              </Typography>
+            </Divider>
+
+            <Stack spacing={2}>
+              <Button
+                component={Link}
+                to="/register/client"
+                variant="outlined"
+                fullWidth
+                size="large"
+                startIcon={<PersonAdd />}
+                sx={{
+                  textTransform: 'none',
+                  py: 1.5,
+                }}
+              >
+                {t('auth.registerClient')}
+              </Button>
+
+              <Button
+                component={Link}
+                to="/register/employee"
+                variant="outlined"
+                fullWidth
+                size="large"
+                startIcon={<Work />}
+                sx={{
+                  textTransform: 'none',
+                  py: 1.5,
+                }}
+              >
+                {t('auth.registerEmployee')}
+              </Button>
+            </Stack>
           </CardContent>
         </Card>
       </Box>

@@ -21,4 +21,3 @@ public class OrderRequestDTO {
     @Valid
     private List<OrderRowRequestDTO> orderRows;
 }
-

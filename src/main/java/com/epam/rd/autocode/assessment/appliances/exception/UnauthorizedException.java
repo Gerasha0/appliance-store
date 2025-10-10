@@ -1,8 +1,5 @@
 package com.epam.rd.autocode.assessment.appliances.exception;
 
-/**
- * Exception thrown when a user is not authenticated or authentication fails
- */
 public class UnauthorizedException extends RuntimeException {
 
     public UnauthorizedException(String message) {
@@ -13,4 +10,3 @@ public class UnauthorizedException extends RuntimeException {
         super(message, cause);
     }
 }
-

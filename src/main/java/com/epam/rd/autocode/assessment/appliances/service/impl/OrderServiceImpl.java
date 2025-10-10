@@ -5,6 +5,7 @@ import com.epam.rd.autocode.assessment.appliances.exception.ResourceNotFoundExce
 import com.epam.rd.autocode.assessment.appliances.model.Client;
 import com.epam.rd.autocode.assessment.appliances.model.Employee;
 import com.epam.rd.autocode.assessment.appliances.model.Orders;
+import com.epam.rd.autocode.assessment.appliances.model.OrderRow;
 import com.epam.rd.autocode.assessment.appliances.repository.ClientRepository;
 import com.epam.rd.autocode.assessment.appliances.repository.EmployeeRepository;
 import com.epam.rd.autocode.assessment.appliances.repository.OrdersRepository;
@@ -29,7 +30,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Loggable
     public Orders createOrder(Orders order) {
+        // Ensure approved is set to false for new orders
         order.setApproved(false);
+
+        // Ensure all order rows have the correct bidirectional relationship
+        // This should already be done by addOrderRow() method, but we double-check
+        if (order.getOrderRowSet() != null) {
+            for (OrderRow orderRow : order.getOrderRowSet()) {
+                if (orderRow.getOrder() == null) {
+                    orderRow.setOrder(order);
+                }
+            }
+        }
+
         return ordersRepository.save(order);
     }
 
@@ -41,7 +54,10 @@ public class OrderServiceImpl implements OrderService {
         // Clear existing order rows and add new ones
         existing.getOrderRowSet().clear();
         if (order.getOrderRowSet() != null) {
-            existing.getOrderRowSet().addAll(order.getOrderRowSet());
+            // Use addOrderRow to maintain bidirectional relationship
+            for (OrderRow orderRow : order.getOrderRowSet()) {
+                existing.addOrderRow(orderRow);
+            }
         }
         return ordersRepository.save(existing);
     }

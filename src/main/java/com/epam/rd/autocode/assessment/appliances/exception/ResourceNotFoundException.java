@@ -1,8 +1,5 @@
 package com.epam.rd.autocode.assessment.appliances.exception;
 
-/**
- * Exception thrown when a requested resource is not found in the database
- */
 public class ResourceNotFoundException extends RuntimeException {
 
     private final String resourceName;
@@ -35,4 +32,3 @@ public class ResourceNotFoundException extends RuntimeException {
         return fieldValue;
     }
 }
-

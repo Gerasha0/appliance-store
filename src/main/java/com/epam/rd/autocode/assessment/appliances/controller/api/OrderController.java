@@ -53,9 +53,7 @@ public class OrderController {
             @PathVariable Long clientId,
             Authentication authentication,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        // Employees can access any client's orders
         if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
-            // Clients can only access their own orders
             User currentUser = userService.getUserByEmail(authentication.getName());
             if (!(currentUser instanceof Client) || !currentUser.getId().equals(clientId)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
@@ -92,9 +90,7 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable Long id, Authentication authentication) {
         Orders order = orderService.getOrderById(id);
 
-        // Employees can access any order
         if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
-            // Clients can only access their own orders
             User currentUser = userService.getUserByEmail(authentication.getName());
             if (!(currentUser instanceof Client) || !order.getClient().getId().equals(currentUser.getId())) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
@@ -105,19 +101,19 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO dto) {
-        // Get client
         Client client = clientService.getClientById(dto.getClientId());
 
-        // Create order rows from DTOs
-        List<OrderRow> orderRows = new ArrayList<>();
+        Orders order = new Orders();
+        order.setClient(client);
+        order.setApproved(false);
+
+        // Add order rows with bidirectional relationship
         for (var rowDto : dto.getOrderRows()) {
             Appliance appliance = applianceService.getApplianceById(rowDto.getApplianceId());
             OrderRow orderRow = entityMapper.toOrderRowEntity(rowDto, appliance);
-            orderRows.add(orderRow);
+            order.addOrderRow(orderRow);  // Use helper method to set bidirectional relationship
         }
 
-        // Create order
-        Orders order = entityMapper.toOrderEntity(dto, client, orderRows);
         Orders created = orderService.createOrder(order);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -131,29 +127,24 @@ public class OrderController {
             Authentication authentication) {
         Orders existing = orderService.getOrderById(id);
 
-        // Employees can update any order
         if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
-            // Clients can only update their own orders
             User currentUser = userService.getUserByEmail(authentication.getName());
             if (!(currentUser instanceof Client) || !existing.getClient().getId().equals(currentUser.getId())) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
             }
-            // Clients cannot update approved orders
             if (existing.getApproved()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot update approved order");
             }
         }
 
-        // Update client if changed
         Client client = clientService.getClientById(dto.getClientId());
         existing.setClient(client);
 
-        // Update order rows
         existing.getOrderRowSet().clear();
         for (var rowDto : dto.getOrderRows()) {
             Appliance appliance = applianceService.getApplianceById(rowDto.getApplianceId());
             OrderRow orderRow = entityMapper.toOrderRowEntity(rowDto, appliance);
-            existing.getOrderRowSet().add(orderRow);
+            existing.addOrderRow(orderRow);  // Use helper method instead of add()
         }
 
         Orders updated = orderService.updateOrder(id, existing);
@@ -164,14 +155,11 @@ public class OrderController {
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id, Authentication authentication) {
         Orders order = orderService.getOrderById(id);
 
-        // Employees can delete any order
         if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
-            // Clients can only delete their own orders
             User currentUser = userService.getUserByEmail(authentication.getName());
             if (!(currentUser instanceof Client) || !order.getClient().getId().equals(currentUser.getId())) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
             }
-            // Clients cannot delete approved orders
             if (order.getApproved()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot delete approved order");
             }

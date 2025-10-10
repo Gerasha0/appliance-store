@@ -23,4 +23,3 @@ public class ApplianceResponseDTO {
     private Integer power;
     private BigDecimal price;
 }
-

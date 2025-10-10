@@ -18,4 +18,3 @@ public class PageResponseDTO<T> {
     private boolean first;
     private boolean last;
 }
-

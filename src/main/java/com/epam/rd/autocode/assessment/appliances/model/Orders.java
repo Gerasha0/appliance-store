@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.HashSet;
@@ -14,7 +13,6 @@ import java.util.Set;
 @Table(name = "orders")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +30,22 @@ public class Orders {
     @Valid
     @NotNull(message = "Order items are required")
     @Size(min = 1, message = "Order must contain at least one item")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<OrderRow> orderRowSet = new HashSet<>();
 
     @NotNull(message = "Approved status is required")
     @Column(nullable = false)
     private Boolean approved = false;
+
+    // Helper method to add order row and maintain bidirectional relationship
+    public void addOrderRow(OrderRow orderRow) {
+        orderRowSet.add(orderRow);
+        orderRow.setOrder(this);
+    }
+
+    // Helper method to remove order row and maintain bidirectional relationship
+    public void removeOrderRow(OrderRow orderRow) {
+        orderRowSet.remove(orderRow);
+        orderRow.setOrder(null);
+    }
 }

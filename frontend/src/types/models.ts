@@ -95,7 +95,8 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface ClientRequestDTO {
+// Registration DTOs (password required)
+export interface ClientRegistrationDTO {
   email: string;
   password: string;
   firstName: string;
@@ -105,9 +106,28 @@ export interface ClientRequestDTO {
   card?: string;
 }
 
-export interface EmployeeRequestDTO {
+export interface EmployeeRegistrationDTO {
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
+  position: string;
+}
+
+// Update DTOs (password optional)
+export interface ClientRequestDTO {
+  email: string;
+  password?: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  card?: string;
+}
+
+export interface EmployeeRequestDTO {
+  email: string;
+  password?: string;
   firstName: string;
   lastName: string;
   position: string;
@@ -139,7 +159,7 @@ export interface OrderRequestDTO {
 export interface OrderRowRequestDTO {
   applianceId: number;
   quantity: number;
-  amount: number;  // Total amount for this order row (price * quantity)
+  amount?: number;  // Optional - calculated automatically by backend (price * quantity)
 }
 
 // DTOs for API responses

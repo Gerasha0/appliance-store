@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.epam.rd.autocode.assessment.appliances</groupId>
 	<artifactId>Appliance-store-Spring</artifactId>
-	<version>0.02</version>
+	<version>0.1</version>
 	<name>Appliance-store-Spring</name>
 	<description>Appliance store - Demo project for Spring Boot</description>
 	<properties>

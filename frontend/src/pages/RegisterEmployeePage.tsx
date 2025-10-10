@@ -11,13 +11,15 @@ import {
   TextField,
   Typography,
   Alert,
+  Divider,
 } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useRegisterEmployeeMutation } from '@/store/api/apiSlice';
 import { employeeSchema } from '@/types/validation';
-import { LanguageSwitcher } from '@/components';
+import { LanguageSwitcher, ThemeToggle } from '@/components';
 import { showSuccess, showError } from '@/utils';
-import type { EmployeeRequestDTO } from '@/types/models';
+import type { EmployeeRegistrationDTO } from '@/types/models';
 
 export const RegisterEmployeePage: React.FC = () => {
   const { t } = useTranslation();
@@ -28,7 +30,7 @@ export const RegisterEmployeePage: React.FC = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<EmployeeRequestDTO>({
+  } = useForm<EmployeeRegistrationDTO>({
     resolver: yupResolver(employeeSchema),
     defaultValues: {
       email: '',
@@ -39,7 +41,7 @@ export const RegisterEmployeePage: React.FC = () => {
     },
   });
 
-  const onSubmit = async (data: EmployeeRequestDTO) => {
+  const onSubmit = async (data: EmployeeRegistrationDTO) => {
     try {
       await registerEmployee(data).unwrap();
       showSuccess(t('auth.registerSuccess') || 'Registration successful!');
@@ -64,20 +66,34 @@ export const RegisterEmployeePage: React.FC = () => {
           position: 'relative',
         }}
       >
-        {/* Language Switcher - positioned at top right */}
+        {/* Language Switcher and Theme Toggle - positioned at top right */}
         <Box
           sx={{
             position: 'absolute',
             top: 16,
             right: 16,
+            display: 'flex',
+            gap: 1,
           }}
         >
+          <ThemeToggle size="medium" />
           <LanguageSwitcher color="primary" />
         </Box>
 
         <Card sx={{ width: '100%' }}>
           <CardContent sx={{ p: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom align="center">
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Button
+                component={Link}
+                to="/login"
+                startIcon={<ArrowBack />}
+                sx={{ mr: 2 }}
+              >
+                {t('common.back')}
+              </Button>
+            </Box>
+
+            <Typography variant="h4" component="h1" gutterBottom align="center" fontWeight="bold">
               {t('auth.registerEmployee')}
             </Typography>
 
@@ -182,12 +198,20 @@ export const RegisterEmployeePage: React.FC = () => {
                 {isLoading ? t('common.loading') : t('auth.register')}
               </Button>
 
-              <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Divider sx={{ my: 2 }} />
+
+              <Box sx={{ textAlign: 'center' }}>
                 <Typography variant="body2" color="text.secondary">
                   {t('auth.haveAccount')}{' '}
-                  <Link to="/login" style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}>
+                  <Button
+                    component={Link}
+                    to="/login"
+                    variant="text"
+                    size="small"
+                    sx={{ textTransform: 'none', fontWeight: 'bold' }}
+                  >
                     {t('auth.signIn')}
-                  </Link>
+                  </Button>
                 </Typography>
               </Box>
             </form>

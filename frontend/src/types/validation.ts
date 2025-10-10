@@ -1,6 +1,9 @@
 import * as yup from 'yup';
 import { Category, PowerType } from './models';
 
+// Name validation pattern that supports Cyrillic and Latin characters
+const namePattern = /^[a-zA-Zа-яА-ЯёЁ]+(([',. -][a-zA-Zа-яА-ЯёЁ ])?[a-zA-Zа-яА-ЯёЁ]*)*$/;
+
 // Login validation schema
 export const loginSchema = yup.object({
   email: yup
@@ -22,7 +25,7 @@ export const clientSchema = yup.object({
     .min(2, 'First name must be at least 2 characters')
     .max(50, 'First name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'First name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   lastName: yup
@@ -31,7 +34,7 @@ export const clientSchema = yup.object({
     .min(2, 'Last name must be at least 2 characters')
     .max(50, 'Last name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'Last name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   email: yup
@@ -85,7 +88,7 @@ export const clientRegistrationSchema = yup.object({
     .min(2, 'First name must be at least 2 characters')
     .max(50, 'First name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'First name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   lastName: yup
@@ -94,7 +97,7 @@ export const clientRegistrationSchema = yup.object({
     .min(2, 'Last name must be at least 2 characters')
     .max(50, 'Last name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'Last name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   email: yup
@@ -139,7 +142,7 @@ export const employeeSchema = yup.object({
     .min(2, 'First name must be at least 2 characters')
     .max(50, 'First name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'First name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   lastName: yup
@@ -148,7 +151,7 @@ export const employeeSchema = yup.object({
     .min(2, 'Last name must be at least 2 characters')
     .max(50, 'Last name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'Last name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   email: yup
@@ -184,7 +187,7 @@ export const employeeRegistrationSchema = yup.object({
     .min(2, 'First name must be at least 2 characters')
     .max(50, 'First name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'First name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   lastName: yup
@@ -193,7 +196,7 @@ export const employeeRegistrationSchema = yup.object({
     .min(2, 'Last name must be at least 2 characters')
     .max(50, 'Last name must not exceed 50 characters')
     .matches(
-      /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+      namePattern,
       'Last name must contain only letters, spaces, hyphens, and apostrophes'
     ),
   email: yup

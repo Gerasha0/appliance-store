@@ -15,38 +15,23 @@ public class LoggingServices {
     
     private static final Logger log = LoggerFactory.getLogger(LoggingServices.class);
 
-    /**
-     * Pointcut that matches all repositories, services and Web REST endpoints.
-     */
     @Pointcut("within(@org.springframework.stereotype.Repository *)" +
             " || within(@org.springframework.stereotype.Service *)" +
             " || within(@org.springframework.web.bind.annotation.RestController *)")
     public void springBeanPointcut() {
-        // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
 
-    /**
-     * Pointcut that matches all Spring beans in the application's main packages.
-     */
     @Pointcut("within(com.epam.rd.autocode.assessment.appliances.service..*)" +
             " || within(com.epam.rd.autocode.assessment.appliances.controller..*)" +
             " || within(com.epam.rd.autocode.assessment.appliances.repository..*)")
     public void applicationPackagePointcut() {
-        // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
 
-    /**
-     * Pointcut for methods annotated with @Loggable.
-     */
     @Pointcut("@annotation(com.epam.rd.autocode.assessment.appliances.aspect.Loggable)")
     public void loggablePointcut() {
-        // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
 
-    /**
-     * Advice that logs methods throwing exceptions.
-     */
-    @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
+   @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
         log.error("Exception in {}.{}() with cause = '{}' and exception = '{}'",
                 joinPoint.getSignature().getDeclaringTypeName(),
@@ -55,9 +40,6 @@ public class LoggingServices {
                 e.getMessage(), e);
     }
 
-    /**
-     * Advice that logs when a method is entered and exited.
-     */
     @Around("applicationPackagePointcut() && springBeanPointcut() || loggablePointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         if (log.isDebugEnabled()) {
@@ -86,10 +68,7 @@ public class LoggingServices {
         }
     }
 
-    /**
-     * Advice for logging before method execution (for important business operations).
-     */
-    @Before("loggablePointcut()")
+   @Before("loggablePointcut()")
     public void logBefore(JoinPoint joinPoint) {
         if (log.isInfoEnabled()) {
             log.info("Executing: {}.{}() with arguments: {}",
@@ -99,10 +78,7 @@ public class LoggingServices {
         }
     }
 
-    /**
-     * Advice for logging after successful method execution.
-     */
-    @AfterReturning(pointcut = "loggablePointcut()", returning = "result")
+   @AfterReturning(pointcut = "loggablePointcut()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         if (log.isInfoEnabled()) {
             log.info("Successfully executed: {}.{}() with result: {}",

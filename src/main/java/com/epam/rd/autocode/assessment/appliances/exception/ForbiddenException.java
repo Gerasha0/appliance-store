@@ -1,8 +1,5 @@
 package com.epam.rd.autocode.assessment.appliances.exception;
 
-/**
- * Exception thrown when a user does not have permission to access a resource
- */
 public class ForbiddenException extends RuntimeException {
 
     public ForbiddenException(String message) {
@@ -13,4 +10,3 @@ public class ForbiddenException extends RuntimeException {
         super(message, cause);
     }
 }
-

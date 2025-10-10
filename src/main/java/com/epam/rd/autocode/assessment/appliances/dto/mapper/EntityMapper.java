@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @Component
 public class EntityMapper {
 
-    // User mappings
     public UserResponseDTO toUserResponseDTO(User user) {
         if (user == null) return null;
 
@@ -28,7 +27,6 @@ public class EntityMapper {
         return new UserResponseDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), role);
     }
 
-    // Client mappings
     public ClientResponseDTO toClientResponseDTO(Client client) {
         if (client == null) return null;
         return new ClientResponseDTO(
@@ -49,7 +47,7 @@ public class EntityMapper {
         client.setFirstName(dto.getFirstName());
         client.setLastName(dto.getLastName());
         client.setEmail(dto.getEmail());
-        client.setPassword(dto.getPassword()); // Will be encoded in service
+        client.setPassword(dto.getPassword());
         client.setPhone(dto.getPhone());
         client.setAddress(dto.getAddress());
         client.setCard(dto.getCard());
@@ -64,10 +62,8 @@ public class EntityMapper {
         if (dto.getPhone() != null) client.setPhone(dto.getPhone());
         if (dto.getAddress() != null) client.setAddress(dto.getAddress());
         if (dto.getCard() != null) client.setCard(dto.getCard());
-        // Password update handled separately in service
     }
 
-    // Employee mappings
     public EmployeeResponseDTO toEmployeeResponseDTO(Employee employee) {
         if (employee == null) return null;
         return new EmployeeResponseDTO(
@@ -86,7 +82,7 @@ public class EntityMapper {
         employee.setFirstName(dto.getFirstName());
         employee.setLastName(dto.getLastName());
         employee.setEmail(dto.getEmail());
-        employee.setPassword(dto.getPassword()); // Will be encoded in service
+        employee.setPassword(dto.getPassword());
         employee.setPosition(dto.getPosition());
         return employee;
     }
@@ -97,10 +93,8 @@ public class EntityMapper {
         if (dto.getLastName() != null) employee.setLastName(dto.getLastName());
         if (dto.getEmail() != null) employee.setEmail(dto.getEmail());
         if (dto.getPosition() != null) employee.setPosition(dto.getPosition());
-        // Password update handled separately in service
     }
 
-    // Manufacturer mappings
     public ManufacturerResponseDTO toManufacturerResponseDTO(Manufacturer manufacturer) {
         if (manufacturer == null) return null;
         return new ManufacturerResponseDTO(
@@ -127,7 +121,6 @@ public class EntityMapper {
         if (dto.getCountry() != null) manufacturer.setCountry(dto.getCountry());
     }
 
-    // Appliance mappings
     public ApplianceResponseDTO toApplianceResponseDTO(Appliance appliance) {
         if (appliance == null) return null;
 
@@ -177,7 +170,6 @@ public class EntityMapper {
         if (dto.getPrice() != null) appliance.setPrice(dto.getPrice());
     }
 
-    // OrderRow mappings
     public OrderRowResponseDTO toOrderRowResponseDTO(OrderRow orderRow) {
         if (orderRow == null) return null;
 
@@ -195,12 +187,20 @@ public class EntityMapper {
         OrderRow orderRow = new OrderRow();
         orderRow.setAppliance(appliance);
         orderRow.setQuantity(dto.getQuantity());
-        orderRow.setAmount(dto.getAmount());
+
+        // Calculate amount automatically: price * quantity
+        BigDecimal amount = dto.getAmount();
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) == 0) {
+            // If amount is not provided or is zero, calculate it from appliance price
+            amount = appliance.getPrice()
+                .multiply(BigDecimal.valueOf(dto.getQuantity()))
+                .setScale(2, java.math.RoundingMode.HALF_UP); // Round to 2 decimal places
+        }
+        orderRow.setAmount(amount);
 
         return orderRow;
     }
 
-    // Order mappings
     public OrderResponseDTO toOrderResponseDTO(Orders order) {
         if (order == null) return null;
 
@@ -216,7 +216,6 @@ public class EntityMapper {
 
         dto.setApproved(order.getApproved());
 
-        // Calculate total amount
         BigDecimal totalAmount = order.getOrderRowSet().stream()
             .map(OrderRow::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -236,7 +235,6 @@ public class EntityMapper {
         return order;
     }
 
-    // Page mappings
     public <E, D> PageResponseDTO<D> toPageResponseDTO(Page<E> page, List<D> dtoContent) {
         PageResponseDTO<D> dto = new PageResponseDTO<>();
         dto.setContent(dtoContent);
@@ -249,7 +247,6 @@ public class EntityMapper {
         return dto;
     }
 
-    // Convenience method for mapping page content
     public <E, D> PageResponseDTO<D> toPageResponseDTO(Page<E> page, java.util.function.Function<E, D> mapper) {
         List<D> dtoContent = page.getContent().stream()
             .map(mapper)

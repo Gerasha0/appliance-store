@@ -32,8 +32,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
-        
-        // Determine role dynamically based on entity type
+
         String role = determineRole(user);
         
         return org.springframework.security.core.userdetails.User.builder()

@@ -21,7 +21,7 @@ public class OrderRowRequestDTO {
     @Min(value = 1, message = "Quantity must be at least 1")
     private Long quantity;
 
-    @NotNull(message = "Amount is required")
+    // Amount is optional - will be calculated automatically from appliance price * quantity
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 }

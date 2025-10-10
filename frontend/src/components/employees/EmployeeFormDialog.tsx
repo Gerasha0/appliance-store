@@ -9,10 +9,8 @@ import {
   Box,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useTranslation } from 'react-i18next';
 import type { Employee, EmployeeRequestDTO } from '@/types/models';
-import { employeeSchema } from '@/types/validation';
 
 interface EmployeeFormDialogProps {
   open: boolean;
@@ -37,7 +35,6 @@ export const EmployeeFormDialog: React.FC<EmployeeFormDialogProps> = ({
     reset,
     formState: { errors, isSubmitting },
   } = useForm<EmployeeRequestDTO>({
-    resolver: yupResolver(employeeSchema),
     defaultValues: {
       email: '',
       password: '',

@@ -11,10 +11,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Controller for managing internationalization (i18n).
- * Provides endpoints to change language and retrieve translations.
- */
 @RestController
 @RequestMapping("/api/locale")
 @RequiredArgsConstructor
@@ -23,13 +19,6 @@ public class LocaleController {
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
 
-    /**
-     * Change the current language.
-     * 
-     * @param lang Language code (en, uk)
-     * @param request HTTP request
-     * @return Success response with new locale
-     */
     @PostMapping("/change")
     public ResponseEntity<Map<String, String>> changeLocale(
             @RequestParam String lang,
@@ -47,12 +36,6 @@ public class LocaleController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Get current locale information.
-     * 
-     * @param locale Current locale
-     * @return Current locale details
-     */
     @GetMapping("/current")
     public ResponseEntity<Map<String, String>> getCurrentLocale(Locale locale) {
         Map<String, String> response = new HashMap<>();
@@ -63,14 +46,6 @@ public class LocaleController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Get all available translations for a specific category.
-     * Useful for populating frontend forms and labels.
-     * 
-     * @param category Category (menu, button, appliance, client, employee, order, etc.)
-     * @param locale Current locale
-     * @return Map of translations for the category
-     */
     @GetMapping("/translations/{category}")
     public ResponseEntity<Map<String, String>> getTranslations(
             @PathVariable String category,
@@ -127,11 +102,6 @@ public class LocaleController {
         return ResponseEntity.ok(translations);
     }
 
-    /**
-     * Get all supported languages.
-     * 
-     * @return List of supported language codes
-     */
     @GetMapping("/languages")
     public ResponseEntity<Map<String, Object>> getSupportedLanguages(Locale locale) {
         Map<String, Object> response = new HashMap<>();

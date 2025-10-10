@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch, closeCart, updateQuantity, removeFromCart, clearCart } from '@/store';
 import { useCreateOrderMutation } from '@/store/api/ordersApi';
 import { useSnackbar } from 'notistack';
-import type { OrderRequestDTO } from '@/types/models';
+import type { OrderRequestDTO, OrderRowRequestDTO } from '@/types/models';
 
 export const CartDrawer: React.FC = () => {
   const { t } = useTranslation();
@@ -67,10 +67,9 @@ export const CartDrawer: React.FC = () => {
     try {
       const orderData: OrderRequestDTO = {
         clientId: userId,
-        orderRows: items.map((item) => ({
+        orderRows: items.map((item): OrderRowRequestDTO => ({
           applianceId: item.appliance.id,
           quantity: item.quantity,
-          amount: item.appliance.price * item.quantity,
         })),
       };
 
@@ -82,8 +81,9 @@ export const CartDrawer: React.FC = () => {
       navigate('/orders');
     } catch (err: any) {
       console.error('Failed to create order:', err);
-      setError(err?.data?.message || t('cart.orderError') || 'Failed to place order');
-      enqueueSnackbar(t('cart.orderError') || 'Failed to place order', { variant: 'error' });
+      const errorMessage = err?.data?.message || t('cart.orderError') || 'Failed to place order';
+      setError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     }
   };
 
@@ -155,8 +155,8 @@ export const CartDrawer: React.FC = () => {
                     size="small"
                     value={item.quantity}
                     onChange={(e) => {
-                      const val = parseInt(e.target.value);
-                      if (!isNaN(val) && val > 0) {
+                      const val = Number.parseInt(e.target.value);
+                      if (!Number.isNaN(val) && val > 0) {
                         handleUpdateQuantity(item.appliance.id, val);
                       }
                     }}

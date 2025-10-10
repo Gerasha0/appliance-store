@@ -80,6 +80,7 @@
     "address": "Адреса",
     "position": "Посада",
     "card": "Номер картки",
+    "cardOptional": "Необов'язково",
     "loginTitle": "Увійдіть до свого облікового запису",
     "registerTitle": "Створити обліковий запис",
     "registerClient": "Зареєструватися як клієнт",
@@ -351,7 +352,8 @@
     "updateError": "Не вдалося оновити профіль",
     "passwordChangeSuccess": "Пароль успішно змінено",
     "passwordChangeError": "Не вдалося змінити пароль",
-    "role": "Роль"
+    "role": "Роль",
+    "loadingProfile": "Завантаження профілю..."
   },
   "cart": {
     "title": "Кошик покупок",

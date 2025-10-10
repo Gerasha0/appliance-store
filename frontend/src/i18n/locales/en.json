@@ -80,6 +80,7 @@
     "address": "Address",
     "position": "Position",
     "card": "Card Number",
+    "cardOptional": "Optional",
     "loginTitle": "Login to your account",
     "registerTitle": "Create an account",
     "registerClient": "Register as Client",
@@ -335,7 +336,8 @@
     "updateError": "Failed to update profile",
     "passwordChangeSuccess": "Password changed successfully",
     "passwordChangeError": "Failed to change password",
-    "role": "Role"
+    "role": "Role",
+    "loadingProfile": "Loading profile..."
   },
   "cart": {
     "title": "Shopping Cart",

@@ -21,18 +21,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Global exception handler for all REST controllers
- * Provides consistent error responses across the application
- */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Handle ResourceNotFoundException
-     * Status: 404 NOT FOUND
-     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFoundException(
             ResourceNotFoundException ex, HttpServletRequest request) {
@@ -49,10 +41,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    /**
-     * Handle ResourceAlreadyExistsException
-     * Status: 409 CONFLICT
-     */
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceAlreadyExistsException(
             ResourceAlreadyExistsException ex, HttpServletRequest request) {
@@ -69,10 +57,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    /**
-     * Handle BadRequestException
-     * Status: 400 BAD REQUEST
-     */
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponseDTO> handleBadRequestException(
             BadRequestException ex, HttpServletRequest request) {
@@ -89,10 +73,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle validation errors from @Valid annotation
-     * Status: 400 BAD REQUEST
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleValidationException(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -117,10 +97,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle constraint violation exceptions
-     * Status: 400 BAD REQUEST
-     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponseDTO> handleConstraintViolationException(
             ConstraintViolationException ex, HttpServletRequest request) {
@@ -145,10 +121,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle type mismatch errors (e.g., invalid path variable type)
-     * Status: 400 BAD REQUEST
-     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponseDTO> handleTypeMismatchException(
             MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
@@ -168,10 +140,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle HTTP message not readable (e.g., malformed JSON)
-     * Status: 400 BAD REQUEST
-     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadableException(
             HttpMessageNotReadableException ex, HttpServletRequest request) {
@@ -189,10 +157,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle UnauthorizedException and Spring Security AuthenticationException
-     * Status: 401 UNAUTHORIZED
-     */
     @ExceptionHandler({UnauthorizedException.class, AuthenticationException.class, BadCredentialsException.class})
     public ResponseEntity<ErrorResponseDTO> handleUnauthorizedException(
             Exception ex, HttpServletRequest request) {
@@ -209,10 +173,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
-    /**
-     * Handle ForbiddenException and Spring Security AccessDeniedException
-     * Status: 403 FORBIDDEN
-     */
     @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
     public ResponseEntity<ErrorResponseDTO> handleForbiddenException(
             Exception ex, HttpServletRequest request) {
@@ -229,10 +189,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
-    /**
-     * Handle IllegalArgumentException
-     * Status: 400 BAD REQUEST
-     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDTO> handleIllegalArgumentException(
             IllegalArgumentException ex, HttpServletRequest request) {
@@ -249,10 +205,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle all other uncaught exceptions
-     * Status: 500 INTERNAL SERVER ERROR
-     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGlobalException(
             Exception ex, HttpServletRequest request) {
