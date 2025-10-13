@@ -36,17 +36,36 @@ import {
   useGetOrdersByClientQuery,
   useGetAllClientsQuery,
   useGetAllEmployeesQuery,
+  useDeleteOrderMutation,
+  useApproveOrderMutation,
+  useUpdateOrderMutation,
 } from '@/store/api/apiSlice';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ApplianceCard } from '@/components/appliances';
 import { useAppSelector } from '@/store';
 import { UserRole, Category } from '@/types/models';
-import type { Orders, Appliance } from '@/types/models';
+import type { Orders, Appliance, OrderRequestDTO } from '@/types/models';
+import { OrderDetailDialog, EditOrderDialog } from '@/components/orders';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { useSnackbar } from 'notistack';
 
 // Employee Dashboard Component
 const EmployeeDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [selectedOrder, setSelectedOrder] = useState<Orders | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [approveDialogOpen, setApproveDialogOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const role = useAppSelector((state) => state.auth.role);
+
+  // Mutations
+  const [deleteOrder] = useDeleteOrderMutation();
+  const [approveOrder] = useApproveOrderMutation();
+  const [updateOrder] = useUpdateOrderMutation();
 
   // Fetch data
   const { data: appliancesData, isLoading: appliancesLoading } = useGetAllAppliancesQuery({
@@ -127,6 +146,87 @@ const EmployeeDashboard: React.FC = () => {
       color: 'secondary' as const,
     },
   ];
+
+  const handleViewOrder = (order: Orders) => {
+    setSelectedOrder(order);
+    setDetailDialogOpen(true);
+  };
+
+  const handleCloseDetailDialog = () => {
+    setDetailDialogOpen(false);
+    setSelectedOrder(null);
+  };
+
+  const handleEditClick = (order: Orders) => {
+    setSelectedOrder(order);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditFromDetail = (id: number) => {
+    const order = recentOrders.find((o: Orders) => o.id === id);
+    if (order) {
+      setDetailDialogOpen(false); // Close detail dialog first
+      handleEditClick(order);
+    }
+  };
+
+  const handleEditSubmit = async (orderId: number, data: OrderRequestDTO) => {
+    try {
+      await updateOrder({ id: orderId, order: data }).unwrap();
+      enqueueSnackbar(t('order.updateSuccess'), { variant: 'success' });
+      setEditDialogOpen(false);
+      setSelectedOrder(null);
+    } catch (error: unknown) {
+      console.error('Failed to update order:', error);
+      enqueueSnackbar(t('order.updateError'), { variant: 'error' });
+    }
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedOrderId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteFromDetail = (id: number) => {
+    handleDeleteClick(id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedOrderId) {
+      try {
+        await deleteOrder(selectedOrderId).unwrap();
+        enqueueSnackbar(t('order.deleteSuccess'), { variant: 'success' });
+        setDeleteDialogOpen(false);
+        setSelectedOrderId(null);
+      } catch (error: unknown) {
+        console.error('Failed to delete order:', error);
+        enqueueSnackbar(t('order.deleteError'), { variant: 'error' });
+      }
+    }
+  };
+
+  const handleApproveClick = (id: number) => {
+    setSelectedOrderId(id);
+    setApproveDialogOpen(true);
+  };
+
+  const handleApproveFromDetail = (id: number) => {
+    handleApproveClick(id);
+  };
+
+  const handleApproveConfirm = async () => {
+    if (selectedOrderId) {
+      try {
+        await approveOrder(selectedOrderId).unwrap();
+        enqueueSnackbar(t('order.approveSuccess'), { variant: 'success' });
+        setApproveDialogOpen(false);
+        setSelectedOrderId(null);
+      } catch (error: unknown) {
+        console.error('Failed to approve order:', error);
+        enqueueSnackbar(t('order.approveError'), { variant: 'error' });
+      }
+    }
+  };
 
   return (
     <Box>
@@ -233,7 +333,7 @@ const EmployeeDashboard: React.FC = () => {
                     <TableCell align="right">
                       <IconButton
                         size="small"
-                        onClick={() => navigate(`/orders/${order.id}`)}
+                        onClick={() => handleViewOrder(order)}
                         aria-label="view order"
                       >
                         <ViewIcon />
@@ -276,6 +376,46 @@ const EmployeeDashboard: React.FC = () => {
           </Paper>
         </Box>
       </Box>
+
+      {/* Order Detail Dialog */}
+      <OrderDetailDialog
+        open={detailDialogOpen}
+        order={selectedOrder}
+        userRole={role}
+        onClose={handleCloseDetailDialog}
+        onEdit={handleEditFromDetail}
+        onDelete={handleDeleteFromDetail}
+        onApprove={handleApproveFromDetail}
+      />
+
+      {/* Edit Order Dialog */}
+      <EditOrderDialog
+        open={editDialogOpen}
+        order={selectedOrder}
+        onClose={() => {
+          setEditDialogOpen(false);
+          setSelectedOrder(null);
+        }}
+        onSubmit={handleEditSubmit}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        title={t('order.deleteOrder')}
+        message={t('order.deleteConfirm')}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteDialogOpen(false)}
+      />
+
+      {/* Approve Confirmation Dialog */}
+      <ConfirmDialog
+        open={approveDialogOpen}
+        title={t('order.approveOrder')}
+        message={t('order.approveConfirm')}
+        onConfirm={handleApproveConfirm}
+        onCancel={() => setApproveDialogOpen(false)}
+      />
     </Box>
   );
 };
@@ -284,10 +424,21 @@ const EmployeeDashboard: React.FC = () => {
 const ClientDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState<Orders | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const email = useAppSelector((state) => state.auth.email);
   const userId = useAppSelector((state) => state.auth.userId);
   const firstName = useAppSelector((state) => state.auth.firstName);
+  const role = useAppSelector((state) => state.auth.role);
+
+  // Mutations
+  const [deleteOrder] = useDeleteOrderMutation();
+  const [updateOrder] = useUpdateOrderMutation();
 
   // Fetch popular appliances (larger page for catalog)
   const { data: appliancesData, isLoading: appliancesLoading } = useGetAllAppliancesQuery({
@@ -320,6 +471,60 @@ const ClientDashboard: React.FC = () => {
 
   // Get popular appliances (first 8 items)
   const popularAppliances = searchQuery ? filteredAppliances.slice(0, 8) : appliancesList.slice(0, 8);
+
+  const handleViewOrder = (order: Orders) => {
+    setSelectedOrder(order);
+    setDetailDialogOpen(true);
+  };
+
+  const handleCloseDetailDialog = () => {
+    setDetailDialogOpen(false);
+    setSelectedOrder(null);
+  };
+
+  const handleEditClick = (order: Orders) => {
+    setSelectedOrder(order);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditFromDetail = (id: number) => {
+    const order = recentOrders.find((o: Orders) => o.id === id);
+    if (order) {
+      setDetailDialogOpen(false); // Close detail dialog first
+      handleEditClick(order);
+    }
+  };
+
+  const handleEditSubmit = async (orderId: number, data: OrderRequestDTO) => {
+    try {
+      await updateOrder({ id: orderId, order: data }).unwrap();
+      enqueueSnackbar(t('order.updateSuccess'), { variant: 'success' });
+      setEditDialogOpen(false);
+      setSelectedOrder(null);
+    } catch (error: unknown) {
+      console.error('Failed to update order:', error);
+      enqueueSnackbar(t('order.updateError'), { variant: 'error' });
+    }
+  };
+
+  const handleDeleteFromDetail = (id: number) => {
+    setSelectedOrderId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedOrderId) {
+      try {
+        await deleteOrder(selectedOrderId).unwrap();
+        enqueueSnackbar(t('order.deleteSuccess'), { variant: 'success' });
+        setDeleteDialogOpen(false);
+        setSelectedOrderId(null);
+      } catch (error: unknown) {
+        console.error('Failed to delete order:', error);
+        enqueueSnackbar(t('order.deleteError'), { variant: 'error' });
+      }
+    }
+  };
 
   return (
     <Box>
@@ -421,7 +626,7 @@ const ClientDashboard: React.FC = () => {
       {/* Recent Orders */}
       <Paper sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h6">{t('order.recentOrders')}</Typography>
+          <Typography variant="h6">{t('dashboard.recentOrders')}</Typography>
           <Button
             variant="outlined"
             endIcon={<ViewIcon />}
@@ -471,7 +676,7 @@ const ClientDashboard: React.FC = () => {
                     <TableCell align="right">
                       <IconButton
                         size="small"
-                        onClick={() => navigate(`/orders/${order.id}`)}
+                        onClick={() => handleViewOrder(order)}
                         aria-label="view order"
                       >
                         <ViewIcon />
@@ -484,6 +689,34 @@ const ClientDashboard: React.FC = () => {
           </TableContainer>
         )}
       </Paper>
+
+      {/* Order Detail Dialog */}
+      <OrderDetailDialog
+        open={detailDialogOpen}
+        order={selectedOrder}
+        userRole={role}
+        onClose={handleCloseDetailDialog}
+        onEdit={handleEditFromDetail}
+        onDelete={handleDeleteFromDetail}
+      />
+
+      {/* Edit Order Dialog */}
+      <EditOrderDialog
+        open={editDialogOpen}
+        order={selectedOrder}
+        onClose={() => {
+          setEditDialogOpen(false);
+          setSelectedOrder(null);
+        }}
+        onSubmit={handleEditSubmit}
+      />
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        title={t('order.deleteOrder')}
+        message={t('order.deleteConfirm')}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteDialogOpen(false)}
+      />
     </Box>
   );
 };

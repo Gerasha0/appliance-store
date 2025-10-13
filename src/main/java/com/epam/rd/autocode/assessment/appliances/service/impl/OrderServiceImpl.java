@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,15 +51,30 @@ public class OrderServiceImpl implements OrderService {
     @Loggable
     public Orders updateOrder(Long id, Orders order) {
         Orders existing = getOrderById(id);
+
+        // Update client if changed
         existing.setClient(order.getClient());
-        // Clear existing order rows and add new ones
-        existing.getOrderRowSet().clear();
-        if (order.getOrderRowSet() != null) {
-            // Use addOrderRow to maintain bidirectional relationship
+
+        // Clear existing order rows completely
+        // Create a temporary list to avoid ConcurrentModificationException
+        List<OrderRow> rowsToRemove = new ArrayList<>(existing.getOrderRowSet());
+        for (OrderRow row : rowsToRemove) {
+            existing.removeOrderRow(row);
+        }
+
+        // Add new order rows with proper bidirectional relationship
+        if (order.getOrderRowSet() != null && !order.getOrderRowSet().isEmpty()) {
             for (OrderRow orderRow : order.getOrderRowSet()) {
-                existing.addOrderRow(orderRow);
+                // Create a new detached OrderRow to avoid issues with existing ones
+                OrderRow newRow = new OrderRow();
+                newRow.setAppliance(orderRow.getAppliance());
+                newRow.setQuantity(orderRow.getQuantity());
+                newRow.setAmount(orderRow.getAmount());
+                existing.addOrderRow(newRow);
             }
         }
+
+        // Save and return the updated order
         return ordersRepository.save(existing);
     }
 

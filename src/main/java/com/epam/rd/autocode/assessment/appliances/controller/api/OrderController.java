@@ -23,9 +23,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
@@ -137,17 +134,19 @@ public class OrderController {
             }
         }
 
+        // Create order object from DTO
         Client client = clientService.getClientById(dto.getClientId());
-        existing.setClient(client);
+        Orders orderToUpdate = new Orders();
+        orderToUpdate.setClient(client);
 
-        existing.getOrderRowSet().clear();
+        // Add order rows from DTO
         for (var rowDto : dto.getOrderRows()) {
             Appliance appliance = applianceService.getApplianceById(rowDto.getApplianceId());
             OrderRow orderRow = entityMapper.toOrderRowEntity(rowDto, appliance);
-            existing.addOrderRow(orderRow);  // Use helper method instead of add()
+            orderToUpdate.addOrderRow(orderRow);
         }
 
-        Orders updated = orderService.updateOrder(id, existing);
+        Orders updated = orderService.updateOrder(id, orderToUpdate);
         return ResponseEntity.ok(entityMapper.toOrderResponseDTO(updated));
     }
 

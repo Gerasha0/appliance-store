@@ -1,4 +1,4 @@
--- BCrypt hashed password for: password123
+﻿-- BCrypt hashed password for: password123
 -- Hash: $2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO
 
 -- Manufacturers (10 records)
@@ -13,7 +13,7 @@ INSERT INTO manufacturer (id, name, address, country) VALUES (8, 'LG', '20 Yeoui
 INSERT INTO manufacturer (id, name, address, country) VALUES (9, 'Sony', '1-7-1 Konan, Minato-ku, Tokyo', 'Japan');
 INSERT INTO manufacturer (id, name, address, country) VALUES (10, 'Intel', '2200 Mission College Blvd, Santa Clara, CA', 'USA');
 
--- Users (Employees) - 10 records (ID 1-4 existed, adding 13-18 to avoid conflicts)
+-- Users (Employees) - 10 records
 INSERT INTO users (id, first_name, last_name, email, password) VALUES (1, 'John', 'Phobos', 'phobos@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
 INSERT INTO users (id, first_name, last_name, email, password) VALUES (2, 'Sarah', 'Moon', 'moon@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
 INSERT INTO users (id, first_name, last_name, email, password) VALUES (3, 'Michael', 'Deimos', 'deimos@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
@@ -36,7 +36,7 @@ INSERT INTO employees (id, position) VALUES (16, 'Inventory Manager');
 INSERT INTO employees (id, position) VALUES (17, 'Marketing Coordinator');
 INSERT INTO employees (id, position) VALUES (18, 'Operations Manager');
 
--- Users (Clients) - 10 records (ID 5-12 existed, adding 19-20)
+-- Users (Clients) - 10 records
 INSERT INTO users (id, first_name, last_name, email, password) VALUES (5, 'James', 'Mercury', 'mercury@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
 INSERT INTO users (id, first_name, last_name, email, password) VALUES (6, 'Maria', 'Venus', 'venus@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
 INSERT INTO users (id, first_name, last_name, email, password) VALUES (7, 'Robert', 'Earth', 'earth@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
@@ -71,6 +71,8 @@ INSERT INTO appliance (name, category, model, manufacturer_id, power_type, chara
 INSERT INTO appliance (name, category, model, manufacturer_id, power_type, characteristic, description, power, price) VALUES ('Whisper', 'SMALL', 'Model-I',9,'ACCUMULATOR','Ultra quiet','Silent operation',150, 449.99);
 INSERT INTO appliance (name, category, model, manufacturer_id, power_type, characteristic, description, power, price) VALUES ('Velocity', 'SMALL', 'Model-J',10,'AC110','High speed','Fast processing',1800, 749.99);
 
--- Reset sequences for auto-increment to continue after manual inserts
-ALTER TABLE manufacturer ALTER COLUMN id RESTART WITH 100;
-ALTER TABLE users ALTER COLUMN id RESTART WITH 100;
+-- Reset auto-increment values to start after manual inserts
+ALTER TABLE manufacturer AUTO_INCREMENT = 100;
+ALTER TABLE users AUTO_INCREMENT = 100;
+ALTER TABLE appliance AUTO_INCREMENT = 100;
+

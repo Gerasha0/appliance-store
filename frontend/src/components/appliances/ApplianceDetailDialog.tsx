@@ -38,7 +38,8 @@ export const ApplianceDetailDialog: React.FC<ApplianceDetailDialogProps> = ({
     return null;
   }
 
-  const manufacturer = manufacturers.find(m => m.id === appliance.manufacturerId);
+  // Use appliance.manufacturer directly, or fallback to manufacturers list
+  const manufacturer = appliance.manufacturer || manufacturers.find(m => m.id === appliance.manufacturer?.id);
 
   const handleEdit = () => {
     if (onEdit && appliance) {
@@ -48,7 +49,13 @@ export const ApplianceDetailDialog: React.FC<ApplianceDetailDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      disableRestoreFocus
+    >
       <DialogTitle>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">{t('appliance.applianceDetails')}</Typography>

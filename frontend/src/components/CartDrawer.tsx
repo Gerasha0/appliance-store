@@ -54,12 +54,16 @@ export const CartDrawer: React.FC = () => {
   };
 
   const handleCheckout = async () => {
+    console.log('Checkout started. UserId:', userId, 'Items:', items);
+
     if (!userId) {
+      console.error('UserId is missing!');
       setError(t('cart.loginRequired') || 'Please login to checkout');
       return;
     }
 
     if (items.length === 0) {
+      console.error('Cart is empty!');
       setError(t('cart.emptyCart') || 'Cart is empty');
       return;
     }
@@ -73,15 +77,18 @@ export const CartDrawer: React.FC = () => {
         })),
       };
 
-      await createOrder(orderData).unwrap();
-      
+      console.log('Creating order with data:', orderData);
+      const result = await createOrder(orderData).unwrap();
+      console.log('Order created successfully:', result);
+
       enqueueSnackbar(t('cart.orderSuccess') || 'Order placed successfully!', { variant: 'success' });
       dispatch(clearCart());
       dispatch(closeCart());
       navigate('/orders');
     } catch (err: any) {
       console.error('Failed to create order:', err);
-      const errorMessage = err?.data?.message || t('cart.orderError') || 'Failed to place order';
+      console.error('Error details:', JSON.stringify(err, null, 2));
+      const errorMessage = err?.data?.message || err?.message || t('cart.orderError') || 'Failed to place order';
       setError(errorMessage);
       enqueueSnackbar(errorMessage, { variant: 'error' });
     }
@@ -93,6 +100,7 @@ export const CartDrawer: React.FC = () => {
       open={isOpen}
       onClose={handleClose}
       slotProps={{ paper: { sx: { width: { xs: '100%', sm: 400 } } } }}
+      disableRestoreFocus
     >
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

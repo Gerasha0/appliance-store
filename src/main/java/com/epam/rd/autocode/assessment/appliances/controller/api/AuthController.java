@@ -11,6 +11,7 @@ import com.epam.rd.autocode.assessment.appliances.service.EmployeeService;
 import com.epam.rd.autocode.assessment.appliances.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        log.info("Login attempt for user: {}", loginRequest.getEmail());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -52,19 +55,23 @@ public class AuthController {
             User user = userService.getUserByEmail(loginRequest.getEmail());
             String role = determineRole(user);
             
-            return ResponseEntity.ok(new JwtResponse(jwt, user.getEmail(), role, user.getId(), 
+            log.info("Successful login for user: {} with role: {}", loginRequest.getEmail(), role);
+            return ResponseEntity.ok(new JwtResponse(jwt, user.getEmail(), role, user.getId(),
                     user.getFirstName(), user.getLastName()));
         } catch (BadCredentialsException e) {
+            log.warn("Failed login attempt for user: {} - Invalid credentials", loginRequest.getEmail());
             Map<String, String> error = new HashMap<>();
             error.put("error", "Invalid email or password");
             error.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         } catch (AuthenticationException e) {
+            log.error("Authentication failed for user: {} - {}", loginRequest.getEmail(), e.getMessage());
             Map<String, String> error = new HashMap<>();
             error.put("error", "Authentication failed");
             error.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         } catch (Exception e) {
+            log.error("Server error during authentication for user: {}", loginRequest.getEmail(), e);
             Map<String, String> error = new HashMap<>();
             error.put("error", "Server error");
             error.put("message", e.getMessage());
@@ -74,18 +81,32 @@ public class AuthController {
 
     @PostMapping("/register/client")
     public ResponseEntity<ClientResponseDTO> registerClient(@Valid @RequestBody ClientRequestDTO clientDTO) {
-        Client client = entityMapper.toClientEntity(clientDTO);
-        Client created = clientService.createClient(client);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(entityMapper.toClientResponseDTO(created));
+        log.info("Registering new client: {}", clientDTO.getEmail());
+        try {
+            Client client = entityMapper.toClientEntity(clientDTO);
+            Client created = clientService.createClient(client);
+            log.info("Successfully registered client: {} with ID: {}", created.getEmail(), created.getId());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(entityMapper.toClientResponseDTO(created));
+        } catch (Exception e) {
+            log.error("Failed to register client: {}", clientDTO.getEmail(), e);
+            throw e;
+        }
     }
 
     @PostMapping("/register/employee")
     public ResponseEntity<EmployeeResponseDTO> registerEmployee(@Valid @RequestBody EmployeeRequestDTO employeeDTO) {
-        Employee employee = entityMapper.toEmployeeEntity(employeeDTO);
-        Employee created = employeeService.createEmployee(employee);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(entityMapper.toEmployeeResponseDTO(created));
+        log.info("Registering new employee: {}", employeeDTO.getEmail());
+        try {
+            Employee employee = entityMapper.toEmployeeEntity(employeeDTO);
+            Employee created = employeeService.createEmployee(employee);
+            log.info("Successfully registered employee: {} with ID: {}", created.getEmail(), created.getId());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(entityMapper.toEmployeeResponseDTO(created));
+        } catch (Exception e) {
+            log.error("Failed to register employee: {}", employeeDTO.getEmail(), e);
+            throw e;
+        }
     }
 
     private String determineRole(User user) {

@@ -132,16 +132,6 @@ const AppliancesPage: React.FC = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  // Adjust rowsPerPage when switching view modes
-  useEffect(() => {
-    if (viewMode === 'grid') {
-      setRowsPerPage(12); // Better for grid layout
-      setPage(0); // Reset to first page
-    } else {
-      setRowsPerPage(10); // Standard for table
-      setPage(0); // Reset to first page
-    }
-  }, [viewMode]);
 
   const handleOpenDialog = (appliance?: Appliance) => {
     setEditingAppliance(appliance || null);
@@ -315,14 +305,28 @@ const AppliancesPage: React.FC = () => {
             <Box sx={{ display: 'flex', gap: 0.5 }}>
               <IconButton
                 size="small"
-                onClick={() => setViewMode('table')}
+                onClick={() => {
+                  setViewMode('table');
+                  // Set valid rowsPerPage for table mode if current value is invalid
+                  if (![5, 10, 25, 50].includes(rowsPerPage)) {
+                    setRowsPerPage(10);
+                  }
+                  setPage(0);
+                }}
                 color={viewMode === 'table' ? 'primary' : 'default'}
               >
                 <ViewListIcon />
               </IconButton>
               <IconButton
                 size="small"
-                onClick={() => setViewMode('grid')}
+                onClick={() => {
+                  setViewMode('grid');
+                  // Set valid rowsPerPage for grid mode if current value is invalid
+                  if (![8, 12, 24, 48].includes(rowsPerPage)) {
+                    setRowsPerPage(12);
+                  }
+                  setPage(0);
+                }}
                 color={viewMode === 'grid' ? 'primary' : 'default'}
               >
                 <ViewModuleIcon />
