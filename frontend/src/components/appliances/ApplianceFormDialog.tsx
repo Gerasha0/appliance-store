@@ -41,6 +41,14 @@ export const ApplianceFormDialog: React.FC<ApplianceFormDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // Get default manufacturer ID
+  const getDefaultManufacturerId = () => {
+    if (appliance?.manufacturerId) {
+      return appliance.manufacturerId;
+    }
+    return manufacturers.length > 0 ? manufacturers[0].id : 1;
+  };
+
   const {
     control,
     handleSubmit,
@@ -49,46 +57,50 @@ export const ApplianceFormDialog: React.FC<ApplianceFormDialogProps> = ({
   } = useForm<ApplianceRequestDTO>({
     resolver: yupResolver(applianceSchema) as any,
     defaultValues: {
-      name: '',
-      category: Category.SMALL,
-      model: '',
-      powerType: PowerType.AC220,
-      price: 0,
-      manufacturerId: manufacturers.length > 0 ? manufacturers[0].id : 0,
-      characteristic: '',
-      description: '',
-      power: 0,
+      name: appliance?.name || '',
+      category: appliance?.category || Category.SMALL,
+      model: appliance?.model || '',
+      powerType: appliance?.powerType || PowerType.AC220,
+      price: appliance?.price || 0,
+      manufacturerId: getDefaultManufacturerId(),
+      characteristic: appliance?.characteristic || '',
+      description: appliance?.description || '',
+      power: appliance?.power || 0,
     },
   });
 
-  // Update form when appliance or manufacturers change
+  // Update form when dialog opens or appliance changes
   useEffect(() => {
-    if (appliance) {
-      reset({
-        name: appliance.name,
-        category: appliance.category,
-        model: appliance.model || '',
-        powerType: appliance.powerType,
-        price: appliance.price,
-        manufacturerId: appliance.manufacturerId,
-        characteristic: appliance.characteristic || '',
-        description: appliance.description || '',
-        power: appliance.power || 0,
-      });
-    } else {
-      reset({
-        name: '',
-        category: Category.SMALL,
-        model: '',
-        powerType: PowerType.AC220,
-        price: 0,
-        manufacturerId: manufacturers.length > 0 ? manufacturers[0].id : 0,
-        characteristic: '',
-        description: '',
-        power: 0,
-      });
+    if (open) {
+      const defaultManufacturerId = manufacturers.length > 0 ? manufacturers[0].id : 1;
+      
+      if (appliance) {
+        reset({
+          name: appliance.name || '',
+          category: appliance.category || Category.SMALL,
+          model: appliance.model || '',
+          powerType: appliance.powerType || PowerType.AC220,
+          price: appliance.price || 0,
+          manufacturerId: appliance.manufacturerId || appliance.manufacturer?.id || defaultManufacturerId,
+          characteristic: appliance.characteristic || '',
+          description: appliance.description || '',
+          power: appliance.power || 0,
+        });
+      } else {
+        reset({
+          name: '',
+          category: Category.SMALL,
+          model: '',
+          powerType: PowerType.AC220,
+          price: 0,
+          manufacturerId: defaultManufacturerId,
+          characteristic: '',
+          description: '',
+          power: 0,
+        });
+      }
     }
-  }, [appliance, manufacturers, reset]);
+  }, [open, appliance, manufacturers, reset]);
 
   const handleFormSubmit = async (data: ApplianceRequestDTO) => {
     await onSubmit(data);
@@ -239,7 +251,12 @@ export const ApplianceFormDialog: React.FC<ApplianceFormDialogProps> = ({
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.manufacturerId} required>
                   <InputLabel>{t('appliance.manufacturer')}</InputLabel>
-                  <Select {...field} label={t('appliance.manufacturer')} disabled={isSubmitting}>
+                  <Select 
+                    {...field} 
+                    value={field.value || (manufacturers.length > 0 ? manufacturers[0].id : '')}
+                    label={t('appliance.manufacturer')} 
+                    disabled={isSubmitting}
+                  >
                     {manufacturers.map(m => (
                       <MenuItem key={m.id} value={m.id}>
                         {m.name}

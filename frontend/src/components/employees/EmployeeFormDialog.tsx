@@ -44,12 +44,11 @@ export const EmployeeFormDialog: React.FC<EmployeeFormDialogProps> = ({
     },
   });
 
-  // Update form when employee changes
   useEffect(() => {
     if (employee) {
       reset({
         email: employee.email,
-        password: '', // Never pre-fill password for security
+        password: '',
         firstName: employee.firstName,
         lastName: employee.lastName,
         position: employee.position,
@@ -66,7 +65,11 @@ export const EmployeeFormDialog: React.FC<EmployeeFormDialogProps> = ({
   }, [employee, reset]);
 
   const handleFormSubmit = async (data: EmployeeRequestDTO) => {
-    await onSubmit(data);
+    const submitData = { ...data };
+    if (employee && (!submitData.password || submitData.password.trim() === '')) {
+      delete submitData.password;
+    }
+    await onSubmit(submitData);
   };
 
   const handleClose = () => {

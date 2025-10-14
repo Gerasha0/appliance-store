@@ -64,6 +64,11 @@ public class ClientController {
             @PathVariable Long id, @Valid @RequestBody ClientRequestDTO dto) {
         Client client = clientService.getClientById(id);
         entityMapper.updateClientFromDTO(dto, client);
+        
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            client.setPassword(dto.getPassword());
+        }
+        
         Client updated = clientService.updateClient(id, client);
         return ResponseEntity.ok(entityMapper.toClientResponseDTO(updated));
     }

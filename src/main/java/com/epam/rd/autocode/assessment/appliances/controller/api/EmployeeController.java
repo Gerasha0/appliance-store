@@ -64,6 +64,11 @@ public class EmployeeController {
             @PathVariable Long id, @Valid @RequestBody EmployeeRequestDTO dto) {
         Employee employee = employeeService.getEmployeeById(id);
         entityMapper.updateEmployeeFromDTO(dto, employee);
+        
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            employee.setPassword(dto.getPassword());
+        }
+        
         Employee updated = employeeService.updateEmployee(id, employee);
         return ResponseEntity.ok(entityMapper.toEmployeeResponseDTO(updated));
     }

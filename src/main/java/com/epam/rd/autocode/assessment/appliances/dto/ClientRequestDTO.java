@@ -30,7 +30,6 @@ public class ClientRequestDTO {
     @Size(max = 255, message = "Email must not exceed 255 characters")
     private String email;
 
-    @NotBlank(message = "Password is required")
     @Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).*$",
              message = "Password must contain at least one digit, one lowercase, one uppercase letter and one special character")

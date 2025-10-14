@@ -138,7 +138,11 @@ export const ClientFormDialog: React.FC<ClientFormDialogProps> = ({
   }, [client, reset]);
 
   const handleFormSubmit = async (data: ClientRequestDTO) => {
-    await onSubmit(data);
+    const submitData = { ...data };
+    if (client && (!submitData.password || submitData.password.trim() === '')) {
+      delete submitData.password;
+    }
+    await onSubmit(submitData);
   };
 
   const handleClose = () => {

@@ -136,6 +136,10 @@ public class OrderController {
         Client client = clientService.getClientById(dto.getClientId());
         Orders orderToUpdate = new Orders();
         orderToUpdate.setClient(client);
+        // Preserve the employee if it was set
+        if (existing.getEmployee() != null) {
+            orderToUpdate.setEmployee(existing.getEmployee());
+        }
 
         for (var rowDto : dto.getOrderRows()) {
             Appliance appliance = applianceService.getApplianceById(rowDto.getApplianceId());

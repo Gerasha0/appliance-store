@@ -124,14 +124,14 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
         const updatedItems = [...orderItems];
         updatedItems[existingItemIndex].quantity += quantity;
         updatedItems[existingItemIndex].subtotal =
-          updatedItems[existingItemIndex].quantity * selectedAppliance.price;
+          Math.round(updatedItems[existingItemIndex].quantity * selectedAppliance.price * 100) / 100;
         setOrderItems(updatedItems);
       } else {
         // Add new item
         const newItem: OrderItem = {
           appliance: selectedAppliance,
           quantity,
-          subtotal: quantity * selectedAppliance.price,
+          subtotal: Math.round(quantity * selectedAppliance.price * 100) / 100,
         };
         setOrderItems([...orderItems, newItem]);
       }
@@ -154,7 +154,7 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
           return {
             ...item,
             quantity: newQuantity,
-            subtotal: newQuantity * item.appliance.price,
+            subtotal: Math.round(newQuantity * item.appliance.price * 100) / 100,
           };
         }
         return item;
@@ -170,7 +170,8 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
         orderRows: orderItems.map(item => ({
           applianceId: item.appliance.id,
           quantity: item.quantity,
-          amount: item.subtotal,  // Add amount field (price * quantity)
+          // Round amount to 2 decimal places to match backend BigDecimal(10,2) constraint
+          amount: Math.round(item.subtotal * 100) / 100,
         })),
       };
 

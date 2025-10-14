@@ -81,7 +81,8 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
         order.orderRows?.map(row => ({
           appliance: row.appliance!,
           quantity: row.quantity,
-          subtotal: row.amount,
+          // Ensure amount is a number (it might be BigDecimal from backend)
+          subtotal: typeof row.amount === 'number' ? row.amount : Number(row.amount),
         })) || [];
       setOrderItems(existingItems);
     }
@@ -108,14 +109,14 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
         const updatedItems = [...orderItems];
         updatedItems[existingItemIndex].quantity += quantity;
         updatedItems[existingItemIndex].subtotal =
-          updatedItems[existingItemIndex].quantity * selectedAppliance.price;
+          Math.round(updatedItems[existingItemIndex].quantity * selectedAppliance.price * 100) / 100;
         setOrderItems(updatedItems);
       } else {
         // Add new item
         const newItem: OrderItem = {
           appliance: selectedAppliance,
           quantity,
-          subtotal: quantity * selectedAppliance.price,
+          subtotal: Math.round(quantity * selectedAppliance.price * 100) / 100,
         };
         setOrderItems([...orderItems, newItem]);
       }
@@ -138,7 +139,7 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
           return {
             ...item,
             quantity: newQuantity,
-            subtotal: newQuantity * item.appliance.price,
+            subtotal: Math.round(newQuantity * item.appliance.price * 100) / 100,
           };
         }
         return item;
@@ -148,18 +149,40 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (order && orderItems.length > 0) {
-      const orderData: OrderRequestDTO = {
-        clientId: order.client?.id || order.clientId,
-        orderRows: orderItems.map(item => ({
-          applianceId: item.appliance.id,
-          quantity: item.quantity,
-          amount: item.subtotal,
-        })),
-      };
-
-      await onSubmit(order.id, orderData);
+    if (!order) {
+      console.error('Order is null');
+      return;
     }
+
+    if (orderItems.length === 0) {
+      console.error('No order items');
+      return;
+    }
+
+    // Ensure we have a valid clientId
+    const clientId = order.client?.id || order.clientId;
+    if (!clientId) {
+      console.error('Client ID is missing', { order });
+      return;
+    }
+
+    const orderData: OrderRequestDTO = {
+      clientId: clientId,
+      orderRows: orderItems.map(item => ({
+        applianceId: item.appliance.id,
+        quantity: item.quantity,
+        // Round amount to 2 decimal places to match backend BigDecimal(10,2) constraint
+        amount: Math.round(item.subtotal * 100) / 100,
+      })),
+    };
+
+    console.log('Submitting order update:', {
+      orderId: order.id,
+      orderData,
+      orderItems,
+    });
+
+    await onSubmit(order.id, orderData);
   };
 
   if (!order) {
