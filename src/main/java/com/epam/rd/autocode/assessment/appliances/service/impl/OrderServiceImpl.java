@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +30,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Loggable
     public Orders createOrder(Orders order) {
-        // Ensure approved is set to false for new orders
         order.setApproved(false);
-
-        // Ensure all order rows have the correct bidirectional relationship
-        // This should already be done by addOrderRow() method, but we double-check
         if (order.getOrderRowSet() != null) {
             for (OrderRow orderRow : order.getOrderRowSet()) {
                 if (orderRow.getOrder() == null) {
@@ -43,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
-
         return ordersRepository.save(order);
     }
 
@@ -51,21 +45,13 @@ public class OrderServiceImpl implements OrderService {
     @Loggable
     public Orders updateOrder(Long id, Orders order) {
         Orders existing = getOrderById(id);
-
-        // Update client if changed
         existing.setClient(order.getClient());
-
-        // Clear existing order rows completely
-        // Create a temporary list to avoid ConcurrentModificationException
         List<OrderRow> rowsToRemove = new ArrayList<>(existing.getOrderRowSet());
         for (OrderRow row : rowsToRemove) {
             existing.removeOrderRow(row);
         }
-
-        // Add new order rows with proper bidirectional relationship
         if (order.getOrderRowSet() != null && !order.getOrderRowSet().isEmpty()) {
             for (OrderRow orderRow : order.getOrderRowSet()) {
-                // Create a new detached OrderRow to avoid issues with existing ones
                 OrderRow newRow = new OrderRow();
                 newRow.setAppliance(orderRow.getAppliance());
                 newRow.setQuantity(orderRow.getQuantity());
@@ -73,8 +59,6 @@ public class OrderServiceImpl implements OrderService {
                 existing.addOrderRow(newRow);
             }
         }
-
-        // Save and return the updated order
         return ordersRepository.save(existing);
     }
 

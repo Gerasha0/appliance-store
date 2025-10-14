@@ -46,13 +46,11 @@ public class Orders {
     @Column(nullable = false)
     private Boolean approved = false;
 
-    // Helper method to add order row and maintain bidirectional relationship
     public void addOrderRow(OrderRow orderRow) {
         orderRowSet.add(orderRow);
         orderRow.setOrder(this);
     }
 
-    // Helper method to remove order row and maintain bidirectional relationship
     public void removeOrderRow(OrderRow orderRow) {
         orderRowSet.remove(orderRow);
         orderRow.setOrder(null);

@@ -78,13 +78,10 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_WithValidEmail_ShouldReturnUserDetails() {
-        // Given
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
 
-        // When
         UserDetails result = userService.loadUserByUsername("test@example.com");
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getUsername()).isEqualTo("test@example.com");
         assertThat(result.getPassword()).isEqualTo("encodedPassword");
@@ -94,13 +91,10 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_WithEmployee_ShouldReturnUserDetailsWithEmployeeRole() {
-        // Given
         when(userRepository.findByEmail("jane@example.com")).thenReturn(Optional.of(testEmployee));
 
-        // When
         UserDetails result = userService.loadUserByUsername("jane@example.com");
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getAuthorities()).anyMatch(auth -> auth.getAuthority().equals("ROLE_EMPLOYEE"));
         verify(userRepository, times(1)).findByEmail("jane@example.com");
@@ -108,13 +102,10 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_WithClient_ShouldReturnUserDetailsWithClientRole() {
-        // Given
         when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(testClient));
 
-        // When
         UserDetails result = userService.loadUserByUsername("john@example.com");
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getAuthorities()).anyMatch(auth -> auth.getAuthority().equals("ROLE_CLIENT"));
         verify(userRepository, times(1)).findByEmail("john@example.com");
@@ -122,10 +113,8 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_WithInvalidEmail_ShouldThrowUsernameNotFoundException() {
-        // Given
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> userService.loadUserByUsername("invalid@example.com"))
                 .isInstanceOf(UsernameNotFoundException.class)
                 .hasMessageContaining("User not found with email");
@@ -135,7 +124,6 @@ class UserServiceImplTest {
 
     @Test
     void createUser_WithValidData_ShouldEncodePasswordAndReturnSavedUser() {
-        // Given
         User newUser = new User();
         newUser.setFirstName("New");
         newUser.setLastName("User");
@@ -146,10 +134,8 @@ class UserServiceImplTest {
         when(passwordEncoder.encode("plainPassword")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(newUser);
 
-        // When
         User result = userService.createUser(newUser);
 
-        // Then
         assertThat(result).isNotNull();
         verify(userRepository, times(1)).existsByEmail("newuser@example.com");
         verify(passwordEncoder, times(1)).encode("plainPassword");
@@ -158,10 +144,8 @@ class UserServiceImplTest {
 
     @Test
     void createUser_WithDuplicateEmail_ShouldThrowResourceAlreadyExistsException() {
-        // Given
         when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
 
-        // When & Then
         assertThatThrownBy(() -> userService.createUser(testUser))
                 .isInstanceOf(ResourceAlreadyExistsException.class)
                 .hasMessageContaining("User")
@@ -174,7 +158,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithValidIdAndSameEmail_ShouldUpdateWithoutCheckingEmailExistence() {
-        // Given
         User updatedUser = new User();
         updatedUser.setFirstName("Updated");
         updatedUser.setLastName("Name");
@@ -184,10 +167,8 @@ class UserServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        // When
         User result = userService.updateUser(1L, updatedUser);
 
-        // Then
         assertThat(result).isNotNull();
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, never()).existsByEmail(anyString());
@@ -196,7 +177,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithValidIdAndNewEmail_ShouldCheckEmailExistenceAndUpdate() {
-        // Given
         User updatedUser = new User();
         updatedUser.setFirstName("Updated");
         updatedUser.setLastName("Name");
@@ -207,10 +187,8 @@ class UserServiceImplTest {
         when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        // When
         User result = userService.updateUser(1L, updatedUser);
 
-        // Then
         assertThat(result).isNotNull();
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).existsByEmail("newemail@example.com");
@@ -219,7 +197,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithDuplicateNewEmail_ShouldThrowResourceAlreadyExistsException() {
-        // Given
         User updatedUser = new User();
         updatedUser.setFirstName("Updated");
         updatedUser.setLastName("Name");
@@ -228,7 +205,6 @@ class UserServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByEmail("duplicate@example.com")).thenReturn(true);
 
-        // When & Then
         assertThatThrownBy(() -> userService.updateUser(1L, updatedUser))
                 .isInstanceOf(ResourceAlreadyExistsException.class)
                 .hasMessageContaining("User")
@@ -242,7 +218,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithPasswordChange_ShouldEncodeNewPassword() {
-        // Given
         User updatedUser = new User();
         updatedUser.setFirstName("Updated");
         updatedUser.setLastName("Name");
@@ -253,10 +228,8 @@ class UserServiceImplTest {
         when(passwordEncoder.encode("newPlainPassword")).thenReturn("newEncodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        // When
         User result = userService.updateUser(1L, updatedUser);
 
-        // Then
         assertThat(result).isNotNull();
         verify(passwordEncoder, times(1)).encode("newPlainPassword");
         verify(userRepository, times(1)).save(testUser);
@@ -264,10 +237,8 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> userService.updateUser(999L, testUser))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("User")
@@ -280,25 +251,19 @@ class UserServiceImplTest {
 
     @Test
     void deleteUser_ShouldCallRepositoryDelete() {
-        // Given
         doNothing().when(userRepository).deleteById(1L);
 
-        // When
         userService.deleteUser(1L);
 
-        // Then
         verify(userRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getUserById_WithValidId_ShouldReturnUser() {
-        // Given
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
 
-        // When
         User result = userService.getUserById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getFirstName()).isEqualTo("Test");
@@ -307,10 +272,8 @@ class UserServiceImplTest {
 
     @Test
     void getUserById_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> userService.getUserById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("User")
@@ -322,13 +285,10 @@ class UserServiceImplTest {
 
     @Test
     void getUserByEmail_WithValidEmail_ShouldReturnUser() {
-        // Given
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
 
-        // When
         User result = userService.getUserByEmail("test@example.com");
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getEmail()).isEqualTo("test@example.com");
         verify(userRepository, times(1)).findByEmail("test@example.com");
@@ -336,10 +296,8 @@ class UserServiceImplTest {
 
     @Test
     void getUserByEmail_WithInvalidEmail_ShouldThrowResourceNotFoundException() {
-        // Given
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> userService.getUserByEmail("invalid@example.com"))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("User")
@@ -351,14 +309,11 @@ class UserServiceImplTest {
 
     @Test
     void getAllUsers_ShouldReturnListOfUsers() {
-        // Given
         List<User> users = Arrays.asList(testUser, testEmployee, testClient);
         when(userRepository.findAll()).thenReturn(users);
 
-        // When
         List<User> result = userService.getAllUsers();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(3);
         assertThat(result).containsExactly(testUser, testEmployee, testClient);
@@ -367,17 +322,14 @@ class UserServiceImplTest {
 
     @Test
     void getAllUsers_WithPageable_ShouldReturnPageOfUsers() {
-        // Given
         List<User> users = Arrays.asList(testUser, testEmployee);
         Page<User> page = new PageImpl<>(users);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(userRepository.findAll(pageable)).thenReturn(page);
 
-        // When
         Page<User> result = userService.getAllUsers(pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getTotalElements()).isEqualTo(2);
@@ -386,7 +338,6 @@ class UserServiceImplTest {
 
     @Test
     void searchUsers_ShouldReturnFilteredUsers() {
-        // Given
         String searchTerm = "Test";
         List<User> users = Arrays.asList(testUser);
         Page<User> page = new PageImpl<>(users);
@@ -394,10 +345,8 @@ class UserServiceImplTest {
 
         when(userRepository.searchUsers(searchTerm, pageable)).thenReturn(page);
 
-        // When
         Page<User> result = userService.searchUsers(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         verify(userRepository, times(1)).searchUsers(searchTerm, pageable);
@@ -405,17 +354,14 @@ class UserServiceImplTest {
 
     @Test
     void searchUsers_WithNoResults_ShouldReturnEmptyPage() {
-        // Given
         String searchTerm = "NonExistent";
         Page<User> emptyPage = new PageImpl<>(Arrays.asList());
         Pageable pageable = PageRequest.of(0, 10);
 
         when(userRepository.searchUsers(searchTerm, pageable)).thenReturn(emptyPage);
 
-        // When
         Page<User> result = userService.searchUsers(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isEqualTo(0);

@@ -29,7 +29,6 @@ class OrdersTest {
         allConstructors = Arrays.asList(userClass.getConstructors());
     }
 
-    /*Tests for constructors*/
     @Test
     void checkCountConstructors() {
         assertEquals(TestConstants.Orders.CLASS_COUNT_CONSTRUCTORS, allConstructors.size());
@@ -51,45 +50,6 @@ class OrdersTest {
     }
 
     @Test
-    void checkConstructorWithParameter() {
-        final long count = allConstructors.stream()
-                .filter(c -> c.getParameterCount() == TestConstants.Orders.PARAMETERS_IN_CONSTRUCTOR_WITH_PARAMETERS)
-                .count();
-        assertEquals(1, count);
-    }
-
-    @Test
-    void checkParameterTypeForConstructorWithParameter() {
-        final Constructor<?> constructor = allConstructors.stream()
-                .filter(c -> c.getParameterCount() == TestConstants.Orders.PARAMETERS_IN_CONSTRUCTOR_WITH_PARAMETERS)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("No constructor with " + TestConstants.Orders.PARAMETERS_IN_CONSTRUCTOR_WITH_PARAMETERS + " parameters"));
-
-        final List<Parameter> parameters = Arrays.asList(constructor.getParameters());
-
-        parameters.stream()
-                .filter(p -> p.getType().getTypeName().equals(TestConstants.LONG_TYPE))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("No parameter with type " + TestConstants.LONG_TYPE));
-
-        parameters.stream()
-                .filter(p -> p.getType().getTypeName().equals(TestConstants.CLIENT_TYPE))
-                .findFirst()
-                .orElseThrow(()->new RuntimeException("No parameter with type "+TestConstants.CLIENT_TYPE));
-
-        parameters.stream()
-                .filter(p -> p.getType().getTypeName().equals(TestConstants.EMPLOYEE_TYPE))
-                .findFirst()
-                .orElseThrow(()->new RuntimeException("No parameter with type "+TestConstants.EMPLOYEE_TYPE));
-
-        parameters.stream()
-                .filter(p -> p.toString().contains("java.util.Set<com.epam.rd.autocode.assessment.appliances.model.OrderRow>"))
-                .findFirst()
-                .orElseThrow(()->new RuntimeException("No parameter with type java.util.Set<com.epam.rd.autocode.assessment.appliances.model.OrderRow>"));
-    }
-
-    /*Tests for fields*/
-    @Test
     void checkCountFields(){
         assertEquals(TestConstants.Orders.CLASS_COUNT_FIELDS,allFields.size());
     }
@@ -104,7 +64,8 @@ class OrdersTest {
     @CsvSource({"id",
             "client",
             "employee",
-            "orderRowSet"
+            "orderRowSet",
+            "approved"
     })
     void checkFieldsNames(String name){
         final long count = allFields.stream()

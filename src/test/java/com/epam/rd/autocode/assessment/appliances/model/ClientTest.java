@@ -38,7 +38,6 @@ class ClientTest {
         assertEquals(USER_TYPE, actual);
     }
 
-    /*Tests for CONSTRUCTORS*/
     @Test
     @DisplayName("Count constructors have to be " + CLASS_COUNT_CONSTRUCTORS)
     void checkCountConstructors() {
@@ -93,7 +92,6 @@ class ClientTest {
         assertEquals(7, countStringParameters);
     }
 
-    /* Tests for FIELDS */
     @Test
     @DisplayName("Check count fields")
     void checkCountFields() {
@@ -118,7 +116,6 @@ class ClientTest {
         assertEquals(1, count);
     }
 
-    /*not for student*/
     @Test
     @DisplayName("Check field type and field name")
     void checkNameFieldType() {

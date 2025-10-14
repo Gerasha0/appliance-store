@@ -3,6 +3,9 @@ package com.epam.rd.autocode.assessment.appliances.controller.api;
 import com.epam.rd.autocode.assessment.appliances.dto.ManufacturerRequestDTO;
 import com.epam.rd.autocode.assessment.appliances.model.Manufacturer;
 import com.epam.rd.autocode.assessment.appliances.repository.ManufacturerRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.ApplianceRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.OrderRowRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.OrdersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,10 +35,22 @@ class ManufacturerControllerIntegrationTest {
     @Autowired
     private ManufacturerRepository manufacturerRepository;
 
+    @Autowired
+    private ApplianceRepository applianceRepository;
+
+    @Autowired
+    private OrderRowRepository orderRowRepository;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
+
     private Manufacturer testManufacturer;
 
     @BeforeEach
     void setUp() {
+        orderRowRepository.deleteAll();
+        ordersRepository.deleteAll();
+        applianceRepository.deleteAll();
         manufacturerRepository.deleteAll();
 
         testManufacturer = new Manufacturer();
@@ -48,6 +62,9 @@ class ManufacturerControllerIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        orderRowRepository.deleteAll();
+        ordersRepository.deleteAll();
+        applianceRepository.deleteAll();
         manufacturerRepository.deleteAll();
     }
 
@@ -163,7 +180,7 @@ class ManufacturerControllerIntegrationTest {
     @WithMockUser(roles = "EMPLOYEE")
     void deleteManufacturer_WhenNotExists_ShouldReturn404() throws Exception {
         mockMvc.perform(delete("/api/manufacturers/{id}", 999L))
-                .andExpect(status().isNoContent()); // Actually returns 204 even if not found
+                .andExpect(status().isNoContent());
     }
 
     @Test

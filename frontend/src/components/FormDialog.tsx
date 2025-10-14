@@ -54,6 +54,15 @@ export const FormDialog: React.FC<FormDialogProps> = ({
       maxWidth={maxWidth}
       fullWidth={fullWidth}
       sx={sx}
+      disableRestoreFocus
+      disableEnforceFocus
+      disableScrollLock
+      keepMounted={false}
+      slotProps={{
+        backdrop: {
+          sx: { backgroundColor: 'rgba(0, 0, 0, 0.5)' }
+        }
+      }}
     >
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {title}
@@ -97,4 +106,3 @@ export const FormDialog: React.FC<FormDialogProps> = ({
 };
 
 export default FormDialog;
-

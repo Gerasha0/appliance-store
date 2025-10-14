@@ -46,13 +46,10 @@ class ManufacturerServiceImplTest {
 
     @Test
     void createManufacturer_ShouldReturnSavedManufacturer() {
-        // Given
         when(manufacturerRepository.save(any(Manufacturer.class))).thenReturn(testManufacturer);
 
-        // When
         Manufacturer result = manufacturerService.createManufacturer(testManufacturer);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("Samsung");
@@ -61,17 +58,14 @@ class ManufacturerServiceImplTest {
 
     @Test
     void updateManufacturer_WithValidId_ShouldReturnUpdatedManufacturer() {
-        // Given
         Manufacturer updatedManufacturer = new Manufacturer();
         updatedManufacturer.setName("LG");
 
         when(manufacturerRepository.findById(1L)).thenReturn(Optional.of(testManufacturer));
         when(manufacturerRepository.save(any(Manufacturer.class))).thenReturn(testManufacturer);
 
-        // When
         Manufacturer result = manufacturerService.updateManufacturer(1L, updatedManufacturer);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo("LG");
         verify(manufacturerRepository, times(1)).findById(1L);
@@ -80,10 +74,8 @@ class ManufacturerServiceImplTest {
 
     @Test
     void updateManufacturer_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(manufacturerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> manufacturerService.updateManufacturer(999L, testManufacturer))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Manufacturer")
@@ -96,25 +88,19 @@ class ManufacturerServiceImplTest {
 
     @Test
     void deleteManufacturer_ShouldCallRepositoryDelete() {
-        // Given
         doNothing().when(manufacturerRepository).deleteById(1L);
 
-        // When
         manufacturerService.deleteManufacturer(1L);
 
-        // Then
         verify(manufacturerRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getManufacturerById_WithValidId_ShouldReturnManufacturer() {
-        // Given
         when(manufacturerRepository.findById(1L)).thenReturn(Optional.of(testManufacturer));
 
-        // When
         Manufacturer result = manufacturerService.getManufacturerById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("Samsung");
@@ -123,10 +109,8 @@ class ManufacturerServiceImplTest {
 
     @Test
     void getManufacturerById_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(manufacturerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> manufacturerService.getManufacturerById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Manufacturer")
@@ -138,7 +122,6 @@ class ManufacturerServiceImplTest {
 
     @Test
     void getAllManufacturers_ShouldReturnListOfManufacturers() {
-        // Given
         Manufacturer manufacturer2 = new Manufacturer();
         manufacturer2.setId(2L);
         manufacturer2.setName("LG");
@@ -146,10 +129,8 @@ class ManufacturerServiceImplTest {
         List<Manufacturer> manufacturers = Arrays.asList(testManufacturer, manufacturer2);
         when(manufacturerRepository.findAll()).thenReturn(manufacturers);
 
-        // When
         List<Manufacturer> result = manufacturerService.getAllManufacturers();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(testManufacturer, manufacturer2);
@@ -158,7 +139,6 @@ class ManufacturerServiceImplTest {
 
     @Test
     void getAllManufacturers_WithPageable_ShouldReturnPageOfManufacturers() {
-        // Given
         Manufacturer manufacturer2 = new Manufacturer();
         manufacturer2.setId(2L);
         manufacturer2.setName("LG");
@@ -169,10 +149,8 @@ class ManufacturerServiceImplTest {
 
         when(manufacturerRepository.findAll(pageable)).thenReturn(page);
 
-        // When
         Page<Manufacturer> result = manufacturerService.getAllManufacturers(pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getTotalElements()).isEqualTo(2);
@@ -181,7 +159,6 @@ class ManufacturerServiceImplTest {
 
     @Test
     void searchManufacturers_ShouldReturnFilteredManufacturers() {
-        // Given
         String searchTerm = "Sam";
         List<Manufacturer> manufacturers = Arrays.asList(testManufacturer);
         Page<Manufacturer> page = new PageImpl<>(manufacturers);
@@ -189,10 +166,8 @@ class ManufacturerServiceImplTest {
 
         when(manufacturerRepository.searchManufacturers(searchTerm, pageable)).thenReturn(page);
 
-        // When
         Page<Manufacturer> result = manufacturerService.searchManufacturers(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getName()).contains("Sam");
@@ -201,21 +176,17 @@ class ManufacturerServiceImplTest {
 
     @Test
     void searchManufacturers_WithNoResults_ShouldReturnEmptyPage() {
-        // Given
         String searchTerm = "NonExistent";
         Page<Manufacturer> emptyPage = new PageImpl<>(Arrays.asList());
         Pageable pageable = PageRequest.of(0, 10);
 
         when(manufacturerRepository.searchManufacturers(searchTerm, pageable)).thenReturn(emptyPage);
 
-        // When
         Page<Manufacturer> result = manufacturerService.searchManufacturers(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isEqualTo(0);
         verify(manufacturerRepository, times(1)).searchManufacturers(searchTerm, pageable);
     }
 }
-

@@ -24,7 +24,6 @@ class ManufacturerTest {
         allConstructors = Arrays.asList(clazz.getConstructors());
     }
 
-    /* Tests for CONSTRUCTORS */
     @Test
     @DisplayName("Count constructors")
     void checkCountConstructors() {
@@ -80,7 +79,6 @@ class ManufacturerTest {
 
     }
 
-    /* Tests for FIELDS */
     @Test
     @DisplayName("Count fields")
     void checkCountFields() {
@@ -132,5 +130,4 @@ class ManufacturerTest {
                 .count();
         assertEquals(1, countLong);
     }
-
 }

@@ -82,6 +82,8 @@ public class ApplianceController {
         Appliance appliance = entityMapper.toApplianceEntity(dto, manufacturer);
         Appliance created = applianceService.createAppliance(appliance);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .header("X-Content-Type-Options", "nosniff")
+                .header("X-XSS-Protection", "1; mode=block")
                 .body(entityMapper.toApplianceResponseDTO(created));
     }
 

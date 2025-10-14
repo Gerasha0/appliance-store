@@ -73,13 +73,10 @@ class OrderServiceImplTest {
 
     @Test
     void createOrder_ShouldReturnSavedOrderWithApprovedFalse() {
-        // Given
         when(ordersRepository.save(any(Orders.class))).thenReturn(testOrder);
 
-        // When
         Orders result = orderService.createOrder(testOrder);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getApproved()).isFalse();
@@ -88,7 +85,6 @@ class OrderServiceImplTest {
 
     @Test
     void updateOrder_WithValidId_ShouldReturnUpdatedOrder() {
-        // Given
         Orders updatedOrder = new Orders();
         updatedOrder.setClient(testClient);
         updatedOrder.setOrderRowSet(new HashSet<>());
@@ -96,10 +92,8 @@ class OrderServiceImplTest {
         when(ordersRepository.findById(1L)).thenReturn(Optional.of(testOrder));
         when(ordersRepository.save(any(Orders.class))).thenReturn(testOrder);
 
-        // When
         Orders result = orderService.updateOrder(1L, updatedOrder);
 
-        // Then
         assertThat(result).isNotNull();
         verify(ordersRepository, times(1)).findById(1L);
         verify(ordersRepository, times(1)).save(testOrder);
@@ -107,10 +101,8 @@ class OrderServiceImplTest {
 
     @Test
     void updateOrder_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(ordersRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> orderService.updateOrder(999L, testOrder))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Order")
@@ -123,25 +115,19 @@ class OrderServiceImplTest {
 
     @Test
     void deleteOrder_ShouldCallRepositoryDelete() {
-        // Given
         doNothing().when(ordersRepository).deleteById(1L);
 
-        // When
         orderService.deleteOrder(1L);
 
-        // Then
         verify(ordersRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getOrderById_WithValidId_ShouldReturnOrder() {
-        // Given
         when(ordersRepository.findById(1L)).thenReturn(Optional.of(testOrder));
 
-        // When
         Orders result = orderService.getOrderById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         verify(ordersRepository, times(1)).findById(1L);
@@ -149,10 +135,8 @@ class OrderServiceImplTest {
 
     @Test
     void getOrderById_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(ordersRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> orderService.getOrderById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Order")
@@ -164,7 +148,6 @@ class OrderServiceImplTest {
 
     @Test
     void getAllOrders_ShouldReturnListOfOrders() {
-        // Given
         Orders order2 = new Orders();
         order2.setId(2L);
         order2.setClient(testClient);
@@ -172,10 +155,8 @@ class OrderServiceImplTest {
         List<Orders> orders = Arrays.asList(testOrder, order2);
         when(ordersRepository.findAll()).thenReturn(orders);
 
-        // When
         List<Orders> result = orderService.getAllOrders();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         verify(ordersRepository, times(1)).findAll();
@@ -183,17 +164,14 @@ class OrderServiceImplTest {
 
     @Test
     void getAllOrders_WithPageable_ShouldReturnPageOfOrders() {
-        // Given
         List<Orders> orders = Arrays.asList(testOrder);
         Page<Orders> page = new PageImpl<>(orders);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(ordersRepository.findAll(pageable)).thenReturn(page);
 
-        // When
         Page<Orders> result = orderService.getAllOrders(pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -202,15 +180,12 @@ class OrderServiceImplTest {
 
     @Test
     void approveOrder_WithValidIds_ShouldReturnApprovedOrder() {
-        // Given
         when(ordersRepository.findById(1L)).thenReturn(Optional.of(testOrder));
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
         when(ordersRepository.save(any(Orders.class))).thenReturn(testOrder);
 
-        // When
         Orders result = orderService.approveOrder(1L, 1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getApproved()).isTrue();
         assertThat(result.getEmployee()).isEqualTo(testEmployee);
@@ -221,10 +196,8 @@ class OrderServiceImplTest {
 
     @Test
     void approveOrder_WithInvalidOrderId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(ordersRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> orderService.approveOrder(999L, 1L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Order")
@@ -237,11 +210,9 @@ class OrderServiceImplTest {
 
     @Test
     void approveOrder_WithInvalidEmployeeId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(ordersRepository.findById(1L)).thenReturn(Optional.of(testOrder));
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> orderService.approveOrder(1L, 999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Employee")
@@ -255,7 +226,6 @@ class OrderServiceImplTest {
 
     @Test
     void getOrdersByClientId_WithValidClientId_ShouldReturnClientOrders() {
-        // Given
         List<Orders> orders = Arrays.asList(testOrder);
         Page<Orders> page = new PageImpl<>(orders);
         Pageable pageable = PageRequest.of(0, 10);
@@ -263,10 +233,8 @@ class OrderServiceImplTest {
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
         when(ordersRepository.findByClient(testClient, pageable)).thenReturn(page);
 
-        // When
         Page<Orders> result = orderService.getOrdersByClientId(1L, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getClient()).isEqualTo(testClient);
@@ -276,10 +244,8 @@ class OrderServiceImplTest {
 
     @Test
     void getOrdersByClientId_WithInvalidClientId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> orderService.getOrdersByClientId(999L, PageRequest.of(0, 10)))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Client")
@@ -292,7 +258,6 @@ class OrderServiceImplTest {
 
     @Test
     void getOrdersByEmployeeId_WithValidEmployeeId_ShouldReturnEmployeeOrders() {
-        // Given
         testOrder.setEmployee(testEmployee);
         testOrder.setApproved(true);
 
@@ -303,10 +268,8 @@ class OrderServiceImplTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
         when(ordersRepository.findByEmployee(testEmployee, pageable)).thenReturn(page);
 
-        // When
         Page<Orders> result = orderService.getOrdersByEmployeeId(1L, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getEmployee()).isEqualTo(testEmployee);
@@ -316,10 +279,8 @@ class OrderServiceImplTest {
 
     @Test
     void getOrdersByEmployeeId_WithInvalidEmployeeId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> orderService.getOrdersByEmployeeId(999L, PageRequest.of(0, 10)))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Employee")
@@ -332,7 +293,6 @@ class OrderServiceImplTest {
 
     @Test
     void getOrdersByApprovalStatus_WithTrue_ShouldReturnApprovedOrders() {
-        // Given
         testOrder.setApproved(true);
         List<Orders> orders = Arrays.asList(testOrder);
         Page<Orders> page = new PageImpl<>(orders);
@@ -340,10 +300,8 @@ class OrderServiceImplTest {
 
         when(ordersRepository.findByApproved(true, pageable)).thenReturn(page);
 
-        // When
         Page<Orders> result = orderService.getOrdersByApprovalStatus(true, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getApproved()).isTrue();
@@ -352,17 +310,14 @@ class OrderServiceImplTest {
 
     @Test
     void getOrdersByApprovalStatus_WithFalse_ShouldReturnPendingOrders() {
-        // Given
         List<Orders> orders = Arrays.asList(testOrder);
         Page<Orders> page = new PageImpl<>(orders);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(ordersRepository.findByApproved(false, pageable)).thenReturn(page);
 
-        // When
         Page<Orders> result = orderService.getOrdersByApprovalStatus(false, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getApproved()).isFalse();

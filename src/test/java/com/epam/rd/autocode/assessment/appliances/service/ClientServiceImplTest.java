@@ -56,7 +56,6 @@ class ClientServiceImplTest {
 
     @Test
     void createClient_ShouldEncodePasswordAndReturnSavedClient() {
-        // Given
         Client newClient = new Client();
         newClient.setFirstName("Jane");
         newClient.setLastName("Smith");
@@ -69,10 +68,8 @@ class ClientServiceImplTest {
         when(passwordEncoder.encode("plainPassword")).thenReturn("encodedPassword");
         when(clientRepository.save(any(Client.class))).thenReturn(newClient);
 
-        // When
         Client result = clientService.createClient(newClient);
 
-        // Then
         assertThat(result).isNotNull();
         verify(passwordEncoder, times(1)).encode("plainPassword");
         verify(clientRepository, times(1)).save(newClient);
@@ -80,7 +77,6 @@ class ClientServiceImplTest {
 
     @Test
     void updateClient_WithValidIdAndNoPasswordChange_ShouldUpdateWithoutEncodingPassword() {
-        // Given
         Client updatedClient = new Client();
         updatedClient.setFirstName("John");
         updatedClient.setLastName("Updated");
@@ -93,10 +89,8 @@ class ClientServiceImplTest {
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
         when(clientRepository.save(any(Client.class))).thenReturn(testClient);
 
-        // When
         Client result = clientService.updateClient(1L, updatedClient);
 
-        // Then
         assertThat(result).isNotNull();
         verify(clientRepository, times(1)).findById(1L);
         verify(passwordEncoder, never()).encode(anyString());
@@ -105,7 +99,6 @@ class ClientServiceImplTest {
 
     @Test
     void updateClient_WithValidIdAndPasswordChange_ShouldEncodeNewPassword() {
-        // Given
         Client updatedClient = new Client();
         updatedClient.setFirstName("John");
         updatedClient.setLastName("Updated");
@@ -119,10 +112,8 @@ class ClientServiceImplTest {
         when(passwordEncoder.encode("newPlainPassword")).thenReturn("newEncodedPassword");
         when(clientRepository.save(any(Client.class))).thenReturn(testClient);
 
-        // When
         Client result = clientService.updateClient(1L, updatedClient);
 
-        // Then
         assertThat(result).isNotNull();
         verify(clientRepository, times(1)).findById(1L);
         verify(passwordEncoder, times(1)).encode("newPlainPassword");
@@ -131,7 +122,6 @@ class ClientServiceImplTest {
 
     @Test
     void updateClient_WithEmptyPassword_ShouldNotEncodePassword() {
-        // Given
         Client updatedClient = new Client();
         updatedClient.setFirstName("John");
         updatedClient.setLastName("Updated");
@@ -144,10 +134,8 @@ class ClientServiceImplTest {
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
         when(clientRepository.save(any(Client.class))).thenReturn(testClient);
 
-        // When
         Client result = clientService.updateClient(1L, updatedClient);
 
-        // Then
         assertThat(result).isNotNull();
         verify(passwordEncoder, never()).encode(anyString());
         verify(clientRepository, times(1)).save(testClient);
@@ -155,10 +143,8 @@ class ClientServiceImplTest {
 
     @Test
     void updateClient_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> clientService.updateClient(999L, testClient))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Client")
@@ -171,25 +157,19 @@ class ClientServiceImplTest {
 
     @Test
     void deleteClient_ShouldCallRepositoryDelete() {
-        // Given
         doNothing().when(clientRepository).deleteById(1L);
 
-        // When
         clientService.deleteClient(1L);
 
-        // Then
         verify(clientRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getClientById_WithValidId_ShouldReturnClient() {
-        // Given
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
 
-        // When
         Client result = clientService.getClientById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getFirstName()).isEqualTo("John");
@@ -198,10 +178,8 @@ class ClientServiceImplTest {
 
     @Test
     void getClientById_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> clientService.getClientById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Client")
@@ -213,7 +191,6 @@ class ClientServiceImplTest {
 
     @Test
     void getAllClients_ShouldReturnListOfClients() {
-        // Given
         Client client2 = new Client();
         client2.setId(2L);
         client2.setFirstName("Jane");
@@ -222,10 +199,8 @@ class ClientServiceImplTest {
         List<Client> clients = Arrays.asList(testClient, client2);
         when(clientRepository.findAll()).thenReturn(clients);
 
-        // When
         List<Client> result = clientService.getAllClients();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(testClient, client2);
@@ -234,17 +209,14 @@ class ClientServiceImplTest {
 
     @Test
     void getAllClients_WithPageable_ShouldReturnPageOfClients() {
-        // Given
         List<Client> clients = Arrays.asList(testClient);
         Page<Client> page = new PageImpl<>(clients);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(clientRepository.findAll(pageable)).thenReturn(page);
 
-        // When
         Page<Client> result = clientService.getAllClients(pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -253,7 +225,6 @@ class ClientServiceImplTest {
 
     @Test
     void searchClients_ShouldReturnFilteredClients() {
-        // Given
         String searchTerm = "John";
         List<Client> clients = Arrays.asList(testClient);
         Page<Client> page = new PageImpl<>(clients);
@@ -261,10 +232,8 @@ class ClientServiceImplTest {
 
         when(clientRepository.searchClients(searchTerm, pageable)).thenReturn(page);
 
-        // When
         Page<Client> result = clientService.searchClients(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         verify(clientRepository, times(1)).searchClients(searchTerm, pageable);
@@ -272,17 +241,14 @@ class ClientServiceImplTest {
 
     @Test
     void searchClients_WithNoResults_ShouldReturnEmptyPage() {
-        // Given
         String searchTerm = "NonExistent";
         Page<Client> emptyPage = new PageImpl<>(Arrays.asList());
         Pageable pageable = PageRequest.of(0, 10);
 
         when(clientRepository.searchClients(searchTerm, pageable)).thenReturn(emptyPage);
 
-        // When
         Page<Client> result = clientService.searchClients(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isEqualTo(0);

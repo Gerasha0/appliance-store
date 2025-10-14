@@ -26,8 +26,7 @@ class ApplianceTest {
         allConstructors = Arrays.asList(clazz.getConstructors());
     }
 
-    /* Tests for CONSTRUCTORS */
-    @Test
+     @Test
     @DisplayName("Count constructors")
     void checkCountConstructors() {
         Assertions.assertEquals(TestConstants.Appliance.CLASS_COUNT_CONSTRUCTORS, allConstructors.size());
@@ -102,7 +101,6 @@ class ApplianceTest {
         assertEquals(4, countString);
     }
 
-    /* Tests for FIELDS */
     @Test
     @DisplayName("Count fields")
     void checkCountFields() {
@@ -138,7 +136,6 @@ class ApplianceTest {
         assertEquals(expected, count);
     }
 
-    /*not for student*/
     @DisplayName("Check field type and field name")
     @ParameterizedTest
     @CsvFileSource(resources = "/ApplianceFields.csv")

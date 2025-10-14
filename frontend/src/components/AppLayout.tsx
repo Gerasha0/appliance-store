@@ -131,7 +131,7 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const visibleMenuItems = menuItems.filter(item => role && item.roles.includes(role));
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
 
       {/* AppBar */}
@@ -290,6 +290,14 @@ export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.leavingScreen,
             }),
+          minHeight: '100vh',
+          backgroundImage: theme === 'dark'
+            ? 'url(/dark_theme.png)'
+            : 'url(/light_theme.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
         }}
       >
         <Toolbar />

@@ -59,13 +59,10 @@ class ApplianceServiceImplTest {
 
     @Test
     void createAppliance_ShouldReturnSavedAppliance() {
-        // Given
         when(applianceRepository.save(any(Appliance.class))).thenReturn(testAppliance);
 
-        // When
         Appliance result = applianceService.createAppliance(testAppliance);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("Refrigerator");
@@ -75,7 +72,6 @@ class ApplianceServiceImplTest {
 
     @Test
     void updateAppliance_WithValidId_ShouldReturnUpdatedAppliance() {
-        // Given
         Appliance updatedAppliance = new Appliance();
         updatedAppliance.setName("Updated Refrigerator");
         updatedAppliance.setCategory(Category.BIG);
@@ -90,10 +86,8 @@ class ApplianceServiceImplTest {
         when(applianceRepository.findById(1L)).thenReturn(Optional.of(testAppliance));
         when(applianceRepository.save(any(Appliance.class))).thenReturn(testAppliance);
 
-        // When
         Appliance result = applianceService.updateAppliance(1L, updatedAppliance);
 
-        // Then
         assertThat(result).isNotNull();
         verify(applianceRepository, times(1)).findById(1L);
         verify(applianceRepository, times(1)).save(testAppliance);
@@ -101,10 +95,8 @@ class ApplianceServiceImplTest {
 
     @Test
     void updateAppliance_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(applianceRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> applianceService.updateAppliance(999L, testAppliance))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Appliance")
@@ -117,25 +109,19 @@ class ApplianceServiceImplTest {
 
     @Test
     void deleteAppliance_ShouldCallRepositoryDelete() {
-        // Given
         doNothing().when(applianceRepository).deleteById(1L);
 
-        // When
         applianceService.deleteAppliance(1L);
 
-        // Then
         verify(applianceRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getApplianceById_WithValidId_ShouldReturnAppliance() {
-        // Given
         when(applianceRepository.findById(1L)).thenReturn(Optional.of(testAppliance));
 
-        // When
         Appliance result = applianceService.getApplianceById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("Refrigerator");
@@ -144,10 +130,8 @@ class ApplianceServiceImplTest {
 
     @Test
     void getApplianceById_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(applianceRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> applianceService.getApplianceById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Appliance")
@@ -159,7 +143,6 @@ class ApplianceServiceImplTest {
 
     @Test
     void getAllAppliances_ShouldReturnListOfAppliances() {
-        // Given
         Appliance appliance2 = new Appliance();
         appliance2.setId(2L);
         appliance2.setName("Washing Machine");
@@ -167,10 +150,8 @@ class ApplianceServiceImplTest {
         List<Appliance> appliances = Arrays.asList(testAppliance, appliance2);
         when(applianceRepository.findAll()).thenReturn(appliances);
 
-        // When
         List<Appliance> result = applianceService.getAllAppliances();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(testAppliance, appliance2);
@@ -179,17 +160,14 @@ class ApplianceServiceImplTest {
 
     @Test
     void getAllAppliances_WithPageable_ShouldReturnPageOfAppliances() {
-        // Given
         List<Appliance> appliances = Arrays.asList(testAppliance);
         Page<Appliance> page = new PageImpl<>(appliances);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(applianceRepository.findAll(pageable)).thenReturn(page);
 
-        // When
         Page<Appliance> result = applianceService.getAllAppliances(pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -198,7 +176,6 @@ class ApplianceServiceImplTest {
 
     @Test
     void searchAppliances_ShouldReturnFilteredAppliances() {
-        // Given
         String searchTerm = "Refrig";
         List<Appliance> appliances = Arrays.asList(testAppliance);
         Page<Appliance> page = new PageImpl<>(appliances);
@@ -206,10 +183,8 @@ class ApplianceServiceImplTest {
 
         when(applianceRepository.searchAppliances(searchTerm, pageable)).thenReturn(page);
 
-        // When
         Page<Appliance> result = applianceService.searchAppliances(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         verify(applianceRepository, times(1)).searchAppliances(searchTerm, pageable);
@@ -217,17 +192,14 @@ class ApplianceServiceImplTest {
 
     @Test
     void getAppliancesByCategory_ShouldReturnAppliancesOfCategory() {
-        // Given
         List<Appliance> appliances = Arrays.asList(testAppliance);
         Page<Appliance> page = new PageImpl<>(appliances);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(applianceRepository.findByCategory(Category.BIG, pageable)).thenReturn(page);
 
-        // When
         Page<Appliance> result = applianceService.getAppliancesByCategory(Category.BIG, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getCategory()).isEqualTo(Category.BIG);
@@ -236,17 +208,14 @@ class ApplianceServiceImplTest {
 
     @Test
     void getAppliancesByPowerType_ShouldReturnAppliancesOfPowerType() {
-        // Given
         List<Appliance> appliances = Arrays.asList(testAppliance);
         Page<Appliance> page = new PageImpl<>(appliances);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(applianceRepository.findByPowerType(PowerType.AC220, pageable)).thenReturn(page);
 
-        // When
         Page<Appliance> result = applianceService.getAppliancesByPowerType(PowerType.AC220, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getPowerType()).isEqualTo(PowerType.AC220);
@@ -255,16 +224,13 @@ class ApplianceServiceImplTest {
 
     @Test
     void getAppliancesByCategory_WithNoResults_ShouldReturnEmptyPage() {
-        // Given
         Page<Appliance> emptyPage = new PageImpl<>(Arrays.asList());
         Pageable pageable = PageRequest.of(0, 10);
 
         when(applianceRepository.findByCategory(Category.SMALL, pageable)).thenReturn(emptyPage);
 
-        // When
         Page<Appliance> result = applianceService.getAppliancesByCategory(Category.SMALL, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEmpty();
         verify(applianceRepository, times(1)).findByCategory(Category.SMALL, pageable);

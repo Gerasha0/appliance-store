@@ -37,6 +37,15 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       onClose={onCancel}
       maxWidth={maxWidth}
       fullWidth
+      disableRestoreFocus
+      disableEnforceFocus
+      disableScrollLock
+      keepMounted={false}
+      slotProps={{
+        backdrop: {
+          sx: { backgroundColor: 'rgba(0, 0, 0, 0.5)' }
+        }
+      }}
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>

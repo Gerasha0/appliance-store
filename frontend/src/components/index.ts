@@ -16,7 +16,8 @@ export { LanguageSwitcher } from './LanguageSwitcher';
 export { Pagination } from './Pagination';
 export { SearchBar } from './SearchBar';
 export { FiltersPanel } from './FiltersPanel';
-export { 
+export { QuantityInput } from './QuantityInput';
+export {
   EmptyState,
   NoDataEmptyState,
   NoResultsEmptyState,

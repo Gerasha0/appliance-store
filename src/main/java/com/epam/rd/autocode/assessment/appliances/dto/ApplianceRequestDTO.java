@@ -16,6 +16,7 @@ public class ApplianceRequestDTO {
 
     @NotBlank(message = "Appliance name is required")
     @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[^<>\"'%;()&+]*$", message = "Name contains invalid characters")
     private String name;
 
     @NotNull(message = "Category is required")
@@ -23,6 +24,7 @@ public class ApplianceRequestDTO {
 
     @NotBlank(message = "Model is required")
     @Size(min = 1, max = 100, message = "Model must be between 1 and 100 characters")
+    @Pattern(regexp = "^[^<>\"'%;()&+]*$", message = "Model contains invalid characters")
     private String model;
 
     @NotNull(message = "Manufacturer is required")
@@ -32,9 +34,11 @@ public class ApplianceRequestDTO {
     private PowerType powerType;
 
     @Size(max = 500, message = "Characteristic must not exceed 500 characters")
+    @Pattern(regexp = "^[^<>\"'%;()&+]*$", message = "Characteristic contains invalid characters")
     private String characteristic;
 
     @Size(max = 1000, message = "Description must not exceed 1000 characters")
+    @Pattern(regexp = "^[^<>\"'%;()&+]*$", message = "Description contains invalid characters")
     private String description;
 
     @Min(value = 0, message = "Power must be positive or zero")

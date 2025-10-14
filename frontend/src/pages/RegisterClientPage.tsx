@@ -23,6 +23,7 @@ import { clientRegistrationSchema } from '@/types/validation';
 import { LanguageSwitcher, ThemeToggle } from '@/components';
 import { showSuccess, showError } from '@/utils';
 import type { ClientRegistrationDTO } from '@/types/models';
+import { useAppSelector } from '@/store';
 
 // Country codes for phone numbers
 const countryCodes = [
@@ -47,6 +48,7 @@ export const RegisterClientPage: React.FC = () => {
   const [countryCode, setCountryCode] = useState('+380');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const themeMode = useAppSelector((state) => state.ui.theme);
 
   const {
     control,
@@ -104,257 +106,265 @@ export const RegisterClientPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: 4,
-          position: 'relative',
-        }}
-      >
-        {/* Language Switcher and Theme Toggle - positioned at top right */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            display: 'flex',
-            gap: 1,
-          }}
-        >
-          <ThemeToggle size="medium" />
-          <LanguageSwitcher color="primary" />
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        py: 4,
+        backgroundImage: themeMode === 'dark'
+          ? 'url(/dark_theme.png)'
+          : 'url(/light_theme.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <Container maxWidth="sm">
+        <Box sx={{ position: 'relative' }}>
+          {/* Language Switcher and Theme Toggle - positioned at top right */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: -80,
+              right: 0,
+              display: 'flex',
+              gap: 1,
+            }}
+          >
+            <ThemeToggle size="medium" />
+            <LanguageSwitcher color="primary" />
+          </Box>
+
+          <Card sx={{ width: '100%', backgroundColor: 'background.paper', backdropFilter: 'blur(10px)' }}>
+            <CardContent sx={{ p: 4 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Button
+                  component={Link}
+                  to="/login"
+                  startIcon={<ArrowBack />}
+                  sx={{ mr: 2 }}
+                >
+                  {t('common.back')}
+                </Button>
+              </Box>
+
+              <Typography variant="h4" component="h1" gutterBottom align="center" fontWeight="bold">
+                {t('auth.registerClient')}
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
+                {t('auth.registerTitle')}
+              </Typography>
+
+              {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {t('auth.registerError')}
+                </Alert>
+              )}
+
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {/* First Name and Last Name in a row */}
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                  <Controller
+                    name="firstName"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label={t('auth.firstName')}
+                        fullWidth
+                        error={!!errors.firstName}
+                        helperText={errors.firstName?.message}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    name="lastName"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label={t('auth.lastName')}
+                        fullWidth
+                        error={!!errors.lastName}
+                        helperText={errors.lastName?.message}
+                      />
+                    )}
+                  />
+                </Box>
+
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={t('auth.email')}
+                      type="email"
+                      fullWidth
+                      margin="normal"
+                      error={!!errors.email}
+                      helperText={errors.email?.message}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={t('auth.password')}
+                      type="password"
+                      fullWidth
+                      margin="normal"
+                      error={!!errors.password}
+                      helperText={errors.password?.message}
+                    />
+                  )}
+                />
+
+                {/* Phone with integrated Country Code Selector */}
+                <Controller
+                  name="phone"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={t('auth.phone')}
+                      type="tel"
+                      fullWidth
+                      margin="normal"
+                      value={phoneNumber}
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      error={!!errors.phone}
+                      helperText={errors.phone?.message}
+                      placeholder="123 456 7890"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Box
+                              onClick={handleOpenMenu}
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                cursor: 'pointer',
+                                userSelect: 'none',
+                                '&:hover': {
+                                  opacity: 0.7,
+                                },
+                              }}
+                            >
+                              <span style={{ fontSize: '1.2em' }}>
+                                {countryCodes.find((c) => c.code === countryCode)?.flag}
+                              </span>
+                              <span style={{ fontWeight: 500 }}>{countryCode}</span>
+                              <ArrowDropDown fontSize="small" />
+                            </Box>
+                            <Menu
+                              anchorEl={anchorEl}
+                              open={Boolean(anchorEl)}
+                              onClose={handleCloseMenu}
+                              PaperProps={{
+                                sx: {
+                                  maxHeight: 300,
+                                },
+                              }}
+                            >
+                              {countryCodes.map((item) => (
+                                <MenuItem
+                                  key={item.code}
+                                  value={item.code}
+                                  onClick={() => handleCountryCodeChange(item.code)}
+                                >
+                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                                    <span style={{ fontSize: '1.2em' }}>{item.flag}</span>
+                                    <span style={{ fontWeight: 500 }}>{item.code}</span>
+                                    <span style={{ color: 'text.secondary', fontSize: '0.9em' }}>
+                                      {item.country}
+                                    </span>
+                                  </Box>
+                                </MenuItem>
+                              ))}
+                            </Menu>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="address"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={t('auth.address')}
+                      fullWidth
+                      margin="normal"
+                      multiline
+                      rows={2}
+                      error={!!errors.address}
+                      helperText={errors.address?.message}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="card"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label={t('auth.card')}
+                      fullWidth
+                      margin="normal"
+                      placeholder="XXXX-XXXX-XXXX-XXXX"
+                      error={!!errors.card}
+                      helperText={errors.card?.message || t('auth.cardOptional')}
+                    />
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  disabled={isLoading}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  {isLoading ? t('common.loading') : t('auth.register')}
+                </Button>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('auth.haveAccount')}{' '}
+                    <Button
+                      component={Link}
+                      to="/login"
+                      variant="text"
+                      size="small"
+                      sx={{ textTransform: 'none', fontWeight: 'bold' }}
+                    >
+                      {t('auth.signIn')}
+                    </Button>
+                  </Typography>
+                </Box>
+              </form>
+            </CardContent>
+          </Card>
         </Box>
-
-        <Card sx={{ width: '100%' }}>
-          <CardContent sx={{ p: 4 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Button
-                component={Link}
-                to="/login"
-                startIcon={<ArrowBack />}
-                sx={{ mr: 2 }}
-              >
-                {t('common.back')}
-              </Button>
-            </Box>
-
-            <Typography variant="h4" component="h1" gutterBottom align="center" fontWeight="bold">
-              {t('auth.registerClient')}
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
-              {t('auth.registerTitle')}
-            </Typography>
-
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {t('auth.registerError')}
-              </Alert>
-            )}
-
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {/* First Name and Last Name in a row */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <Controller
-                  name="firstName"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t('auth.firstName')}
-                      fullWidth
-                      error={!!errors.firstName}
-                      helperText={errors.firstName?.message}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="lastName"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label={t('auth.lastName')}
-                      fullWidth
-                      error={!!errors.lastName}
-                      helperText={errors.lastName?.message}
-                    />
-                  )}
-                />
-              </Box>
-
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t('auth.email')}
-                    type="email"
-                    fullWidth
-                    margin="normal"
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                  />
-                )}
-              />
-
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t('auth.password')}
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                  />
-                )}
-              />
-
-              {/* Phone with integrated Country Code Selector */}
-              <Controller
-                name="phone"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t('auth.phone')}
-                    type="tel"
-                    fullWidth
-                    margin="normal"
-                    value={phoneNumber}
-                    onChange={(e) => handlePhoneChange(e.target.value)}
-                    error={!!errors.phone}
-                    helperText={errors.phone?.message}
-                    placeholder="123 456 7890"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Box
-                            onClick={handleOpenMenu}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 0.5,
-                              cursor: 'pointer',
-                              userSelect: 'none',
-                              '&:hover': {
-                                opacity: 0.7,
-                              },
-                            }}
-                          >
-                            <span style={{ fontSize: '1.2em' }}>
-                              {countryCodes.find((c) => c.code === countryCode)?.flag}
-                            </span>
-                            <span style={{ fontWeight: 500 }}>{countryCode}</span>
-                            <ArrowDropDown fontSize="small" />
-                          </Box>
-                          <Menu
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={handleCloseMenu}
-                            PaperProps={{
-                              sx: {
-                                maxHeight: 300,
-                              },
-                            }}
-                          >
-                            {countryCodes.map((item) => (
-                              <MenuItem
-                                key={item.code}
-                                value={item.code}
-                                onClick={() => handleCountryCodeChange(item.code)}
-                              >
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
-                                  <span style={{ fontSize: '1.2em' }}>{item.flag}</span>
-                                  <span style={{ fontWeight: 500 }}>{item.code}</span>
-                                  <span style={{ color: 'text.secondary', fontSize: '0.9em' }}>
-                                    {item.country}
-                                  </span>
-                                </Box>
-                              </MenuItem>
-                            ))}
-                          </Menu>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-
-              <Controller
-                name="address"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t('auth.address')}
-                    fullWidth
-                    margin="normal"
-                    multiline
-                    rows={2}
-                    error={!!errors.address}
-                    helperText={errors.address?.message}
-                  />
-                )}
-              />
-
-              <Controller
-                name="card"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label={t('auth.card')}
-                    fullWidth
-                    margin="normal"
-                    placeholder="XXXX-XXXX-XXXX-XXXX"
-                    error={!!errors.card}
-                    helperText={errors.card?.message || t('auth.cardOptional')}
-                  />
-                )}
-              />
-
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                size="large"
-                disabled={isLoading}
-                sx={{ mt: 3, mb: 2 }}
-              >
-                {isLoading ? t('common.loading') : t('auth.register')}
-              </Button>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary">
-                  {t('auth.haveAccount')}{' '}
-                  <Button
-                    component={Link}
-                    to="/login"
-                    variant="text"
-                    size="small"
-                    sx={{ textTransform: 'none', fontWeight: 'bold' }}
-                  >
-                    {t('auth.signIn')}
-                  </Button>
-                </Typography>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };

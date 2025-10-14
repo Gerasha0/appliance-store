@@ -61,7 +61,7 @@ class LocaleControllerIntegrationTest {
         mockMvc.perform(get("/api/locale/current")
                         .header("Accept-Language", "uk"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.language", anyOf(is("uk"), is("en")))); // May fallback to default
+                .andExpect(jsonPath("$.language", anyOf(is("uk"), is("en"))));
     }
 
     @Test
@@ -95,12 +95,12 @@ class LocaleControllerIntegrationTest {
     @Test
     void getTranslations_ForUnknownCategory_ShouldReturnEmptyMap() throws Exception {
         mockMvc.perform(get("/api/locale/translations/unknown"))
-                .andExpect(status().isOk()); // Returns map, may have default entries
+                .andExpect(status().isOk());
     }
 
     @Test
     void changeLocale_WithoutLangParameter_ShouldReturn400() throws Exception {
         mockMvc.perform(post("/api/locale/change"))
-                .andExpect(status().is5xxServerError()); // Returns 500 when required param is missing
+                .andExpect(status().is5xxServerError());
     }
 }

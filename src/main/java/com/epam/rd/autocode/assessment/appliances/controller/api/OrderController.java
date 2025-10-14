@@ -104,7 +104,6 @@ public class OrderController {
         order.setClient(client);
         order.setApproved(false);
 
-        // Add order rows with bidirectional relationship
         for (var rowDto : dto.getOrderRows()) {
             Appliance appliance = applianceService.getApplianceById(rowDto.getApplianceId());
             OrderRow orderRow = entityMapper.toOrderRowEntity(rowDto, appliance);
@@ -134,12 +133,10 @@ public class OrderController {
             }
         }
 
-        // Create order object from DTO
         Client client = clientService.getClientById(dto.getClientId());
         Orders orderToUpdate = new Orders();
         orderToUpdate.setClient(client);
 
-        // Add order rows from DTO
         for (var rowDto : dto.getOrderRows()) {
             Appliance appliance = applianceService.getApplianceById(rowDto.getApplianceId());
             OrderRow orderRow = entityMapper.toOrderRowEntity(rowDto, appliance);

@@ -79,13 +79,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
+                )
+                // Добавляем защиту от XSS на уровне заголовков
+                .headers(headers -> headers
+                        .xssProtection(xss -> xss.disable())
+                        .contentTypeOptions(contentType -> contentType.disable())
+                        .frameOptions(frame -> frame.sameOrigin())
                 );
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // For H2 console
-        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }

@@ -23,7 +23,6 @@ class UserTest {
         allConstructors = Arrays.asList(userClass.getConstructors());
     }
 
-    /*Tests constructors*/
     @Test
     @DisplayName("Count constructors have to be " + TestConstants.User.CLASS_COUNT_CONSTRUCTORS)
     void checkCountConstructors() {
@@ -77,7 +76,6 @@ class UserTest {
         assertEquals(4, countStringParameters);
     }
 
-    /*Tests for fields*/
     @Test
     @DisplayName("Count fields have to be "+TestConstants.User.CLASS_COUNT_FIELDS)
     void checkCountFields(){
@@ -107,7 +105,6 @@ class UserTest {
         assertEquals(expected, count);
     }
 
-    /*not for student*/
     @DisplayName("Check field type and field name")
     @ParameterizedTest
     @CsvFileSource(resources = "/UserField.csv")

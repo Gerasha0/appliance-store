@@ -54,7 +54,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void createEmployee_ShouldEncodePasswordAndReturnSavedEmployee() {
-        // Given
         Employee newEmployee = new Employee();
         newEmployee.setFirstName("John");
         newEmployee.setLastName("Doe");
@@ -65,10 +64,8 @@ class EmployeeServiceImplTest {
         when(passwordEncoder.encode("plainPassword")).thenReturn("encodedPassword");
         when(employeeRepository.save(any(Employee.class))).thenReturn(newEmployee);
 
-        // When
         Employee result = employeeService.createEmployee(newEmployee);
 
-        // Then
         assertThat(result).isNotNull();
         verify(passwordEncoder, times(1)).encode("plainPassword");
         verify(employeeRepository, times(1)).save(newEmployee);
@@ -76,7 +73,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployee_WithValidIdAndNoPasswordChange_ShouldUpdateWithoutEncodingPassword() {
-        // Given
         Employee updatedEmployee = new Employee();
         updatedEmployee.setFirstName("Jane");
         updatedEmployee.setLastName("Updated");
@@ -87,10 +83,8 @@ class EmployeeServiceImplTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(testEmployee);
 
-        // When
         Employee result = employeeService.updateEmployee(1L, updatedEmployee);
 
-        // Then
         assertThat(result).isNotNull();
         verify(employeeRepository, times(1)).findById(1L);
         verify(passwordEncoder, never()).encode(anyString());
@@ -99,7 +93,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployee_WithValidIdAndPasswordChange_ShouldEncodeNewPassword() {
-        // Given
         Employee updatedEmployee = new Employee();
         updatedEmployee.setFirstName("Jane");
         updatedEmployee.setLastName("Updated");
@@ -111,10 +104,8 @@ class EmployeeServiceImplTest {
         when(passwordEncoder.encode("newPlainPassword")).thenReturn("newEncodedPassword");
         when(employeeRepository.save(any(Employee.class))).thenReturn(testEmployee);
 
-        // When
         Employee result = employeeService.updateEmployee(1L, updatedEmployee);
 
-        // Then
         assertThat(result).isNotNull();
         verify(employeeRepository, times(1)).findById(1L);
         verify(passwordEncoder, times(1)).encode("newPlainPassword");
@@ -123,7 +114,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployee_WithEmptyPassword_ShouldNotEncodePassword() {
-        // Given
         Employee updatedEmployee = new Employee();
         updatedEmployee.setFirstName("Jane");
         updatedEmployee.setLastName("Updated");
@@ -134,10 +124,8 @@ class EmployeeServiceImplTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(testEmployee);
 
-        // When
         Employee result = employeeService.updateEmployee(1L, updatedEmployee);
 
-        // Then
         assertThat(result).isNotNull();
         verify(passwordEncoder, never()).encode(anyString());
         verify(employeeRepository, times(1)).save(testEmployee);
@@ -145,10 +133,8 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployee_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> employeeService.updateEmployee(999L, testEmployee))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Employee")
@@ -161,25 +147,19 @@ class EmployeeServiceImplTest {
 
     @Test
     void deleteEmployee_ShouldCallRepositoryDelete() {
-        // Given
         doNothing().when(employeeRepository).deleteById(1L);
 
-        // When
         employeeService.deleteEmployee(1L);
 
-        // Then
         verify(employeeRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getEmployeeById_WithValidId_ShouldReturnEmployee() {
-        // Given
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
 
-        // When
         Employee result = employeeService.getEmployeeById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getFirstName()).isEqualTo("Jane");
@@ -188,10 +168,8 @@ class EmployeeServiceImplTest {
 
     @Test
     void getEmployeeById_WithInvalidId_ShouldThrowResourceNotFoundException() {
-        // Given
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> employeeService.getEmployeeById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Employee")
@@ -203,7 +181,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void getAllEmployees_ShouldReturnListOfEmployees() {
-        // Given
         Employee employee2 = new Employee();
         employee2.setId(2L);
         employee2.setFirstName("John");
@@ -212,10 +189,8 @@ class EmployeeServiceImplTest {
         List<Employee> employees = Arrays.asList(testEmployee, employee2);
         when(employeeRepository.findAll()).thenReturn(employees);
 
-        // When
         List<Employee> result = employeeService.getAllEmployees();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(testEmployee, employee2);
@@ -224,17 +199,14 @@ class EmployeeServiceImplTest {
 
     @Test
     void getAllEmployees_WithPageable_ShouldReturnPageOfEmployees() {
-        // Given
         List<Employee> employees = Arrays.asList(testEmployee);
         Page<Employee> page = new PageImpl<>(employees);
         Pageable pageable = PageRequest.of(0, 10);
 
         when(employeeRepository.findAll(pageable)).thenReturn(page);
 
-        // When
         Page<Employee> result = employeeService.getAllEmployees(pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -243,7 +215,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void searchEmployees_ShouldReturnFilteredEmployees() {
-        // Given
         String searchTerm = "Jane";
         List<Employee> employees = Arrays.asList(testEmployee);
         Page<Employee> page = new PageImpl<>(employees);
@@ -251,10 +222,8 @@ class EmployeeServiceImplTest {
 
         when(employeeRepository.searchEmployees(searchTerm, pageable)).thenReturn(page);
 
-        // When
         Page<Employee> result = employeeService.searchEmployees(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         verify(employeeRepository, times(1)).searchEmployees(searchTerm, pageable);
@@ -262,17 +231,14 @@ class EmployeeServiceImplTest {
 
     @Test
     void searchEmployees_WithNoResults_ShouldReturnEmptyPage() {
-        // Given
         String searchTerm = "NonExistent";
         Page<Employee> emptyPage = new PageImpl<>(Arrays.asList());
         Pageable pageable = PageRequest.of(0, 10);
 
         when(employeeRepository.searchEmployees(searchTerm, pageable)).thenReturn(emptyPage);
 
-        // When
         Page<Employee> result = employeeService.searchEmployees(searchTerm, pageable);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isEqualTo(0);

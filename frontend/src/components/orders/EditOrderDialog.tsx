@@ -22,6 +22,7 @@ import {
 import { Delete, Search, Add, Close } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useGetAllAppliancesQuery } from '@/store/api/apiSlice';
+import { QuantityInput } from '@/components';
 import type { Orders, Appliance, OrderRequestDTO } from '@/types/models';
 
 interface EditOrderDialogProps {
@@ -283,21 +284,13 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
                         <TableCell>{item.appliance.model}</TableCell>
                         <TableCell align="right">${item.appliance.price.toFixed(2)}</TableCell>
                         <TableCell align="center">
-                          <TextField
-                            type="number"
-                            value={item.quantity}
-                            onChange={e =>
-                              handleQuantityChange(
-                                item.appliance.id,
-                                parseInt(e.target.value) || 1
-                              )
-                            }
-                            slotProps={{
-                              htmlInput: { min: 1, style: { textAlign: 'center' } },
-                            }}
-                            size="small"
-                            sx={{ width: 80 }}
-                          />
+                          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <QuantityInput
+                              value={item.quantity}
+                              onChange={(newQty) => handleQuantityChange(item.appliance.id, newQty)}
+                              size="small"
+                            />
+                          </Box>
                         </TableCell>
                         <TableCell align="right">
                           <Typography fontWeight="medium">

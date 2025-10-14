@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline, Box, CircularProgress } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, Box, CircularProgress, GlobalStyles } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { useAppSelector } from '@/store';
 import { PrivateRoute } from '@/components/PrivateRoute';
@@ -75,6 +75,16 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <GlobalStyles
+        styles={{
+          body: {
+            margin: 0,
+            padding: 0,
+            boxSizing: 'border-box',
+            backgroundColor: theme.palette.background.default,
+          },
+        }}
+      />
       <SnackbarProvider
         maxSnack={3}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

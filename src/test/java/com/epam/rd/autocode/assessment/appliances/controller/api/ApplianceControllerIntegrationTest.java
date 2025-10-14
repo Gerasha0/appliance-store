@@ -7,6 +7,8 @@ import com.epam.rd.autocode.assessment.appliances.model.Manufacturer;
 import com.epam.rd.autocode.assessment.appliances.model.PowerType;
 import com.epam.rd.autocode.assessment.appliances.repository.ApplianceRepository;
 import com.epam.rd.autocode.assessment.appliances.repository.ManufacturerRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.OrderRowRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.OrdersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.math.BigDecimal;
-
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,11 +42,19 @@ class ApplianceControllerIntegrationTest {
     @Autowired
     private ManufacturerRepository manufacturerRepository;
 
+    @Autowired
+    private OrderRowRepository orderRowRepository;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
+
     private Manufacturer testManufacturer;
     private Appliance testAppliance;
 
     @BeforeEach
     void setUp() {
+        orderRowRepository.deleteAll();
+        ordersRepository.deleteAll();
         applianceRepository.deleteAll();
         manufacturerRepository.deleteAll();
 
@@ -68,6 +76,8 @@ class ApplianceControllerIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        orderRowRepository.deleteAll();
+        ordersRepository.deleteAll();
         applianceRepository.deleteAll();
         manufacturerRepository.deleteAll();
     }

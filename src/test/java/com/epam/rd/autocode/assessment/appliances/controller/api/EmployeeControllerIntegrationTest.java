@@ -3,6 +3,8 @@ package com.epam.rd.autocode.assessment.appliances.controller.api;
 import com.epam.rd.autocode.assessment.appliances.dto.EmployeeRequestDTO;
 import com.epam.rd.autocode.assessment.appliances.model.Employee;
 import com.epam.rd.autocode.assessment.appliances.repository.EmployeeRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.OrderRowRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.OrdersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,10 +38,18 @@ class EmployeeControllerIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private OrderRowRepository orderRowRepository;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
+
     private Employee testEmployee;
 
     @BeforeEach
     void setUp() {
+        orderRowRepository.deleteAll();
+        ordersRepository.deleteAll();
         employeeRepository.deleteAll();
 
         testEmployee = new Employee();
@@ -54,6 +63,8 @@ class EmployeeControllerIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        orderRowRepository.deleteAll();
+        ordersRepository.deleteAll();
         employeeRepository.deleteAll();
     }
 

@@ -188,10 +188,8 @@ public class EntityMapper {
         orderRow.setAppliance(appliance);
         orderRow.setQuantity(dto.getQuantity());
 
-        // Calculate amount automatically: price * quantity
         BigDecimal amount = dto.getAmount();
         if (amount == null || amount.compareTo(BigDecimal.ZERO) == 0) {
-            // If amount is not provided or is zero, calculate it from appliance price
             amount = appliance.getPrice()
                 .multiply(BigDecimal.valueOf(dto.getQuantity()))
                 .setScale(2, java.math.RoundingMode.HALF_UP); // Round to 2 decimal places

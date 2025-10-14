@@ -9,13 +9,10 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  TextField,
   Alert,
 } from '@mui/material';
 import {
   Close as CloseIcon,
-  Add as AddIcon,
-  Remove as RemoveIcon,
   Delete as DeleteIcon,
   ShoppingCart as CartIcon,
 } from '@mui/icons-material';
@@ -24,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch, closeCart, updateQuantity, removeFromCart, clearCart } from '@/store';
 import { useCreateOrderMutation } from '@/store/api/ordersApi';
 import { useSnackbar } from 'notistack';
+import { QuantityInput } from '@/components';
 import type { OrderRequestDTO, OrderRowRequestDTO } from '@/types/models';
 
 export const CartDrawer: React.FC = () => {
@@ -99,8 +97,19 @@ export const CartDrawer: React.FC = () => {
       anchor="right"
       open={isOpen}
       onClose={handleClose}
-      slotProps={{ paper: { sx: { width: { xs: '100%', sm: 400 } } } }}
+      slotProps={{
+        paper: { sx: { width: { xs: '100%', sm: 400 } } },
+        backdrop: {
+          sx: { backgroundColor: 'rgba(0, 0, 0, 0.5)' }
+        }
+      }}
       disableRestoreFocus
+      disableEnforceFocus
+      disableScrollLock
+      keepMounted={false}
+      ModalProps={{
+        keepMounted: false,
+      }}
     >
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -152,33 +161,12 @@ export const CartDrawer: React.FC = () => {
                 />
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleUpdateQuantity(item.appliance.id, item.quantity - 1)}
-                    disabled={item.quantity <= 1}
-                  >
-                    <RemoveIcon />
-                  </IconButton>
-                  <TextField
-                    size="small"
+                  <QuantityInput
                     value={item.quantity}
-                    onChange={(e) => {
-                      const val = Number.parseInt(e.target.value);
-                      if (!Number.isNaN(val) && val > 0) {
-                        handleUpdateQuantity(item.appliance.id, val);
-                      }
-                    }}
-                    sx={{ width: 60 }}
-                    slotProps={{ 
-                      htmlInput: { min: 1, style: { textAlign: 'center' } } 
-                    }}
-                  />
-                  <IconButton
+                    onChange={(newQuantity) => handleUpdateQuantity(item.appliance.id, newQuantity)}
+                    min={1}
                     size="small"
-                    onClick={() => handleUpdateQuantity(item.appliance.id, item.quantity + 1)}
-                  >
-                    <AddIcon />
-                  </IconButton>
+                  />
 
                   <Typography variant="body2" sx={{ ml: 'auto', fontWeight: 'bold' }}>
                     ${(item.appliance.price * item.quantity).toFixed(2)}
