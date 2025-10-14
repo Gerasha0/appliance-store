@@ -1,13 +1,13 @@
--- BCrypt hashed password is: password123
+-- BCrypt hashed password is: Test12345!
 INSERT INTO users (id, first_name, last_name, email, password) VALUES
-    (5, 'Mercury', 'Planet', 'mercury@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (6, 'Venus', 'Star', 'venus@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (7, 'Earth', 'Blue', 'earth@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (8, 'Mars', 'Red', 'mars@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (9, 'Jupiter', 'Giant', 'jupiter@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (10, 'Saturn', 'Ring', 'saturn@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (11, 'Uranus', 'Ice', 'uranus@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO'),
-    (12, 'Neptune', 'Blue', 'neptune@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
+    (5, 'Mercury', 'Planet', 'mercury@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (6, 'Venus', 'Star', 'venus@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (7, 'Earth', 'Blue', 'earth@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (8, 'Mars', 'Red', 'mars@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (9, 'Jupiter', 'Giant', 'jupiter@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (10, 'Saturn', 'Ring', 'saturn@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (11, 'Uranus', 'Ice', 'uranus@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC'),
+    (12, 'Neptune', 'Blue', 'neptune@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
 
 INSERT INTO clients (id, phone, address, card) VALUES
     (5, '+1234567890', '123 Mercury Street, Solar City', '1234567890123456'),

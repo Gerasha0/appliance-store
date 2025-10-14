@@ -1,5 +1,5 @@
--- BCrypt hashed password for: password123
--- Hash: $2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO
+-- BCrypt hashed password for: Test12345!
+-- Hash: $2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC
 
 -- Manufacturers (10 records)
 INSERT INTO manufacturer (id, name, address, country) VALUES (1, 'Samsung', '129 Samsung-ro, Suwon', 'South Korea');
@@ -14,16 +14,16 @@ INSERT INTO manufacturer (id, name, address, country) VALUES (9, 'Sony', '1-7-1 
 INSERT INTO manufacturer (id, name, address, country) VALUES (10, 'Intel', '2200 Mission College Blvd, Santa Clara, CA', 'USA');
 
 -- Users (Employees) - 10 records (ID 1-4 existed, adding 13-18 to avoid conflicts)
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (1, 'John', 'Phobos', 'phobos@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (2, 'Sarah', 'Moon', 'moon@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (3, 'Michael', 'Deimos', 'deimos@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (4, 'Emily', 'Europa', 'europa@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (13, 'Thomas', 'Titan', 'titan@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (14, 'Jennifer', 'Io', 'io@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (15, 'Christopher', 'Callisto', 'callisto@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (16, 'Jessica', 'Ganymede', 'ganymede@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (17, 'Daniel', 'Triton', 'triton@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (18, 'Amanda', 'Rhea', 'rhea@epam.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (1, 'John', 'Phobos', 'phobos@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (2, 'Sarah', 'Moon', 'moon@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (3, 'Michael', 'Deimos', 'deimos@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (4, 'Emily', 'Europa', 'europa@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (13, 'Thomas', 'Titan', 'titan@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (14, 'Jennifer', 'Io', 'io@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (15, 'Christopher', 'Callisto', 'callisto@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (16, 'Jessica', 'Ganymede', 'ganymede@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (17, 'Daniel', 'Triton', 'triton@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (18, 'Amanda', 'Rhea', 'rhea@epam.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
 
 INSERT INTO employees (id, position) VALUES (1, 'Sales Manager');
 INSERT INTO employees (id, position) VALUES (2, 'Sales Associate');
@@ -37,16 +37,16 @@ INSERT INTO employees (id, position) VALUES (17, 'Marketing Coordinator');
 INSERT INTO employees (id, position) VALUES (18, 'Operations Manager');
 
 -- Users (Clients) - 10 records (ID 5-12 existed, adding 19-20)
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (5, 'James', 'Mercury', 'mercury@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (6, 'Maria', 'Venus', 'venus@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (7, 'Robert', 'Earth', 'earth@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (8, 'Patricia', 'Mars', 'mars@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (9, 'Michael', 'Jupiter', 'jupiter@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (10, 'Linda', 'Saturn', 'saturn@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (11, 'David', 'Uranus', 'uranus@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (12, 'Barbara', 'Neptune', 'neptune@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (19, 'William', 'Pluto', 'pluto@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
-INSERT INTO users (id, first_name, last_name, email, password) VALUES (20, 'Elizabeth', 'Ceres', 'ceres@client.com','$2a$10$zgE9xUQ1dsqCYIW9BvdcFuhIZvEMAiCMPhQojJB/K9EFsEjXcKWxO');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (5, 'James', 'Mercury', 'mercury@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (6, 'Maria', 'Venus', 'venus@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (7, 'Robert', 'Earth', 'earth@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (8, 'Patricia', 'Mars', 'mars@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (9, 'Michael', 'Jupiter', 'jupiter@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (10, 'Linda', 'Saturn', 'saturn@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (11, 'David', 'Uranus', 'uranus@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (12, 'Barbara', 'Neptune', 'neptune@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (19, 'William', 'Pluto', 'pluto@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
+INSERT INTO users (id, first_name, last_name, email, password) VALUES (20, 'Elizabeth', 'Ceres', 'ceres@client.com','$2b$10$YdhDd5xk0h1tpVe.h71X6.vEY4hB8RteAg7iFwaeSXQRt1J7VyAlC');
 
 INSERT INTO clients (id, phone, address, card) VALUES (5, '+1-555-0001', '101 Mercury Street, NY', '1000-0000-0000-0001');
 INSERT INTO clients (id, phone, address, card) VALUES (6, '+1-555-0002', '202 Venus Avenue, CA', '1000-0000-0000-0002');

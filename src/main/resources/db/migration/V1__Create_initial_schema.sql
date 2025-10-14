@@ -4,7 +4,7 @@ CREATE TABLE manufacturer (
     name VARCHAR(100) NOT NULL UNIQUE,
     address VARCHAR(255) NOT NULL,
     country VARCHAR(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Create users table
 CREATE TABLE users (
@@ -13,14 +13,14 @@ CREATE TABLE users (
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Create employees table (inherits from users)
 CREATE TABLE employees (
     id BIGINT PRIMARY KEY,
     position VARCHAR(100) NOT NULL,
     FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Create clients table (inherits from users)
 CREATE TABLE clients (
@@ -29,7 +29,7 @@ CREATE TABLE clients (
     address VARCHAR(255) NOT NULL,
     card VARCHAR(19),
     FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Create appliance table
 CREATE TABLE appliance (
@@ -44,7 +44,7 @@ CREATE TABLE appliance (
     power INT,
     price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (manufacturer_id) REFERENCES manufacturer(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Create orders table
 CREATE TABLE orders (
@@ -54,7 +54,7 @@ CREATE TABLE orders (
     approved BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (employee_id) REFERENCES employees(id),
     FOREIGN KEY (client_id) REFERENCES clients(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Create order_row table
 CREATE TABLE order_row (
@@ -64,5 +64,4 @@ CREATE TABLE order_row (
     quantity INT NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (appliance_id) REFERENCES appliance(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+);

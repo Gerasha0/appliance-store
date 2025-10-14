@@ -165,7 +165,8 @@ const EmployeeDashboard: React.FC = () => {
   const handleEditFromDetail = (id: number) => {
     const order = recentOrders.find((o: Orders) => o.id === id);
     if (order) {
-      setDetailDialogOpen(false); // Close detail dialog first
+      setDetailDialogOpen(false);
+      setSelectedOrder(null);
       handleEditClick(order);
     }
   };
