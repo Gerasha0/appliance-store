@@ -84,12 +84,11 @@ class ClientServiceImplTest {
         updatedClient.setPhone("+1111111111");
         updatedClient.setAddress("789 Elm St");
         updatedClient.setCard("1111111111111111");
-        updatedClient.setPassword(null);
 
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
         when(clientRepository.save(any(Client.class))).thenReturn(testClient);
 
-        Client result = clientService.updateClient(1L, updatedClient);
+        Client result = clientService.updateClient(1L, updatedClient, null);
 
         assertThat(result).isNotNull();
         verify(clientRepository, times(1)).findById(1L);
@@ -106,13 +105,12 @@ class ClientServiceImplTest {
         updatedClient.setPhone("+1111111111");
         updatedClient.setAddress("789 Elm St");
         updatedClient.setCard("1111111111111111");
-        updatedClient.setPassword("newPlainPassword");
 
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
         when(passwordEncoder.encode("newPlainPassword")).thenReturn("newEncodedPassword");
         when(clientRepository.save(any(Client.class))).thenReturn(testClient);
 
-        Client result = clientService.updateClient(1L, updatedClient);
+        Client result = clientService.updateClient(1L, updatedClient, "newPlainPassword");
 
         assertThat(result).isNotNull();
         verify(clientRepository, times(1)).findById(1L);
@@ -129,12 +127,11 @@ class ClientServiceImplTest {
         updatedClient.setPhone("+1111111111");
         updatedClient.setAddress("789 Elm St");
         updatedClient.setCard("1111111111111111");
-        updatedClient.setPassword("");
 
         when(clientRepository.findById(1L)).thenReturn(Optional.of(testClient));
         when(clientRepository.save(any(Client.class))).thenReturn(testClient);
 
-        Client result = clientService.updateClient(1L, updatedClient);
+        Client result = clientService.updateClient(1L, updatedClient, "");
 
         assertThat(result).isNotNull();
         verify(passwordEncoder, never()).encode(anyString());
@@ -145,7 +142,7 @@ class ClientServiceImplTest {
     void updateClient_WithInvalidId_ShouldThrowResourceNotFoundException() {
         when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> clientService.updateClient(999L, testClient))
+        assertThatThrownBy(() -> clientService.updateClient(999L, testClient, null))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Client")
                 .hasMessageContaining("id")

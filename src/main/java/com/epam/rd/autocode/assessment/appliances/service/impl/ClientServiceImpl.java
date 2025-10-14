@@ -6,6 +6,7 @@ import com.epam.rd.autocode.assessment.appliances.model.Client;
 import com.epam.rd.autocode.assessment.appliances.repository.ClientRepository;
 import com.epam.rd.autocode.assessment.appliances.service.ClientService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,17 +33,29 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Loggable
-    public Client updateClient(Long id, Client client) {
+    public Client updateClient(Long id, Client client, String newPassword) {
         Client existing = getClientById(id);
+        
+        log.info("Updating client {}: client object hash={}, existing object hash={}, are same? {}", 
+            id, 
+            System.identityHashCode(client),
+            System.identityHashCode(existing),
+            client == existing);
+        
         existing.setFirstName(client.getFirstName());
         existing.setLastName(client.getLastName());
         existing.setEmail(client.getEmail());
         existing.setPhone(client.getPhone());
         existing.setAddress(client.getAddress());
         existing.setCard(client.getCard());
-        if (client.getPassword() != null && !client.getPassword().isEmpty()) {
-            existing.setPassword(passwordEncoder.encode(client.getPassword()));
+        
+        if (newPassword != null && !newPassword.trim().isEmpty()) {
+            log.info("Encoding and updating new password for client {}", id);
+            existing.setPassword(passwordEncoder.encode(newPassword));
+        } else {
+            log.info("No new password provided, keeping existing password for client {}", id);
         }
+        
         return clientRepository.save(existing);
     }
 

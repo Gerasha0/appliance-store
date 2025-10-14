@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ClientService {
     Client createClient(Client client);
-    Client updateClient(Long id, Client client);
+    Client updateClient(Long id, Client client, String newPassword);
     void deleteClient(Long id);
     Client getClientById(Long id);
     List<Client> getAllClients();

@@ -56,7 +56,7 @@ export const RegisterClientPage: React.FC = () => {
     formState: { errors },
     setValue,
   } = useForm<ClientRegistrationDTO>({
-    resolver: yupResolver(clientRegistrationSchema),
+    resolver: yupResolver(clientRegistrationSchema) as any,
     defaultValues: {
       email: '',
       password: '',
@@ -64,6 +64,7 @@ export const RegisterClientPage: React.FC = () => {
       lastName: '',
       phone: '',
       address: '',
+      card: '',
     },
   });
 

@@ -73,14 +73,13 @@ export const clientSchema = yup.object({
   card: yup
     .string()
     .transform((value) => (value === '' ? undefined : value))
-    .optional()
+    .notRequired()
     .matches(
       /^(\d{16}|\d{4}-\d{4}-\d{4}-\d{4})$/,
       'Card must be 16 digits or formatted as XXXX-XXXX-XXXX-XXXX'
     ),
 });
 
-// Client registration schema (for registration without ID)
 export const clientRegistrationSchema = yup.object({
   firstName: yup
     .string()
@@ -132,6 +131,14 @@ export const clientRegistrationSchema = yup.object({
     .required('Address is required')
     .min(5, 'Address must be at least 5 characters')
     .max(255, 'Address must not exceed 255 characters'),
+  card: yup
+    .string()
+    .transform((value) => (value === '' ? undefined : value))
+    .notRequired()
+    .matches(
+      /^(\d{16}|\d{4}-\d{4}-\d{4}-\d{4})$/,
+      'Card must be 16 digits or formatted as XXXX-XXXX-XXXX-XXXX'
+    ),
 });
 
 // Employee validation schema

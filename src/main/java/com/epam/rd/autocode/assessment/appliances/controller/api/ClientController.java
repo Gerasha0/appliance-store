@@ -6,8 +6,10 @@ import com.epam.rd.autocode.assessment.appliances.dto.PageResponseDTO;
 import com.epam.rd.autocode.assessment.appliances.dto.mapper.EntityMapper;
 import com.epam.rd.autocode.assessment.appliances.model.Client;
 import com.epam.rd.autocode.assessment.appliances.service.ClientService;
+import com.epam.rd.autocode.assessment.appliances.validation.OnCreate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,8 +17,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/clients")
 @RequiredArgsConstructor
@@ -52,7 +56,8 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientResponseDTO> createClient(@Valid @RequestBody ClientRequestDTO dto) {
+    public ResponseEntity<ClientResponseDTO> createClient(
+            @Validated(OnCreate.class) @RequestBody ClientRequestDTO dto) {
         Client client = entityMapper.toClientEntity(dto);
         Client created = clientService.createClient(client);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -62,14 +67,19 @@ public class ClientController {
     @PutMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> updateClient(
             @PathVariable Long id, @Valid @RequestBody ClientRequestDTO dto) {
+        log.info("Updating client {}, password provided: {}", id, dto.getPassword() != null);
+        
         Client client = clientService.getClientById(id);
         entityMapper.updateClientFromDTO(dto, client);
-        
-        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
-            client.setPassword(dto.getPassword());
+
+        boolean updatePassword = dto.getPassword() != null && !dto.getPassword().trim().isEmpty();
+        if (updatePassword) {
+            log.info("New password provided for client {}", id);
+        } else {
+            log.info("Password not provided, keeping existing password for client {}", id);
         }
-        
-        Client updated = clientService.updateClient(id, client);
+
+        Client updated = clientService.updateClient(id, client, updatePassword ? dto.getPassword() : null);
         return ResponseEntity.ok(entityMapper.toClientResponseDTO(updated));
     }
 

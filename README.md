@@ -2,6 +2,7 @@
 
 ### Современная система управления интернет-магазином бытовой техники
 
+[![Version](https://img.shields.io/badge/Version-0.3.8-brightgreen?style=flat-square)](https://github.com/Gerasha0/appliance-store)
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat-square&logo=java)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.0-6DB33F?style=flat-square&logo=spring-boot)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
@@ -15,6 +16,22 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/Gerasha0/appliance-store?style=for-the-badge)](https://github.com/Gerasha0/appliance-store)
 [![GitHub repo size](https://img.shields.io/github/repo-size/Gerasha0/appliance-store?style=for-the-badge)](https://github.com/Gerasha0/appliance-store)
 [![GitHub language count](https://img.shields.io/github/languages/count/Gerasha0/appliance-store?style=for-the-badge)](https://github.com/Gerasha0/appliance-store)
+
+---
+
+## 📝 Последние изменения (v0.3.8)
+
+### 🐛 Критические исправления
+- **🔐 Исправлена система обновления паролей**: Решена проблема с Hibernate кэшированием объектов
+- **✅ Валидация паролей**: Добавлены группы валидации для создания и обновления пользователей
+- **🔄 Рефакторинг ClientService**: Метод `updateClient` теперь принимает пароль как отдельный параметр
+- **🎯 ProfileController**: Обновлена логика обновления профиля клиента
+- **📋 ClientFormDialog**: Улучшена обработка пустых паролей при редактировании
+
+### 🚀 Улучшения
+- Добавлены интерфейсы групп валидации: `OnCreate`, `OnUpdate`
+- Улучшено логирование операций с паролями
+- Оптимизирована логика кодирования паролей в сервисном слое
 
 ---
 
@@ -289,9 +306,7 @@ npm run dev
 # Остановка всех процессов
 ./kill-dev.sh
 
-# Тестирование API
-./test_api.sh
-```
+
 
 ---
 
@@ -396,9 +411,7 @@ mvn test
 # Frontend тесты (если настроены)
 cd frontend && npm test
 
-# Manual API тестирование
-./test_api.sh
-```
+
 
 ---
 

@@ -57,10 +57,12 @@ public class ProfileController {
             if (dto.getCard() != null && !dto.getCard().isBlank()) {
                 client.setCard(dto.getCard());
             }
-            if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-                client.setPassword(passwordEncoder.encode(dto.getPassword()));
-            }
-            Client updated = clientService.updateClient(client.getId(), client);
+            
+            String newPassword = (dto.getPassword() != null && !dto.getPassword().isBlank()) 
+                ? dto.getPassword() 
+                : null;
+            
+            Client updated = clientService.updateClient(client.getId(), client, newPassword);
             return ResponseEntity.ok(entityMapper.toClientResponseDTO(updated));
         } else if (user instanceof Employee) {
             Employee employee = (Employee) user;
