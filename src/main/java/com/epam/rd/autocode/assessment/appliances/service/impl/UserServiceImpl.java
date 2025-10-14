@@ -5,6 +5,8 @@ import com.epam.rd.autocode.assessment.appliances.exception.ResourceAlreadyExist
 import com.epam.rd.autocode.assessment.appliances.exception.ResourceNotFoundException;
 import com.epam.rd.autocode.assessment.appliances.model.User;
 import com.epam.rd.autocode.assessment.appliances.repository.UserRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.ClientRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.EmployeeRepository;
 import com.epam.rd.autocode.assessment.appliances.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,13 +27,17 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
+    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     @Loggable
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        User user = getUserByEmailWithCorrectType(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + username);
+        }
 
         String role = determineRole(user);
         
@@ -42,6 +48,14 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
     
+    private User getUserByEmailWithCorrectType(String email) {
+        return clientRepository.findByEmail(email)
+                .map(client -> (User) client)
+                .or(() -> employeeRepository.findByEmail(email).map(employee -> (User) employee))
+                .or(() -> userRepository.findByEmail(email))
+                .orElse(null);
+    }
+
     private String determineRole(User user) {
         if (user instanceof com.epam.rd.autocode.assessment.appliances.model.Employee) {
             return "EMPLOYEE";
@@ -92,8 +106,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        User user = getUserByEmailWithCorrectType(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("User", "email", email);
+        }
+        return user;
     }
 
     @Override

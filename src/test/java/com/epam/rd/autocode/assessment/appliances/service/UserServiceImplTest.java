@@ -6,6 +6,8 @@ import com.epam.rd.autocode.assessment.appliances.model.Client;
 import com.epam.rd.autocode.assessment.appliances.model.Employee;
 import com.epam.rd.autocode.assessment.appliances.model.User;
 import com.epam.rd.autocode.assessment.appliances.repository.UserRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.ClientRepository;
+import com.epam.rd.autocode.assessment.appliances.repository.EmployeeRepository;
 import com.epam.rd.autocode.assessment.appliances.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,12 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ClientRepository clientRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -78,6 +86,8 @@ class UserServiceImplTest {
 
     @Test
     void loadUserByUsername_WithValidEmail_ShouldReturnUserDetails() {
+        when(clientRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+        when(employeeRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserDetails result = userService.loadUserByUsername("test@example.com");
@@ -86,40 +96,44 @@ class UserServiceImplTest {
         assertThat(result.getUsername()).isEqualTo("test@example.com");
         assertThat(result.getPassword()).isEqualTo("encodedPassword");
         assertThat(result.getAuthorities()).hasSize(1);
-        verify(userRepository, times(1)).findByEmail("test@example.com");
+        verify(clientRepository, times(1)).findByEmail("test@example.com");
     }
 
     @Test
     void loadUserByUsername_WithEmployee_ShouldReturnUserDetailsWithEmployeeRole() {
-        when(userRepository.findByEmail("jane@example.com")).thenReturn(Optional.of(testEmployee));
+        when(clientRepository.findByEmail("jane@example.com")).thenReturn(Optional.empty());
+        when(employeeRepository.findByEmail("jane@example.com")).thenReturn(Optional.of(testEmployee));
 
         UserDetails result = userService.loadUserByUsername("jane@example.com");
 
         assertThat(result).isNotNull();
         assertThat(result.getAuthorities()).anyMatch(auth -> auth.getAuthority().equals("ROLE_EMPLOYEE"));
-        verify(userRepository, times(1)).findByEmail("jane@example.com");
+        verify(clientRepository, times(1)).findByEmail("jane@example.com");
+        verify(employeeRepository, times(1)).findByEmail("jane@example.com");
     }
 
     @Test
     void loadUserByUsername_WithClient_ShouldReturnUserDetailsWithClientRole() {
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(testClient));
+        when(clientRepository.findByEmail("john@example.com")).thenReturn(Optional.of(testClient));
 
         UserDetails result = userService.loadUserByUsername("john@example.com");
 
         assertThat(result).isNotNull();
         assertThat(result.getAuthorities()).anyMatch(auth -> auth.getAuthority().equals("ROLE_CLIENT"));
-        verify(userRepository, times(1)).findByEmail("john@example.com");
+        verify(clientRepository, times(1)).findByEmail("john@example.com");
     }
 
     @Test
     void loadUserByUsername_WithInvalidEmail_ShouldThrowUsernameNotFoundException() {
+        when(clientRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.loadUserByUsername("invalid@example.com"))
                 .isInstanceOf(UsernameNotFoundException.class)
                 .hasMessageContaining("User not found with email");
 
-        verify(userRepository, times(1)).findByEmail("invalid@example.com");
+        verify(clientRepository, times(1)).findByEmail("invalid@example.com");
     }
 
     @Test
@@ -285,17 +299,21 @@ class UserServiceImplTest {
 
     @Test
     void getUserByEmail_WithValidEmail_ShouldReturnUser() {
+        when(clientRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+        when(employeeRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
 
         User result = userService.getUserByEmail("test@example.com");
 
         assertThat(result).isNotNull();
         assertThat(result.getEmail()).isEqualTo("test@example.com");
-        verify(userRepository, times(1)).findByEmail("test@example.com");
+        verify(clientRepository, times(1)).findByEmail("test@example.com");
     }
 
     @Test
     void getUserByEmail_WithInvalidEmail_ShouldThrowResourceNotFoundException() {
+        when(clientRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.getUserByEmail("invalid@example.com"))
@@ -304,7 +322,7 @@ class UserServiceImplTest {
                 .hasMessageContaining("email")
                 .hasMessageContaining("invalid@example.com");
 
-        verify(userRepository, times(1)).findByEmail("invalid@example.com");
+        verify(clientRepository, times(1)).findByEmail("invalid@example.com");
     }
 
     @Test
