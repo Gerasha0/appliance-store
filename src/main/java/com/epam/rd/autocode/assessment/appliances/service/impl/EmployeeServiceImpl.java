@@ -31,14 +31,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Loggable
-    public Employee updateEmployee(Long id, Employee employee) {
+    public Employee updateEmployee(Long id, Employee employee, String newPassword) {
         Employee existing = getEmployeeById(id);
         existing.setFirstName(employee.getFirstName());
         existing.setLastName(employee.getLastName());
         existing.setEmail(employee.getEmail());
         existing.setPosition(employee.getPosition());
-        if (employee.getPassword() != null && !employee.getPassword().isEmpty()) {
-            existing.setPassword(passwordEncoder.encode(employee.getPassword()));
+        if (newPassword != null && !newPassword.trim().isEmpty()) {
+            existing.setPassword(passwordEncoder.encode(newPassword));
         }
         return employeeRepository.save(existing);
     }

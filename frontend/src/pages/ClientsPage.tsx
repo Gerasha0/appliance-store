@@ -10,7 +10,6 @@ import { Add, Visibility } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { AppLayout } from '@/components/AppLayout';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { ClientFormDialog } from '@/components/clients/ClientFormDialog';
@@ -188,17 +187,12 @@ const ClientsPage: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <AppLayout>
-        <LoadingSpinner />
-      </AppLayout>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
-    <AppLayout>
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
           <Typography variant="h4">{t('client.title')}</Typography>
           <Button
             variant="contained"
@@ -245,8 +239,7 @@ const ClientsPage: React.FC = () => {
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteDialogOpen(false)}
         />
-      </Box>
-    </AppLayout>
+    </Box>
   );
 };
 

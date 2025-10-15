@@ -72,10 +72,12 @@ public class ProfileController {
             if (dto.getPosition() != null && !dto.getPosition().isBlank()) {
                 employee.setPosition(dto.getPosition());
             }
-            if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-                employee.setPassword(passwordEncoder.encode(dto.getPassword()));
-            }
-            Employee updated = employeeService.updateEmployee(employee.getId(), employee);
+            
+            String newPassword = (dto.getPassword() != null && !dto.getPassword().isBlank()) 
+                ? dto.getPassword() 
+                : null;
+            
+            Employee updated = employeeService.updateEmployee(employee.getId(), employee, newPassword);
             return ResponseEntity.ok(entityMapper.toEmployeeResponseDTO(updated));
         }
         return ResponseEntity.badRequest().body("Unknown user type");

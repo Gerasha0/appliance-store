@@ -83,7 +83,7 @@ class EmployeeServiceImplTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(testEmployee);
 
-        Employee result = employeeService.updateEmployee(1L, updatedEmployee);
+        Employee result = employeeService.updateEmployee(1L, updatedEmployee, null);
 
         assertThat(result).isNotNull();
         verify(employeeRepository, times(1)).findById(1L);
@@ -104,7 +104,7 @@ class EmployeeServiceImplTest {
         when(passwordEncoder.encode("newPlainPassword")).thenReturn("newEncodedPassword");
         when(employeeRepository.save(any(Employee.class))).thenReturn(testEmployee);
 
-        Employee result = employeeService.updateEmployee(1L, updatedEmployee);
+        Employee result = employeeService.updateEmployee(1L, updatedEmployee, "newPlainPassword");
 
         assertThat(result).isNotNull();
         verify(employeeRepository, times(1)).findById(1L);
@@ -124,7 +124,7 @@ class EmployeeServiceImplTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(testEmployee);
 
-        Employee result = employeeService.updateEmployee(1L, updatedEmployee);
+        Employee result = employeeService.updateEmployee(1L, updatedEmployee, "");
 
         assertThat(result).isNotNull();
         verify(passwordEncoder, never()).encode(anyString());
@@ -135,7 +135,7 @@ class EmployeeServiceImplTest {
     void updateEmployee_WithInvalidId_ShouldThrowResourceNotFoundException() {
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> employeeService.updateEmployee(999L, testEmployee))
+        assertThatThrownBy(() -> employeeService.updateEmployee(999L, testEmployee, null))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Employee")
                 .hasMessageContaining("id")

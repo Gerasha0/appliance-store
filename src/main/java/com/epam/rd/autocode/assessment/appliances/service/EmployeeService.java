@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EmployeeService {
     Employee createEmployee(Employee employee);
-    Employee updateEmployee(Long id, Employee employee);
+    Employee updateEmployee(Long id, Employee employee, String newPassword);
     void deleteEmployee(Long id);
     Employee getEmployeeById(Long id);
     List<Employee> getAllEmployees();

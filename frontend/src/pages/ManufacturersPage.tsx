@@ -7,7 +7,6 @@ import {
 import { Add } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { AppLayout } from '@/components/AppLayout';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { DataTable } from '@/components/DataTable';
@@ -151,26 +150,21 @@ const ManufacturersPage: React.FC = () => {
   ];
 
   if (isLoading) {
-    return (
-      <AppLayout>
-        <LoadingSpinner />
-      </AppLayout>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
-    <AppLayout>
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="h4">{t('manufacturer.title')}</Typography>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => handleOpenDialog()}
-          >
-            {t('manufacturer.addManufacturer')}
-          </Button>
-        </Box>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h4">{t('manufacturer.title')}</Typography>
+        <Button
+          variant="contained"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+        >
+          {t('manufacturer.addManufacturer')}
+        </Button>
+      </Box>
 
         <DataTable
           data={manufacturers}
@@ -208,8 +202,7 @@ const ManufacturersPage: React.FC = () => {
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteDialogOpen(false)}
         />
-      </Box>
-    </AppLayout>
+    </Box>
   );
 };
 

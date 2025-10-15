@@ -18,7 +18,6 @@ import {
 import { Delete, CheckCircle, Visibility, FilterList, Clear, Add, Edit } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { AppLayout } from '@/components/AppLayout';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { OrderDetailDialog } from '@/components/orders/OrderDetailDialog';
@@ -203,11 +202,7 @@ const OrdersPage: React.FC = () => {
   const hasActiveFilters = statusFilter !== 'all' || clientFilter || employeeFilter;
 
   if (isLoading) {
-    return (
-      <AppLayout>
-        <LoadingSpinner />
-      </AppLayout>
-    );
+    return <LoadingSpinner />;
   }
   
   // Apply client-side filtering (for EMPLOYEE only, CLIENT sees only own orders anyway)
@@ -237,20 +232,19 @@ const OrdersPage: React.FC = () => {
   const totalElements = filteredOrders.length; // Note: This is filtered count, not total from backend
 
   return (
-    <AppLayout>
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="h4">{t('order.title')}</Typography>
-          {isEmployee && (
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={handleCreateClick}
-            >
-              {t('order.addOrder')}
-            </Button>
-          )}
-        </Box>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h4">{t('order.title')}</Typography>
+        {isEmployee && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateClick}
+          >
+            {t('order.addOrder')}
+          </Button>
+        )}
+      </Box>
 
         {/* Filters Section */}
         <Paper sx={{ p: 2, mb: 2 }}>
@@ -449,8 +443,7 @@ const OrdersPage: React.FC = () => {
           }}
           onSubmit={handleEditSubmit}
         />
-      </Box>
-    </AppLayout>
+    </Box>
   );
 };
 

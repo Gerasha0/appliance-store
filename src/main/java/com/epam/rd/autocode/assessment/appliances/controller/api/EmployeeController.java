@@ -65,15 +65,11 @@ public class EmployeeController {
         Employee employee = employeeService.getEmployeeById(id);
         entityMapper.updateEmployeeFromDTO(dto, employee);
         
-        // Передаём пароль в сервис только если он не пустой
-        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
-            employee.setPassword(dto.getPassword());
-        } else {
-            // Если пароль пустой или null, устанавливаем null чтобы сервис не обрабатывал его
-            employee.setPassword(null);
-        }
+        String newPassword = (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) 
+            ? dto.getPassword() 
+            : null;
         
-        Employee updated = employeeService.updateEmployee(id, employee);
+        Employee updated = employeeService.updateEmployee(id, employee, newPassword);
         return ResponseEntity.ok(entityMapper.toEmployeeResponseDTO(updated));
     }
 
