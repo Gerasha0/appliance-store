@@ -8,6 +8,7 @@ import com.epam.rd.autocode.assessment.appliances.model.User;
 import com.epam.rd.autocode.assessment.appliances.security.JwtTokenProvider;
 import com.epam.rd.autocode.assessment.appliances.service.ClientService;
 import com.epam.rd.autocode.assessment.appliances.service.EmployeeService;
+import com.epam.rd.autocode.assessment.appliances.service.LoginAttemptService;
 import com.epam.rd.autocode.assessment.appliances.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +38,24 @@ public class AuthController {
     private final ClientService clientService;
     private final EmployeeService employeeService;
     private final EntityMapper entityMapper;
+    private final LoginAttemptService loginAttemptService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         log.info("Login attempt for user: {}", loginRequest.getEmail());
+
+        String email = loginRequest.getEmail();
+
+        if (loginAttemptService.isBlocked(email)) {
+            log.warn("Login attempt blocked for user: {} due to too many failed attempts", email);
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Account temporarily locked");
+            error.put("message", "Too many failed login attempts. Please try again in " +
+                     loginAttemptService.getBlockDurationSeconds() + " seconds.");
+            error.put("remainingAttempts", 0);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
+        }
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -55,24 +70,38 @@ public class AuthController {
             User user = userService.getUserByEmail(loginRequest.getEmail());
             String role = determineRole(user);
             
+            loginAttemptService.loginSucceeded(email);
+
             log.info("Successful login for user: {} with role: {}", loginRequest.getEmail(), role);
             return ResponseEntity.ok(new JwtResponse(jwt, user.getEmail(), role, user.getId(),
                     user.getFirstName(), user.getLastName()));
         } catch (BadCredentialsException e) {
-            log.warn("Failed login attempt for user: {} - Invalid credentials", loginRequest.getEmail());
-            Map<String, String> error = new HashMap<>();
+            loginAttemptService.loginFailed(email);
+            int remainingAttempts = loginAttemptService.getRemainingAttempts(email);
+
+            log.warn("Failed login attempt for user: {} - Invalid credentials. Remaining attempts: {}",
+                    loginRequest.getEmail(), remainingAttempts);
+
+            Map<String, Object> error = new HashMap<>();
             error.put("error", "Invalid email or password");
-            error.put("message", e.getMessage());
+            error.put("message", remainingAttempts > 0 ?
+                    "Invalid credentials. " + remainingAttempts + " attempts remaining." :
+                    "Account locked due to too many failed attempts.");
+            error.put("remainingAttempts", remainingAttempts);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         } catch (AuthenticationException e) {
+            loginAttemptService.loginFailed(email);
+            int remainingAttempts = loginAttemptService.getRemainingAttempts(email);
+
             log.error("Authentication failed for user: {} - {}", loginRequest.getEmail(), e.getMessage());
-            Map<String, String> error = new HashMap<>();
+            Map<String, Object> error = new HashMap<>();
             error.put("error", "Authentication failed");
             error.put("message", e.getMessage());
+            error.put("remainingAttempts", remainingAttempts);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         } catch (Exception e) {
             log.error("Server error during authentication for user: {}", loginRequest.getEmail(), e);
-            Map<String, String> error = new HashMap<>();
+            Map<String, Object> error = new HashMap<>();
             error.put("error", "Server error");
             error.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);

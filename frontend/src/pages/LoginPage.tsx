@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate, Link } from 'react-router-dom';
@@ -30,6 +30,8 @@ export const LoginPage: React.FC = () => {
   const [login, { isLoading, error }] = useLoginMutation();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const themeMode = useAppSelector((state) => state.ui.theme);
+  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
+  const [lockoutMessage, setLockoutMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -54,13 +56,29 @@ export const LoginPage: React.FC = () => {
       const response = await login(data).unwrap();
       console.log('Login response:', response); // Debug: check userId
       dispatch(setCredentials(response));
+      setRemainingAttempts(null);
+      setLockoutMessage(null);
       showSuccess(t('auth.loginSuccess') || 'Successfully logged in!');
       setTimeout(() => {
         navigate('/dashboard');
       }, 500);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login failed:', err);
-      showError(t('auth.loginError') || 'Login failed. Please check your credentials.');
+
+      // Handle brute-force protection messages
+      if (err?.data?.remainingAttempts !== undefined) {
+        setRemainingAttempts(err.data.remainingAttempts);
+      }
+
+      if (err?.status === 429 || err?.data?.remainingAttempts === 0) {
+        const message = err?.data?.message || 'Account temporarily locked due to too many failed attempts.';
+        setLockoutMessage(message);
+        showError(message);
+      } else if (err?.data?.remainingAttempts > 0) {
+        showError(`${err?.data?.message || t('auth.loginError')} (${err.data.remainingAttempts} attempts remaining)`);
+      } else {
+        showError(err?.data?.message || t('auth.loginError') || 'Login failed. Please check your credentials.');
+      }
     }
   };
 
@@ -105,6 +123,18 @@ export const LoginPage: React.FC = () => {
               {error && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                   {t('auth.loginError')}
+                </Alert>
+              )}
+
+              {lockoutMessage && (
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                  {lockoutMessage}
+                </Alert>
+              )}
+
+              {remainingAttempts !== null && remainingAttempts > 0 && remainingAttempts < 5 && (
+                <Alert severity="warning" sx={{ mb: 2 }}>
+                  {t('auth.attemptsRemaining', { count: remainingAttempts }) || `${remainingAttempts} login attempts remaining`}
                 </Alert>
               )}
 

@@ -102,7 +102,9 @@
     "passwordRequired": "Password is required",
     "nameRequired": "Name is required",
     "phoneRequired": "Phone is required",
-    "addressRequired": "Address is required"
+    "addressRequired": "Address is required",
+    "attemptsRemaining": "Warning! You have {{count}} login attempts remaining before your account is temporarily locked.",
+    "accountLocked": "Account temporarily locked due to too many failed attempts. Please try again later."
   },
   "employee": {
     "title": "Employees",
