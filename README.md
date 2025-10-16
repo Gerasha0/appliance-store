@@ -2,7 +2,7 @@
 
 ### Современная система управления интернет-магазином бытовой техники
 
-[![Version](https://img.shields.io/badge/Version-0.4.0-brightgreen?style=flat-square)](https://github.com/Gerasha0/appliance-store)
+[![Version](https://img.shields.io/badge/Version-0.4.1-brightgreen?style=flat-square)](https://github.com/Gerasha0/appliance-store)
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat-square&logo=java)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.0-6DB33F?style=flat-square&logo=spring-boot)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
@@ -253,7 +253,7 @@ mvn clean spring-boot:run
 
 # ИЛИ через JAR файл
 mvn clean package
-java -jar target/Appliance-store-Spring-0.0.1-SNAPSHOT.jar
+java -jar target/Appliance-store-Spring-***.jar
 ```
 
 #### 3️⃣ Запуск Frontend (React)
@@ -305,14 +305,14 @@ npm run dev
 ```json
 // Employee (Сотрудник)
 {
-  "email": "employee@example.com",
+  "email": "test1@test.com",
   "password": "password123",
   "role": "EMPLOYEE"
 }
 
 // Client (Клиент)  
 {
-  "email": "client@example.com",
+  "email": "test2@test.com",
   "password": "password123",
   "role": "CLIENT"
 }
@@ -416,13 +416,46 @@ cd frontend && npm test
 
 ## 🔄 Версионирование и история разработки
 
-### 📈 Текущая версия: v0.4.0
+### 📈 Текущая версия: v0.4.1
 
-[![Version](https://img.shields.io/badge/Current_Version-0.4.0-blue?style=for-the-badge)](https://github.com/Gerasha0/appliance-store/releases)
+[![Version](https://img.shields.io/badge/Current_Version-0.4.1-blue?style=for-the-badge)](https://github.com/Gerasha0/appliance-store/releases)
 [![Commits](https://img.shields.io/github/commit-activity/m/Gerasha0/appliance-store?style=for-the-badge)](https://github.com/Gerasha0/appliance-store)
 [![Contributors](https://img.shields.io/github/contributors/Gerasha0/appliance-store?style=for-the-badge)](https://github.com/Gerasha0/appliance-store/graphs/contributors)
 
 ### 📋 История релизов
+
+---
+
+## 📝 Версия 0.4.1
+
+### 🎨 UI/UX Улучшения
+- **🖼️ Модальное окно на Dashboard**: Исправлена проблема с редиректом при клике на технику
+- **👁️ Просмотр деталей техники**: Теперь на главной странице при клике открывается модальное окно с полной информацией, аналогично странице "Техніка"
+- **🔄 ApplianceDetailDialog**: Добавлен диалог просмотра техники на Dashboard для клиентов
+- **📦 Загрузка производителей**: Добавлена загрузка данных производителей для корректного отображения в модальном окне
+
+### 🔧 Backend Улучшения
+- **📋 Logback Configuration**: Создан `logback-spring.xml` с правильной конфигурацией rolling policy
+- **🔄 Ротация логов**: Настроена ротация по размеру (10MB) и времени (30 дней)
+- **📦 Архивация логов**: Автоматическое сжатие старых логов в gzip формат
+- **🗑️ Очистка application.properties**: Удалены бесполезные свойства `logging.logback.*`
+
+### 🔐 Безопасность и Конфигурация
+- **🔑 Environment Variables**: Переход на использование переменных окружения для секретов
+- **🗄️ MySQL 8 Dialect**: Добавлена явная настройка диалекта для MySQL 8.x
+- **💾 Hikari Connection Pool**: Настроены параметры пула соединений (maximum-pool-size, minimum-idle, timeouts)
+- **🌐 JDBC URL**: Использование переменной окружения `${JDBC_URL}` с дефолтным значением
+- **🔒 JWT Secret**: Переход на `${JWT_SECRET}` из переменной окружения
+
+### 📄 Файлы конфигурации
+- **✅ .env файл**: Создан `.env` с необходимыми переменными для проекта
+- **📝 Структурированные секреты**: DB_USER, DB_PASSWORD, JWT_SECRET, JWT_EXPIRATION, JDBC_URL
+
+### 🚀 Технические улучшения
+- Предотвращение hardcoded секретов в application.properties
+- Профессиональная настройка логирования с rolling policy
+- Оптимизация работы пула соединений к базе данных
+- Улучшенная безопасность через переменные окружения
 
 ---
 

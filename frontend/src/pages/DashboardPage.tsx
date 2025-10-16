@@ -39,9 +39,11 @@ import {
   useDeleteOrderMutation,
   useApproveOrderMutation,
   useUpdateOrderMutation,
+  useGetAllManufacturersQuery,
 } from '@/store/api/apiSlice';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ApplianceCard } from '@/components/appliances';
+import { ApplianceDetailDialog } from '@/components/appliances/ApplianceDetailDialog';
 import { useAppSelector } from '@/store';
 import { UserRole, Category } from '@/types/models';
 import type { Orders, Appliance, OrderRequestDTO } from '@/types/models';
@@ -422,6 +424,8 @@ const ClientDashboard: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Orders | null>(null);
+  const [selectedAppliance, setSelectedAppliance] = useState<Appliance | null>(null);
+  const [applianceDetailDialogOpen, setApplianceDetailDialogOpen] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -444,6 +448,8 @@ const ClientDashboard: React.FC = () => {
     { skip: !userId }
   );
 
+  const { data: manufacturersData } = useGetAllManufacturersQuery({ page: 0, size: 1000 });
+
   const isLoading = appliancesLoading || ordersLoading;
 
   if (isLoading) {
@@ -452,6 +458,7 @@ const ClientDashboard: React.FC = () => {
 
   const appliancesList = appliancesData?.content || [];
   const ordersList = ordersData?.content || [];
+  const manufacturers = manufacturersData?.content || [];
 
   const recentOrders = ordersList.slice(0, 5);
 
@@ -460,6 +467,16 @@ const ClientDashboard: React.FC = () => {
   );
 
   const popularAppliances = searchQuery ? filteredAppliances.slice(0, 8) : appliancesList.slice(0, 8);
+
+  const handleApplianceClick = (appliance: Appliance) => {
+    setSelectedAppliance(appliance);
+    setApplianceDetailDialogOpen(true);
+  };
+
+  const handleCloseApplianceDialog = () => {
+    setApplianceDetailDialogOpen(false);
+    setSelectedAppliance(null);
+  };
 
   const handleViewOrder = (order: Orders) => {
     setSelectedOrder(order);
@@ -606,7 +623,7 @@ const ClientDashboard: React.FC = () => {
         ) : (
           <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
             {popularAppliances.map((appliance: Appliance) => (
-              <ApplianceCard key={appliance.id} appliance={appliance} />
+              <ApplianceCard key={appliance.id} appliance={appliance} onClick={handleApplianceClick} />
             ))}
           </Box>
         )}
@@ -705,6 +722,14 @@ const ClientDashboard: React.FC = () => {
         message={t('order.deleteConfirm')}
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteDialogOpen(false)}
+      />
+
+      {/* Appliance Detail Dialog */}
+      <ApplianceDetailDialog
+        open={applianceDetailDialogOpen}
+        appliance={selectedAppliance}
+        manufacturers={manufacturers}
+        onClose={handleCloseApplianceDialog}
       />
     </Box>
   );
