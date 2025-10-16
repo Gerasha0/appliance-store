@@ -191,8 +191,47 @@ class ManufacturerControllerIntegrationTest {
 
     @Test
     @WithMockUser(roles = "CLIENT")
-    void getAllManufacturers_WithClientRole_ShouldReturn403() throws Exception {
+    void getAllManufacturers_WithClientRole_ShouldReturn200() throws Exception {
         mockMvc.perform(get("/api/manufacturers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name", is("TestManufacturer")));
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void getManufacturerById_WithClientRole_ShouldReturn200() throws Exception {
+        mockMvc.perform(get("/api/manufacturers/{id}", testManufacturer.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("TestManufacturer")));
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void createManufacturer_WithClientRole_ShouldReturn403() throws Exception {
+        ManufacturerRequestDTO dto = new ManufacturerRequestDTO("NewManufacturer", "123 Industrial St", "USA");
+
+        mockMvc.perform(post("/api/manufacturers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void updateManufacturer_WithClientRole_ShouldReturn403() throws Exception {
+        ManufacturerRequestDTO dto = new ManufacturerRequestDTO("UpdatedManufacturer", "456 Factory Ave", "Canada");
+
+        mockMvc.perform(put("/api/manufacturers/{id}", testManufacturer.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void deleteManufacturer_WithClientRole_ShouldReturn403() throws Exception {
+        mockMvc.perform(delete("/api/manufacturers/{id}", testManufacturer.getId()))
                 .andExpect(status().isForbidden());
     }
 

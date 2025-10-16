@@ -2,9 +2,11 @@ package com.epam.rd.autocode.assessment.appliances.exception;
 
 public class ResourceAlreadyExistsException extends RuntimeException {
 
-    private final String resourceName;
-    private final String fieldName;
-    private final Object fieldValue;
+    private static final long serialVersionUID = 1L;
+
+    private final transient String resourceName;
+    private final transient String fieldName;
+    private final transient Object fieldValue;
 
     public ResourceAlreadyExistsException(String resourceName, String fieldName, Object fieldValue) {
         super(String.format("%s already exists with %s: '%s'", resourceName, fieldName, fieldValue));

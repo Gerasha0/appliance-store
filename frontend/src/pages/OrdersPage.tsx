@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -18,6 +18,7 @@ import {
 import { Delete, CheckCircle, Visibility, FilterList, Clear, Add, Edit } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
+import { useSearchParams } from 'react-router-dom';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { OrderDetailDialog } from '@/components/orders/OrderDetailDialog';
@@ -41,6 +42,7 @@ import type { Client, Employee, Orders } from '@/types/models';
 const OrdersPage: React.FC = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
   const role = useAppSelector(state => state.auth.role);
   const userId = useAppSelector(state => state.auth.userId);
   
@@ -50,6 +52,13 @@ const OrdersPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [clientFilter, setClientFilter] = useState<string>('');
   const [employeeFilter, setEmployeeFilter] = useState<string>('');
+  
+  useEffect(() => {
+    const clientIdParam = searchParams.get('clientId');
+    if (clientIdParam) {
+      setClientFilter(clientIdParam);
+    }
+  }, [searchParams]);
   
   const isEmployee = role === UserRole.EMPLOYEE;
   

@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/manufacturers")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('EMPLOYEE')")
 public class ManufacturerController {
 
     private final ManufacturerService manufacturerService;
     private final EntityMapper entityMapper;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'CLIENT')")
     public ResponseEntity<PageResponseDTO<ManufacturerResponseDTO>> getAllManufacturers(
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<Manufacturer> page = manufacturerService.getAllManufacturers(pageable);
@@ -36,6 +36,7 @@ public class ManufacturerController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'CLIENT')")
     public ResponseEntity<PageResponseDTO<ManufacturerResponseDTO>> searchManufacturers(
             @RequestParam String query,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -46,12 +47,14 @@ public class ManufacturerController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'CLIENT')")
     public ResponseEntity<ManufacturerResponseDTO> getManufacturerById(@PathVariable Long id) {
         Manufacturer manufacturer = manufacturerService.getManufacturerById(id);
         return ResponseEntity.ok(entityMapper.toManufacturerResponseDTO(manufacturer));
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<ManufacturerResponseDTO> createManufacturer(@Valid @RequestBody ManufacturerRequestDTO dto) {
         Manufacturer manufacturer = entityMapper.toManufacturerEntity(dto);
         Manufacturer created = manufacturerService.createManufacturer(manufacturer);
@@ -60,6 +63,7 @@ public class ManufacturerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<ManufacturerResponseDTO> updateManufacturer(
             @PathVariable Long id, @Valid @RequestBody ManufacturerRequestDTO dto) {
         Manufacturer manufacturer = manufacturerService.getManufacturerById(id);
@@ -69,6 +73,7 @@ public class ManufacturerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Void> deleteManufacturer(@PathVariable Long id) {
         manufacturerService.deleteManufacturer(id);
         return ResponseEntity.noContent().build();

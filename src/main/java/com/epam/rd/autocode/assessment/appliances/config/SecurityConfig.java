@@ -73,14 +73,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/h2-console/**", "/api/locale/**", "/api/test/**").permitAll()
                         .requestMatchers("/api/appliances", "/api/appliances/**").permitAll()
-                        .requestMatchers("/api/employees/**", "/api/manufacturers/**").hasRole(ROLE_EMPLOYEE)
+                        .requestMatchers("/api/manufacturers", "/api/manufacturers/**").authenticated()
+                        .requestMatchers("/api/employees/**").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/api/clients/**").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/api/orders/approve/**").hasRole(ROLE_EMPLOYEE)
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                // Добавляем защиту от XSS на уровне заголовков
                 .headers(headers -> headers
                         .xssProtection(xss -> xss.disable())
                         .contentTypeOptions(contentType -> contentType.disable())
