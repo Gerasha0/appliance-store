@@ -124,4 +124,3 @@ export const QuantityInput: React.FC<QuantityInputProps> = ({
 };
 
 export default QuantityInput;
-

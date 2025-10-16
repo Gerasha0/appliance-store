@@ -24,7 +24,6 @@ export const appliancesApi = createApi({
   baseQuery,
   tagTypes: ['Appliance'],
   endpoints: (builder) => ({
-    // Get all appliances with pagination
     getAllAppliances: builder.query<PageResponse<ApplianceResponseDTO>, {
       page?: number;
       size?: number;
@@ -43,7 +42,6 @@ export const appliancesApi = createApi({
           : [{ type: 'Appliance', id: 'LIST' }],
     }),
 
-    // Search appliances
     searchAppliances: builder.query<PageResponse<ApplianceResponseDTO>, {
       query: string;
       page?: number;
@@ -62,7 +60,6 @@ export const appliancesApi = createApi({
           : [{ type: 'Appliance', id: 'SEARCH' }],
     }),
 
-    // Get appliances by category
     getAppliancesByCategory: builder.query<PageResponse<ApplianceResponseDTO>, {
       category: Category;
       page?: number;
@@ -81,7 +78,6 @@ export const appliancesApi = createApi({
           : [{ type: 'Appliance', id: 'CATEGORY' }],
     }),
 
-    // Get appliances by power type
     getAppliancesByPowerType: builder.query<PageResponse<ApplianceResponseDTO>, {
       powerType: PowerType;
       page?: number;
@@ -100,13 +96,11 @@ export const appliancesApi = createApi({
           : [{ type: 'Appliance', id: 'POWER_TYPE' }],
     }),
 
-    // Get appliance by ID
     getApplianceById: builder.query<ApplianceResponseDTO, number>({
       query: (id) => `/appliances/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Appliance', id }],
     }),
 
-    // Create appliance [EMPLOYEE ONLY]
     createAppliance: builder.mutation<ApplianceResponseDTO, ApplianceRequestDTO>({
       query: (appliance) => ({
         url: '/appliances',
@@ -116,7 +110,6 @@ export const appliancesApi = createApi({
       invalidatesTags: [{ type: 'Appliance', id: 'LIST' }],
     }),
 
-    // Update appliance [EMPLOYEE ONLY]
     updateAppliance: builder.mutation<ApplianceResponseDTO, {
       id: number;
       appliance: ApplianceRequestDTO;
@@ -132,7 +125,6 @@ export const appliancesApi = createApi({
       ],
     }),
 
-    // Delete appliance [EMPLOYEE ONLY]
     deleteAppliance: builder.mutation<void, number>({
       query: (id) => ({
         url: `/appliances/${id}`,
@@ -146,7 +138,6 @@ export const appliancesApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useGetAllAppliancesQuery,
   useSearchAppliancesQuery,

@@ -50,7 +50,6 @@ const uiSlice = createSlice({
 export const { setTheme, toggleTheme, setLocale, setLoading, toggleSidebar, setSidebarOpen } =
   uiSlice.actions;
 
-// Selectors
 export const selectUi = (state: RootState) => state.ui;
 export const selectTheme = (state: RootState) => state.ui.theme;
 export const selectLocale = (state: RootState) => state.ui.locale;

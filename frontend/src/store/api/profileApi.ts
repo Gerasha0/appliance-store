@@ -21,11 +21,9 @@ export interface ProfileUpdateDTO {
   lastName: string;
   email: string;
   password?: string;
-  // Client-specific fields
   phone?: string;
   address?: string;
   card?: string;
-  // Employee-specific field
   position?: string;
 }
 
@@ -34,13 +32,11 @@ export const profileApi = createApi({
   baseQuery,
   tagTypes: ['Profile'],
   endpoints: (builder) => ({
-    // Get current user profile
     getProfile: builder.query<ClientResponseDTO | EmployeeResponseDTO, void>({
       query: () => '/profile',
       providesTags: ['Profile'],
     }),
 
-    // Update current user profile
     updateProfile: builder.mutation<ClientResponseDTO | EmployeeResponseDTO, ProfileUpdateDTO>({
       query: (profile) => ({
         url: '/profile',

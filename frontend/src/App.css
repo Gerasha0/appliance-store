@@ -63,7 +63,6 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Улучшенные таблицы */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -75,14 +74,12 @@
   text-align: left;
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   .page-container {
     padding: 16px;
   }
 }
 
-/* Loading state */
 .loading-overlay {
   display: flex;
   justify-content: center;
@@ -90,7 +87,6 @@
   min-height: 400px;
 }
 
-/* Error state */
 .error-container {
   display: flex;
   flex-direction: column;

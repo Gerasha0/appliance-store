@@ -23,7 +23,6 @@ body {
   flex-direction: column;
 }
 
-/* Улучшенная прокрутка */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -42,7 +41,6 @@ body {
   background: #555;
 }
 
-/* Анимации для переходов */
 @keyframes fadeIn {
   from {
     opacity: 0;

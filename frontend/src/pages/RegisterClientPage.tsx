@@ -25,7 +25,6 @@ import { showSuccess, showError } from '@/utils';
 import type { ClientRegistrationDTO } from '@/types/models';
 import { useAppSelector } from '@/store';
 
-// Country codes for phone numbers
 const countryCodes = [
   { code: '+380', country: 'Ukraine', flag: '🇺🇦' },
   { code: '+1', country: 'USA/Canada', flag: '🇺🇸' },
@@ -70,7 +69,6 @@ export const RegisterClientPage: React.FC = () => {
 
   const onSubmit = async (data: ClientRegistrationDTO) => {
     try {
-      // Remove card field if it's empty (not required for registration)
       const { card, ...registrationData } = data;
       const payload = card ? data : registrationData;
       
@@ -86,7 +84,6 @@ export const RegisterClientPage: React.FC = () => {
   };
 
   const handlePhoneChange = (value: string) => {
-    // Only allow digits
     const cleaned = value.replace(/\D/g, '');
     setPhoneNumber(cleaned);
     setValue('phone', countryCode + cleaned, { shouldValidate: true });

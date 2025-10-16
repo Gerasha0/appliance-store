@@ -19,60 +19,27 @@ import {
 type ButtonColor = 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
 
 export interface EmptyStateProps {
-  /**
-   * Icon to display
-   * Can be a Material-UI icon component or custom React element
-   */
   icon?: React.ReactElement | SvgIconComponent;
-  /**
-   * Main message to display
-   */
   message: string;
-  /**
-   * Optional description/subtitle
-   */
   description?: string;
-  /**
-   * Optional action button
-   */
   action?: {
     label: string;
     onClick: () => void;
     variant?: 'text' | 'outlined' | 'contained';
     color?: ButtonColor;
   };
-  /**
-   * Optional secondary action button
-   */
   secondaryAction?: {
     label: string;
     onClick: () => void;
     variant?: 'text' | 'outlined' | 'contained';
     color?: ButtonColor;
   };
-  /**
-   * Icon size
-   * @default 80
-   */
   iconSize?: number;
-  /**
-   * Icon color
-   * @default "action"
-   */
   iconColor?: 'inherit' | 'action' | 'disabled' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
-  /**
-   * Custom styles
-   */
   sx?: SxProps<Theme>;
-  /**
-   * Minimum height of the empty state container
-   */
   minHeight?: string | number;
 }
 
-/**
- * Predefined empty state types
- */
 export const EmptyStateTypes = {
   NO_DATA: {
     icon: InboxIcon,
@@ -116,13 +83,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   const theme = useTheme();
 
-  // Render icon
   const renderIcon = () => {
     if (!icon) {
       return null;
     }
 
-    // Determine icon color from palette
     const getIconColor = () => {
       if (iconColor === 'action') {
         return theme.palette.action.active;
@@ -139,7 +104,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
     const computedColor = getIconColor();
 
-    // If icon is a component (SvgIconComponent)
     if (typeof icon === 'function') {
       const IconComponent = icon;
       return (
@@ -152,7 +116,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       );
     }
 
-    // If icon is already a React element - wrap in Box
     return (
       <Box
         sx={{
@@ -248,9 +211,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   );
 };
 
-/**
- * Helper components for common empty states
- */
 export const NoDataEmptyState: React.FC<Partial<EmptyStateProps>> = (props) => (
   <EmptyState {...EmptyStateTypes.NO_DATA} {...props} />
 );

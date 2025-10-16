@@ -41,7 +41,6 @@ export const ApplianceFormDialog: React.FC<ApplianceFormDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Get default manufacturer ID
   const getDefaultManufacturerId = () => {
     if (appliance?.manufacturerId) {
       return appliance.manufacturerId;
@@ -69,7 +68,6 @@ export const ApplianceFormDialog: React.FC<ApplianceFormDialogProps> = ({
     },
   });
 
-  // Update form when dialog opens or appliance changes
   useEffect(() => {
     if (open) {
       const defaultManufacturerId = manufacturers.length > 0 ? manufacturers[0].id : 1;

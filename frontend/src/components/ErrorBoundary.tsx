@@ -26,29 +26,23 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
-    // Update state so the next render will show the fallback UI
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log error to console in development
     if (import.meta.env.DEV) {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
 
-    // Call optional error handler
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
     }
 
-    // Update state with error info
     this.setState({
       error,
       errorInfo,
     });
 
-    // You can also log the error to an error reporting service here
-    // Example: logErrorToService(error, errorInfo);
   }
 
   handleReset = (): void => {
@@ -65,12 +59,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render(): ReactNode {
     if (this.state.hasError) {
-      // Custom fallback UI if provided
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      // Default fallback UI
       return (
         <Container maxWidth="md">
           <Box
@@ -181,4 +173,3 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 }
 
 export default ErrorBoundary;
-

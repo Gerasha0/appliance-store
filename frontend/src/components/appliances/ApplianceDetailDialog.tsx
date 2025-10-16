@@ -38,7 +38,6 @@ export const ApplianceDetailDialog: React.FC<ApplianceDetailDialogProps> = ({
     return null;
   }
 
-  // Use appliance.manufacturer directly, or fallback to manufacturers list
   const manufacturer = appliance.manufacturer || manufacturers.find(m => m.id === appliance.manufacturer?.id);
 
   const handleEdit = () => {

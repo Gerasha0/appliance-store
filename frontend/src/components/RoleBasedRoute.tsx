@@ -20,22 +20,18 @@ export const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   const { isAuthenticated, role, token } = useAppSelector(state => state.auth);
   const location = useLocation();
 
-  // Check if we're still loading authentication state
   if (token === null && !isAuthenticated) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
 
-  // If not authenticated, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check if user has required role
   if (role && allowedRoles.includes(role)) {
     return <Outlet />;
   }
 
-  // User doesn't have permission
   if (showAccessDenied) {
     return (
       <Box
@@ -67,7 +63,6 @@ export const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
     );
   }
 
-  // Redirect to unauthorized page or dashboard
   return <Navigate to={redirectTo} replace />;
 };
 

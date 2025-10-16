@@ -1,4 +1,3 @@
-// Hook to sync i18n with Redux store
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, setLocale } from '@/store';
@@ -8,14 +7,12 @@ export const useI18nSync = () => {
   const dispatch = useAppDispatch();
   const localeFromStore = useAppSelector(state => state.ui.locale);
 
-  // Sync i18n language with Redux store
   useEffect(() => {
     if (i18n.language !== localeFromStore) {
       i18n.changeLanguage(localeFromStore);
     }
   }, [localeFromStore, i18n]);
 
-  // Sync Redux store with i18n language changes
   useEffect(() => {
     const handleLanguageChange = (lng: string) => {
       if (lng !== localeFromStore) {
@@ -30,4 +27,3 @@ export const useI18nSync = () => {
     };
   }, [dispatch, i18n, localeFromStore]);
 };
-

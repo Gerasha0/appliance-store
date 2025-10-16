@@ -36,11 +36,9 @@ export const ProfilePage: React.FC = () => {
   const isClient = role === 'CLIENT';
   const isEmployee = role === 'EMPLOYEE';
 
-  // Fetch user profile
   const { data: userData, isLoading } = useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
 
-  // Form state
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -52,7 +50,6 @@ export const ProfilePage: React.FC = () => {
     password: '',
   });
 
-  // Initialize form with user data
   useEffect(() => {
     if (userData) {
       setFormData({
@@ -74,7 +71,6 @@ export const ProfilePage: React.FC = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset form to original data
     if (userData) {
       setFormData({
         firstName: userData.firstName || '',
@@ -97,19 +93,16 @@ export const ProfilePage: React.FC = () => {
         email: formData.email,
       };
 
-      // Add password only if it's not empty
       if (formData.password && formData.password.trim() !== '') {
         updateData.password = formData.password;
       }
 
-      // Add client-specific fields
       if (isClient) {
         if (formData.phone) updateData.phone = formData.phone;
         if (formData.address) updateData.address = formData.address;
         if (formData.card) updateData.card = formData.card;
       }
 
-      // Add employee-specific field
       if (isEmployee && formData.position) {
         updateData.position = formData.position;
       }
@@ -117,7 +110,6 @@ export const ProfilePage: React.FC = () => {
       await updateProfile(updateData).unwrap();
       showSuccess(t('profile.updateSuccess'));
       setIsEditing(false);
-      // Clear password field after successful update
       setFormData(prev => ({ ...prev, password: '' }));
     } catch (error) {
       console.error('Failed to update profile:', error);

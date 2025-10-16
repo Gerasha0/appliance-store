@@ -53,7 +53,6 @@ export const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({
   const canEdit = !order.approved;
   const canDelete = !order.approved;
 
-  // Calculate total amount
   const totalAmount = order.orderRows?.reduce((sum, row) => sum + row.amount, 0) || 0;
 
   return (

@@ -45,7 +45,6 @@ export const ManufacturerFormDialog: React.FC<ManufacturerFormDialogProps> = ({
     },
   });
 
-  // Update form when manufacturer changes
   useEffect(() => {
     if (manufacturer) {
       reset({

@@ -49,12 +49,11 @@ export const ClientFormDialog: React.FC<ClientFormDialogProps> = ({
     },
   });
 
-  // Update form when client changes
   useEffect(() => {
     if (client) {
       reset({
         email: client.email,
-        password: '', // Never pre-fill password for security
+        password: '',
         firstName: client.firstName,
         lastName: client.lastName,
         phone: client.phone,

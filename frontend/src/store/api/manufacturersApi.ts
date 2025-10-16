@@ -22,7 +22,6 @@ export const manufacturersApi = createApi({
   baseQuery,
   tagTypes: ['Manufacturer'],
   endpoints: (builder) => ({
-    // Get all manufacturers with pagination [EMPLOYEE ONLY]
     getAllManufacturers: builder.query<PageResponse<ManufacturerResponseDTO>, {
       page?: number;
       size?: number;
@@ -41,7 +40,6 @@ export const manufacturersApi = createApi({
           : [{ type: 'Manufacturer', id: 'LIST' }],
     }),
 
-    // Search manufacturers [EMPLOYEE ONLY]
     searchManufacturers: builder.query<PageResponse<ManufacturerResponseDTO>, {
       query: string;
       page?: number;
@@ -60,13 +58,11 @@ export const manufacturersApi = createApi({
           : [{ type: 'Manufacturer', id: 'SEARCH' }],
     }),
 
-    // Get manufacturer by ID [EMPLOYEE ONLY]
     getManufacturerById: builder.query<ManufacturerResponseDTO, number>({
       query: (id) => `/manufacturers/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Manufacturer', id }],
     }),
 
-    // Create manufacturer [EMPLOYEE ONLY]
     createManufacturer: builder.mutation<ManufacturerResponseDTO, ManufacturerRequestDTO>({
       query: (manufacturer) => ({
         url: '/manufacturers',
@@ -76,7 +72,6 @@ export const manufacturersApi = createApi({
       invalidatesTags: [{ type: 'Manufacturer', id: 'LIST' }],
     }),
 
-    // Update manufacturer [EMPLOYEE ONLY]
     updateManufacturer: builder.mutation<ManufacturerResponseDTO, {
       id: number;
       manufacturer: ManufacturerRequestDTO;
@@ -92,7 +87,6 @@ export const manufacturersApi = createApi({
       ],
     }),
 
-    // Delete manufacturer [EMPLOYEE ONLY]
     deleteManufacturer: builder.mutation<void, number>({
       query: (id) => ({
         url: `/manufacturers/${id}`,
@@ -106,7 +100,6 @@ export const manufacturersApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useGetAllManufacturersQuery,
   useSearchManufacturersQuery,
@@ -115,4 +108,3 @@ export const {
   useUpdateManufacturerMutation,
   useDeleteManufacturerMutation,
 } = manufacturersApi;
-

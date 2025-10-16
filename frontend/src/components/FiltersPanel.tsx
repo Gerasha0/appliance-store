@@ -21,84 +21,25 @@ import {
 export type FilterValue = string | number | boolean | string[] | number[] | null | undefined;
 
 export interface Filter {
-  /**
-   * Unique identifier for the filter
-   */
   id: string;
-  /**
-   * Label to display
-   */
   label: string;
-  /**
-   * Current value of the filter
-   */
   value: FilterValue;
-  /**
-   * Render function for the filter control
-   */
   render: (value: FilterValue, onChange: (value: FilterValue) => void) => React.ReactNode;
-  /**
-   * Whether this filter is active
-   */
   isActive?: boolean;
 }
 
 export interface FiltersPanelProps {
-  /**
-   * Array of filters to display
-   */
   filters: Filter[];
-  /**
-   * Callback when filters are applied
-   */
   onApply: (filters: Record<string, FilterValue>) => void;
-  /**
-   * Callback when filters are cleared
-   */
   onClear?: () => void;
-  /**
-   * Title of the filters panel
-   * @default "Filters"
-   */
   title?: string;
-  /**
-   * Show apply button
-   * @default true
-   */
   showApplyButton?: boolean;
-  /**
-   * Show clear all button
-   * @default true
-   */
   showClearButton?: boolean;
-  /**
-   * Auto apply filters on change (without Apply button)
-   * @default false
-   */
   autoApply?: boolean;
-  /**
-   * Whether the panel is collapsible
-   * @default true
-   */
   collapsible?: boolean;
-  /**
-   * Initially collapsed state
-   * @default false
-   */
   defaultCollapsed?: boolean;
-  /**
-   * Show filter count badge
-   * @default true
-   */
   showActiveCount?: boolean;
-  /**
-   * Elevation of the paper
-   * @default 1
-   */
   elevation?: number;
-  /**
-   * Additional styling
-   */
   sx?: object;
 }
 
@@ -123,7 +64,6 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
   const [internalFilters, setInternalFilters] = useState<Record<string, FilterValue>>({});
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Initialize internal filters from props
   useEffect(() => {
     const initialFilters: Record<string, FilterValue> = {};
     filters.forEach((filter) => {
@@ -132,7 +72,6 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
     setInternalFilters(initialFilters);
   }, [filters]);
 
-  // Count active filters
   const activeFiltersCount = filters.filter((filter) => {
     const value = internalFilters[filter.id];
     return (
@@ -151,7 +90,6 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
     setInternalFilters(newFilters);
     setHasChanges(true);
 
-    // Auto apply if enabled
     if (autoApply) {
       onApply(newFilters);
       setHasChanges(false);

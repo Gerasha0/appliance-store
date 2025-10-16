@@ -31,7 +31,6 @@ export const LoginPage: React.FC = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const themeMode = useAppSelector((state) => state.ui.theme);
 
-  // Redirect to dashboard if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard', { replace: true });

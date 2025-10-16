@@ -22,7 +22,6 @@ export const clientsApi = createApi({
   baseQuery,
   tagTypes: ['Client'],
   endpoints: (builder) => ({
-    // Get all clients with pagination [EMPLOYEE ONLY]
     getAllClients: builder.query<PageResponse<ClientResponseDTO>, {
       page?: number;
       size?: number;
@@ -41,7 +40,6 @@ export const clientsApi = createApi({
           : [{ type: 'Client', id: 'LIST' }],
     }),
 
-    // Search clients [EMPLOYEE ONLY]
     searchClients: builder.query<PageResponse<ClientResponseDTO>, {
       query: string;
       page?: number;
@@ -60,13 +58,11 @@ export const clientsApi = createApi({
           : [{ type: 'Client', id: 'SEARCH' }],
     }),
 
-    // Get client by ID [EMPLOYEE ONLY]
     getClientById: builder.query<ClientResponseDTO, number>({
       query: (id) => `/clients/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Client', id }],
     }),
 
-    // Create client [EMPLOYEE ONLY]
     createClient: builder.mutation<ClientResponseDTO, ClientRequestDTO>({
       query: (client) => ({
         url: '/clients',
@@ -76,7 +72,6 @@ export const clientsApi = createApi({
       invalidatesTags: [{ type: 'Client', id: 'LIST' }],
     }),
 
-    // Update client [EMPLOYEE ONLY]
     updateClient: builder.mutation<ClientResponseDTO, {
       id: number;
       client: ClientRequestDTO;
@@ -92,7 +87,6 @@ export const clientsApi = createApi({
       ],
     }),
 
-    // Delete client [EMPLOYEE ONLY]
     deleteClient: builder.mutation<void, number>({
       query: (id) => ({
         url: `/clients/${id}`,
@@ -106,7 +100,6 @@ export const clientsApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useGetAllClientsQuery,
   useSearchClientsQuery,
@@ -115,4 +108,3 @@ export const {
   useUpdateClientMutation,
   useDeleteClientMutation,
 } = clientsApi;
-

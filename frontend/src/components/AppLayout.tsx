@@ -43,7 +43,7 @@ const drawerWidth = 240;
 
 export const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { t, i18n } = useTranslation();
-  useI18nSync(); // Sync language with Redux store
+  useI18nSync();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();

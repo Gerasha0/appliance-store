@@ -20,7 +20,6 @@ export const authApi = createApi({
   baseQuery,
   tagTypes: ['Auth'],
   endpoints: (builder) => ({
-    // Login endpoint
     login: builder.mutation<JwtResponse, LoginRequest>({
       query: (credentials) => ({
         url: '/auth/login',
@@ -30,7 +29,6 @@ export const authApi = createApi({
       invalidatesTags: ['Auth'],
     }),
 
-    // Register Client endpoint
     registerClient: builder.mutation<ClientResponseDTO, ClientRequestDTO>({
       query: (client) => ({
         url: '/auth/register/client',
@@ -40,7 +38,6 @@ export const authApi = createApi({
       invalidatesTags: ['Auth'],
     }),
 
-    // Register Employee endpoint
     registerEmployee: builder.mutation<EmployeeResponseDTO, EmployeeRequestDTO>({
       query: (employee) => ({
         url: '/auth/register/employee',
@@ -52,10 +49,8 @@ export const authApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useLoginMutation,
   useRegisterClientMutation,
   useRegisterEmployeeMutation,
 } = authApi;
-

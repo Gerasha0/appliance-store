@@ -87,7 +87,6 @@ export const {
   closeCart,
 } = cartSlice.actions;
 
-// Selectors
 export const selectCartItems = (state: RootState) => state.cart.items;
 export const selectCartIsOpen = (state: RootState) => state.cart.isOpen;
 export const selectCartTotal = (state: RootState) =>

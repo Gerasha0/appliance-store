@@ -22,7 +22,6 @@ export const employeesApi = createApi({
   baseQuery,
   tagTypes: ['Employee'],
   endpoints: (builder) => ({
-    // Get all employees with pagination [EMPLOYEE ONLY]
     getAllEmployees: builder.query<PageResponse<EmployeeResponseDTO>, {
       page?: number;
       size?: number;
@@ -41,7 +40,6 @@ export const employeesApi = createApi({
           : [{ type: 'Employee', id: 'LIST' }],
     }),
 
-    // Search employees [EMPLOYEE ONLY]
     searchEmployees: builder.query<PageResponse<EmployeeResponseDTO>, {
       query: string;
       page?: number;
@@ -60,13 +58,11 @@ export const employeesApi = createApi({
           : [{ type: 'Employee', id: 'SEARCH' }],
     }),
 
-    // Get employee by ID [EMPLOYEE ONLY]
     getEmployeeById: builder.query<EmployeeResponseDTO, number>({
       query: (id) => `/employees/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Employee', id }],
     }),
 
-    // Create employee [EMPLOYEE ONLY]
     createEmployee: builder.mutation<EmployeeResponseDTO, EmployeeRequestDTO>({
       query: (employee) => ({
         url: '/employees',
@@ -76,7 +72,6 @@ export const employeesApi = createApi({
       invalidatesTags: [{ type: 'Employee', id: 'LIST' }],
     }),
 
-    // Update employee [EMPLOYEE ONLY]
     updateEmployee: builder.mutation<EmployeeResponseDTO, {
       id: number;
       employee: EmployeeRequestDTO;
@@ -92,7 +87,6 @@ export const employeesApi = createApi({
       ],
     }),
 
-    // Delete employee [EMPLOYEE ONLY]
     deleteEmployee: builder.mutation<void, number>({
       query: (id) => ({
         url: `/employees/${id}`,
@@ -106,7 +100,6 @@ export const employeesApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useGetAllEmployeesQuery,
   useSearchEmployeesQuery,
@@ -115,4 +108,3 @@ export const {
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
 } = employeesApi;
-

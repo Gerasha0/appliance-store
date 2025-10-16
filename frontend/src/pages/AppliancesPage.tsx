@@ -61,20 +61,17 @@ const AppliancesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: appliancesData, isLoading } = useGetAllAppliancesQuery({ page: 0, size: 1000 });
-  // Fetch manufacturers only for employees (needed for form dropdown and filters)
   const { data: manufacturersData } = useGetAllManufacturersQuery(
     { page: 0, size: 1000 },
-    { skip: !isEmployee } // Skip this query if user is not an employee
+    { skip: !isEmployee }
   );
   const [createAppliance] = useCreateApplianceMutation();
   const [updateAppliance] = useUpdateApplianceMutation();
   const [deleteAppliance] = useDeleteApplianceMutation();
 
-  // Extract arrays from paginated responses
   const appliances = appliancesData?.content || [];
   const manufacturers = manufacturersData?.content || [];
 
-  // For clients, extract unique manufacturers from appliances
   const clientManufacturers = useMemo(() => {
     if (isEmployee) return [];
     const uniqueManufacturers = new Map();
@@ -86,10 +83,8 @@ const AppliancesPage: React.FC = () => {
     return Array.from(uniqueManufacturers.values());
   }, [appliances, isEmployee]);
 
-  // Use appropriate manufacturers list based on role
   const availableManufacturers = isEmployee ? manufacturers : clientManufacturers;
 
-  // Dialog states
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAppliance, setEditingAppliance] = useState<Appliance | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -104,29 +99,23 @@ const AppliancesPage: React.FC = () => {
     enqueueSnackbar(t('cart.itemAdded') || 'Item added to cart', { variant: 'success' });
   };
 
-  // Filter and search states
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
   const [powerTypeFilter, setPowerTypeFilter] = useState<string>('ALL');
   const [manufacturerFilter, setManufacturerFilter] = useState<string>('ALL');
   
-  // Pagination states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // Sort states
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
-  // View mode state
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
 
-  // Read category filter from URL on mount
   useEffect(() => {
     const categoryParam = searchParams.get('category');
     if (categoryParam && (categoryParam === 'BIG' || categoryParam === 'SMALL')) {
       setCategoryFilter(categoryParam);
-      // Clear the URL parameter after applying the filter
       searchParams.delete('category');
       setSearchParams(searchParams, { replace: true });
     }
@@ -158,7 +147,7 @@ const AppliancesPage: React.FC = () => {
     } catch (err) {
       console.error('Failed to save appliance:', err);
       enqueueSnackbar(t('common.error'), { variant: 'error' });
-      throw err; // Re-throw to let the form handle it
+      throw err;
     }
   };
 
@@ -199,43 +188,36 @@ const AppliancesPage: React.FC = () => {
     setManufacturerFilter('ALL');
   };
 
-  // Filter, search and sort logic
   const filteredAndSortedAppliances = useMemo(() => {
     if (!appliances.length) return [];
 
     let filtered = [...appliances];
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(appliance =>
         appliance.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Category filter
     if (categoryFilter !== 'ALL') {
       filtered = filtered.filter(appliance => appliance.category === categoryFilter);
     }
 
-    // PowerType filter
     if (powerTypeFilter !== 'ALL') {
       filtered = filtered.filter(appliance => appliance.powerType === powerTypeFilter);
     }
 
-    // Manufacturer filter - use manufacturer.id from nested object
     if (manufacturerFilter !== 'ALL') {
       filtered = filtered.filter(
         appliance => appliance.manufacturer?.id === parseInt(manufacturerFilter)
       );
     }
 
-    // Sorting
     filtered.sort((a, b) => {
       let aValue: string | number;
       let bValue: string | number;
 
       if (sortField === 'manufacturer') {
-        // For both employees and clients, use the manufacturer from appliance object first
         aValue = a.manufacturer?.name.toLowerCase() ||
           availableManufacturers?.find((m) => m.id === a.manufacturer?.id)?.name.toLowerCase() || '';
         bValue = b.manufacturer?.name.toLowerCase() ||
@@ -307,7 +289,6 @@ const AppliancesPage: React.FC = () => {
                 size="small"
                 onClick={() => {
                   setViewMode('table');
-                  // Set valid rowsPerPage for table mode if current value is invalid
                   if (![5, 10, 25, 50].includes(rowsPerPage)) {
                     setRowsPerPage(10);
                   }
@@ -321,7 +302,6 @@ const AppliancesPage: React.FC = () => {
                 size="small"
                 onClick={() => {
                   setViewMode('grid');
-                  // Set valid rowsPerPage for grid mode if current value is invalid
                   if (![8, 12, 24, 48].includes(rowsPerPage)) {
                     setRowsPerPage(12);
                   }

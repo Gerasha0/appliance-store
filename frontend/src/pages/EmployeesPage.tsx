@@ -33,7 +33,6 @@ const EmployeesPage: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
 
-  // Use search query if present, otherwise use regular paginated query
   const shouldSearch = searchQuery.trim().length > 0;
   
   const {
@@ -113,7 +112,7 @@ const EmployeesPage: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setPage(0); // Reset to first page on search
+    setPage(0);
   };
 
   const handlePageChange = (newPage: number) => {

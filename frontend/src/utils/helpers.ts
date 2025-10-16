@@ -1,12 +1,3 @@
-/**
- * General helper utilities
- */
-
-/**
- * Debounce function - delays execution until after wait time has elapsed
- * @param func - Function to debounce
- * @param wait - Wait time in milliseconds
- */
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -19,11 +10,6 @@ export const debounce = <T extends (...args: any[]) => any>(
   };
 };
 
-/**
- * Throttle function - limits execution to once per wait time
- * @param func - Function to throttle
- * @param wait - Wait time in milliseconds
- */
 export const throttle = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -39,28 +25,14 @@ export const throttle = <T extends (...args: any[]) => any>(
   };
 };
 
-/**
- * Deep clone an object
- * @param obj - Object to clone
- */
 export const deepClone = <T>(obj: T): T => {
   return structuredClone(obj);
 };
 
-/**
- * Check if two objects are equal (deep comparison)
- * @param obj1 - First object
- * @param obj2 - Second object
- */
 export const isEqual = (obj1: any, obj2: any): boolean => {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 };
 
-/**
- * Generate random string
- * @param length - Length of string
- * @param chars - Characters to use (default: alphanumeric)
- */
 export const generateRandomString = (
   length: number,
   chars: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -72,9 +44,6 @@ export const generateRandomString = (
   return result;
 };
 
-/**
- * Generate UUID v4
- */
 export const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replaceAll(/[xy]/g, (c) => {
     const r = Math.trunc(Math.random() * 16);
@@ -83,20 +52,10 @@ export const generateUUID = (): string => {
   });
 };
 
-/**
- * Sleep/delay function
- * @param ms - Milliseconds to sleep
- */
 export const sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-/**
- * Retry async function with exponential backoff
- * @param fn - Async function to retry
- * @param maxRetries - Maximum number of retries
- * @param delay - Initial delay in milliseconds
- */
 export const retryWithBackoff = async <T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
@@ -111,11 +70,6 @@ export const retryWithBackoff = async <T>(
   }
 };
 
-/**
- * Group array items by key
- * @param array - Array to group
- * @param key - Key to group by
- */
 export const groupBy = <T extends Record<string, any>>(
   array: T[],
   key: keyof T
@@ -130,11 +84,6 @@ export const groupBy = <T extends Record<string, any>>(
   }, {} as Record<string, T[]>);
 };
 
-/**
- * Remove duplicates from array
- * @param array - Array to deduplicate
- * @param key - Optional key for object arrays
- */
 export const unique = <T>(array: T[], key?: keyof T): T[] => {
   if (key) {
     const seen = new Set();
@@ -148,11 +97,6 @@ export const unique = <T>(array: T[], key?: keyof T): T[] => {
   return Array.from(new Set(array));
 };
 
-/**
- * Chunk array into smaller arrays
- * @param array - Array to chunk
- * @param size - Size of each chunk
- */
 export const chunk = <T>(array: T[], size: number): T[][] => {
   const chunks: T[][] = [];
   for (let i = 0; i < array.length; i += size) {
@@ -161,12 +105,6 @@ export const chunk = <T>(array: T[], size: number): T[][] => {
   return chunks;
 };
 
-/**
- * Sort array of objects by key
- * @param array - Array to sort
- * @param key - Key to sort by
- * @param order - Sort order (asc or desc)
- */
 export const sortBy = <T extends Record<string, any>>(
   array: T[],
   key: keyof T,
@@ -182,11 +120,6 @@ export const sortBy = <T extends Record<string, any>>(
   });
 };
 
-/**
- * Flatten nested array
- * @param array - Array to flatten
- * @param depth - Depth to flatten (default: Infinity)
- */
 export const flatten = <T>(array: any[], depth: number = Infinity): T[] => {
   if (depth < 1) return array;
   return array.reduce(
@@ -195,11 +128,6 @@ export const flatten = <T>(array: any[], depth: number = Infinity): T[] => {
   );
 };
 
-/**
- * Pick specific keys from object
- * @param obj - Object to pick from
- * @param keys - Keys to pick
- */
 export const pick = <T extends Record<string, any>, K extends keyof T>(
   obj: T,
   keys: K[]
@@ -213,11 +141,6 @@ export const pick = <T extends Record<string, any>, K extends keyof T>(
   return result;
 };
 
-/**
- * Omit specific keys from object
- * @param obj - Object to omit from
- * @param keys - Keys to omit
- */
 export const omit = <T extends Record<string, any>, K extends keyof T>(
   obj: T,
   keys: K[]
@@ -229,16 +152,10 @@ export const omit = <T extends Record<string, any>, K extends keyof T>(
   return result;
 };
 
-/**
- * Check if code is running in browser
- */
 export const isBrowser = (): boolean => {
   return typeof globalThis.window !== 'undefined';
 };
 
-/**
- * Check if device is mobile
- */
 export const isMobile = (): boolean => {
   if (!isBrowser()) return false;
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -246,17 +163,12 @@ export const isMobile = (): boolean => {
   );
 };
 
-/**
- * Copy text to clipboard
- * @param text - Text to copy
- */
 export const copyToClipboard = async (text: string): Promise<boolean> => {
   try {
     if (navigator.clipboard) {
       await navigator.clipboard.writeText(text);
       return true;
     }
-    // Fallback for older browsers
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.style.position = 'fixed';
@@ -272,12 +184,6 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
   }
 };
 
-/**
- * Download data as file
- * @param data - Data to download
- * @param filename - File name
- * @param type - MIME type
- */
 export const downloadFile = (
   data: string | Blob,
   filename: string,
@@ -294,10 +200,6 @@ export const downloadFile = (
   URL.revokeObjectURL(url);
 };
 
-/**
- * Parse query string to object
- * @param queryString - Query string to parse
- */
 export const parseQueryString = (queryString: string): Record<string, string> => {
   const params = new URLSearchParams(queryString);
   const result: Record<string, string> = {};
@@ -307,10 +209,6 @@ export const parseQueryString = (queryString: string): Record<string, string> =>
   return result;
 };
 
-/**
- * Build query string from object
- * @param params - Parameters object
- */
 export const buildQueryString = (params: Record<string, any>): string => {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {

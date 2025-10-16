@@ -1,13 +1,3 @@
-/**
- * Formatting utilities for displaying data
- */
-
-/**
- * Format currency values
- * @param amount - The amount to format
- * @param currency - Currency code (default: USD)
- * @param locale - Locale for formatting (default: en-US)
- */
 export const formatCurrency = (
   amount: number,
   currency: string = 'USD',
@@ -21,12 +11,6 @@ export const formatCurrency = (
   }).format(amount);
 };
 
-/**
- * Format date to readable string
- * @param date - Date string or Date object
- * @param locale - Locale for formatting (default: en-US)
- * @param options - Intl.DateTimeFormatOptions
- */
 export const formatDate = (
   date: string | Date,
   locale: string = 'en-US',
@@ -44,11 +28,6 @@ export const formatDate = (
   return new Intl.DateTimeFormat(locale, defaultOptions).format(dateObj);
 };
 
-/**
- * Format date and time to readable string
- * @param date - Date string or Date object
- * @param locale - Locale for formatting (default: en-US)
- */
 export const formatDateTime = (
   date: string | Date,
   locale: string = 'en-US'
@@ -62,33 +41,20 @@ export const formatDateTime = (
   });
 };
 
-/**
- * Format phone number
- * @param phone - Phone number string
- */
 export const formatPhoneNumber = (phone: string): string => {
-  // Remove all non-numeric characters
   const cleaned = phone.replace(/\D/g, '');
 
-  // Format as (XXX) XXX-XXXX for 10-digit US numbers
   if (cleaned.length === 10) {
     return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
   }
 
-  // Format as +X (XXX) XXX-XXXX for 11-digit numbers
   if (cleaned.length === 11) {
     return `+${cleaned[0]} (${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
   }
 
-  // Return as-is if it doesn't match expected patterns
   return phone;
 };
 
-/**
- * Format file size in bytes to human-readable string
- * @param bytes - File size in bytes
- * @param decimals - Number of decimal places (default: 2)
- */
 export const formatFileSize = (bytes: number, decimals: number = 2): string => {
   if (bytes === 0) return '0 Bytes';
 
@@ -101,12 +67,6 @@ export const formatFileSize = (bytes: number, decimals: number = 2): string => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
-/**
- * Truncate text to specified length
- * @param text - Text to truncate
- * @param maxLength - Maximum length
- * @param ellipsis - Ellipsis string (default: '...')
- */
 export const truncateText = (
   text: string,
   maxLength: number,
@@ -116,12 +76,6 @@ export const truncateText = (
   return text.slice(0, maxLength - ellipsis.length) + ellipsis;
 };
 
-/**
- * Format percentage value
- * @param value - Value to format (0-1 or 0-100)
- * @param decimals - Number of decimal places (default: 0)
- * @param isDecimal - Whether value is in decimal format (0-1) or percentage (0-100)
- */
 export const formatPercentage = (
   value: number,
   decimals: number = 0,
@@ -131,19 +85,11 @@ export const formatPercentage = (
   return `${percentage.toFixed(decimals)}%`;
 };
 
-/**
- * Capitalize first letter of string
- * @param text - Text to capitalize
- */
 export const capitalize = (text: string): string => {
   if (!text) return text;
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
 
-/**
- * Capitalize first letter of each word
- * @param text - Text to capitalize
- */
 export const capitalizeWords = (text: string): string => {
   if (!text) return text;
   return text
@@ -152,20 +98,10 @@ export const capitalizeWords = (text: string): string => {
     .join(' ');
 };
 
-/**
- * Format number with thousand separators
- * @param value - Number to format
- * @param locale - Locale for formatting (default: en-US)
- */
 export const formatNumber = (value: number, locale: string = 'en-US'): string => {
   return new Intl.NumberFormat(locale).format(value);
 };
 
-/**
- * Format relative time (e.g., "2 hours ago", "in 3 days")
- * @param date - Date string or Date object
- * @param locale - Locale for formatting (default: en-US)
- */
 export const formatRelativeTime = (
   date: string | Date,
   locale: string = 'en-US'
@@ -194,4 +130,3 @@ export const formatRelativeTime = (
 
   return 'just now';
 };
-

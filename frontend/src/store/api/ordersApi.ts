@@ -22,7 +22,6 @@ export const ordersApi = createApi({
   baseQuery,
   tagTypes: ['Order'],
   endpoints: (builder) => ({
-    // Get all orders with pagination [EMPLOYEE ONLY]
     getAllOrders: builder.query<PageResponse<OrderResponseDTO>, {
       page?: number;
       size?: number;
@@ -41,7 +40,6 @@ export const ordersApi = createApi({
           : [{ type: 'Order', id: 'LIST' }],
     }),
 
-    // Get orders by client ID [CLIENT: only own orders, EMPLOYEE: all client orders]
     getOrdersByClient: builder.query<PageResponse<OrderResponseDTO>, {
       clientId: number;
       page?: number;
@@ -60,7 +58,6 @@ export const ordersApi = createApi({
           : [{ type: 'Order', id: 'CLIENT_LIST' }],
     }),
 
-    // Get orders by employee ID [EMPLOYEE ONLY]
     getOrdersByEmployee: builder.query<PageResponse<OrderResponseDTO>, {
       employeeId: number;
       page?: number;
@@ -79,7 +76,6 @@ export const ordersApi = createApi({
           : [{ type: 'Order', id: 'EMPLOYEE_LIST' }],
     }),
 
-    // Get orders by approval status
     getOrdersByStatus: builder.query<PageResponse<OrderResponseDTO>, {
       approved: boolean;
       page?: number;
@@ -98,13 +94,11 @@ export const ordersApi = createApi({
           : [{ type: 'Order', id: 'STATUS_LIST' }],
     }),
 
-    // Get order by ID [CLIENT: only own order, EMPLOYEE: any order]
     getOrderById: builder.query<OrderResponseDTO, number>({
       query: (id) => `/orders/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Order', id }],
     }),
 
-    // Create order
     createOrder: builder.mutation<OrderResponseDTO, OrderRequestDTO>({
       query: (order) => ({
         url: '/orders',
@@ -118,7 +112,6 @@ export const ordersApi = createApi({
       ],
     }),
 
-    // Update order [CLIENT: only own unapproved order, EMPLOYEE: any order]
     updateOrder: builder.mutation<OrderResponseDTO, {
       id: number;
       order: OrderRequestDTO;
@@ -136,7 +129,6 @@ export const ordersApi = createApi({
       ],
     }),
 
-    // Delete order [CLIENT: only own unapproved order, EMPLOYEE: any order]
     deleteOrder: builder.mutation<void, number>({
       query: (id) => ({
         url: `/orders/${id}`,
@@ -150,7 +142,6 @@ export const ordersApi = createApi({
       ],
     }),
 
-    // Approve order [EMPLOYEE ONLY]
     approveOrder: builder.mutation<OrderResponseDTO, number>({
       query: (id) => ({
         url: `/orders/${id}/approve`,
@@ -167,7 +158,6 @@ export const ordersApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useGetAllOrdersQuery,
   useGetOrdersByClientQuery,
@@ -179,4 +169,3 @@ export const {
   useDeleteOrderMutation,
   useApproveOrderMutation,
 } = ordersApi;
-

@@ -1,29 +1,13 @@
-/**
- * Validation utilities for form inputs and data
- */
-
-/**
- * Validate email format
- * @param email - Email address to validate
- */
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-/**
- * Validate phone number (US format)
- * @param phone - Phone number to validate
- */
 export const isValidPhone = (phone: string): boolean => {
   const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
   return phoneRegex.test(phone);
 };
 
-/**
- * Validate URL format
- * @param url - URL to validate
- */
 export const isValidUrl = (url: string): boolean => {
   try {
     new URL(url);
@@ -33,11 +17,6 @@ export const isValidUrl = (url: string): boolean => {
   }
 };
 
-/**
- * Validate password strength
- * @param password - Password to validate
- * @returns Object with validation result and message
- */
 export const validatePasswordStrength = (password: string): {
   isValid: boolean;
   strength: 'weak' | 'medium' | 'strong';
@@ -53,16 +32,12 @@ export const validatePasswordStrength = (password: string): {
 
   let strength = 0;
 
-  // Check for lowercase
   if (/[a-z]/.test(password)) strength++;
 
-  // Check for uppercase
   if (/[A-Z]/.test(password)) strength++;
 
-  // Check for numbers
   if (/\d/.test(password)) strength++;
 
-  // Check for special characters
   if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
 
   if (strength < 2) {
@@ -86,21 +61,13 @@ export const validatePasswordStrength = (password: string): {
   }
 };
 
-/**
- * Validate credit card number using Luhn algorithm
- * @param cardNumber - Card number to validate
- */
 export const isValidCreditCard = (cardNumber: string): boolean => {
-  // Remove spaces and dashes
   const cleaned = cardNumber.replace(/[\s-]/g, '');
 
-  // Check if it contains only digits
   if (!/^\d+$/.test(cleaned)) return false;
 
-  // Check length (13-19 digits for most cards)
   if (cleaned.length < 13 || cleaned.length > 19) return false;
 
-  // Luhn algorithm
   let sum = 0;
   let isEven = false;
 
@@ -119,66 +86,33 @@ export const isValidCreditCard = (cardNumber: string): boolean => {
   return sum % 10 === 0;
 };
 
-/**
- * Check if string is empty or only whitespace
- * @param str - String to check
- */
 export const isEmpty = (str: string | null | undefined): boolean => {
   return !str || str.trim().length === 0;
 };
 
-/**
- * Validate file type
- * @param file - File to validate
- * @param allowedTypes - Array of allowed MIME types
- */
 export const isValidFileType = (file: File, allowedTypes: string[]): boolean => {
   return allowedTypes.includes(file.type);
 };
 
-/**
- * Validate file size
- * @param file - File to validate
- * @param maxSizeInMB - Maximum file size in megabytes
- */
 export const isValidFileSize = (file: File, maxSizeInMB: number): boolean => {
   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
   return file.size <= maxSizeInBytes;
 };
 
-/**
- * Sanitize HTML to prevent XSS attacks
- * @param html - HTML string to sanitize
- */
 export const sanitizeHtml = (html: string): string => {
   const div = document.createElement('div');
   div.textContent = html;
   return div.innerHTML;
 };
 
-/**
- * Check if value is a number
- * @param value - Value to check
- */
 export const isNumeric = (value: any): boolean => {
   return !isNaN(parseFloat(value)) && isFinite(value);
 };
 
-/**
- * Validate date range
- * @param startDate - Start date
- * @param endDate - End date
- */
 export const isValidDateRange = (startDate: Date, endDate: Date): boolean => {
   return startDate <= endDate;
 };
 
-/**
- * Check if age is valid (between min and max)
- * @param birthDate - Birth date
- * @param minAge - Minimum age
- * @param maxAge - Maximum age
- */
 export const isValidAge = (
   birthDate: Date,
   minAge: number = 0,
@@ -195,4 +129,3 @@ export const isValidAge = (
 
   return actualAge >= minAge && actualAge <= maxAge;
 };
-

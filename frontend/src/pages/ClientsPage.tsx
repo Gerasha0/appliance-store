@@ -37,7 +37,6 @@ const ClientsPage: React.FC = () => {
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [clientToEdit, setClientToEdit] = useState<Client | null>(null);
 
-  // Use search query if present, otherwise use regular paginated query
   const shouldSearch = searchQuery.trim().length > 0;
   
   const {
@@ -85,11 +84,9 @@ const ClientsPage: React.FC = () => {
   const handleFormSubmit = async (data: ClientRequestDTO) => {
     try {
       if (clientToEdit) {
-        // Update existing client
         await updateClient({ id: clientToEdit.id, client: data }).unwrap();
         enqueueSnackbar(t('client.updateSuccess'), { variant: 'success' });
       } else {
-        // Create new client
         await createClient(data).unwrap();
         enqueueSnackbar(t('client.createSuccess'), { variant: 'success' });
       }
@@ -124,7 +121,7 @@ const ClientsPage: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setPage(0); // Reset to first page on search
+    setPage(0);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -133,7 +130,7 @@ const ClientsPage: React.FC = () => {
 
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
-    setPage(0); // Reset to first page
+    setPage(0);
   };
 
   const handleViewOrders = (clientId: number) => {

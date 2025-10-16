@@ -215,9 +215,6 @@ Appliance Store — это полнофункциональная система
 │   └── 🔤 types/                # TypeScript типы
 │
 └── 📚 Documentation              # Документация
-    ├── API.md                   # REST API документация
-    ├── FRONTEND_SPECIFICATION.md # Спецификация фронтенда
-    └── DEPLOYMENT.md            # Инструкции по развертыванию
 ```
 
 ### 🔧 Основные паттерны проектирования

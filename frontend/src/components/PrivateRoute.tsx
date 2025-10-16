@@ -12,12 +12,10 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const location = useLocation();
 
-  // If not authenticated, redirect to login with return URL
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  // User is authenticated, render the protected route
   return <Outlet />;
 };
 

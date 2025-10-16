@@ -12,32 +12,11 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { toggleTheme } from '@/store/slices/uiSlice';
 
 export interface ThemeToggleProps {
-  /**
-   * Size of the icon button
-   * @default "medium"
-   */
   size?: 'small' | 'medium' | 'large';
-  /**
-   * Color of the icon button
-   * @default "inherit"
-   */
   color?: 'inherit' | 'default' | 'primary' | 'secondary';
-  /**
-   * Show tooltip
-   * @default true
-   */
   showTooltip?: boolean;
-  /**
-   * Custom tooltip text for light mode
-   */
   lightModeTooltip?: string;
-  /**
-   * Custom tooltip text for dark mode
-   */
   darkModeTooltip?: string;
-  /**
-   * Edge position for IconButton
-   */
   edge?: 'start' | 'end' | false;
 }
 

@@ -49,7 +49,6 @@ import { OrderDetailDialog, EditOrderDialog } from '@/components/orders';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { useSnackbar } from 'notistack';
 
-// Employee Dashboard Component
 const EmployeeDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -62,12 +61,10 @@ const EmployeeDashboard: React.FC = () => {
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const role = useAppSelector((state) => state.auth.role);
 
-  // Mutations
   const [deleteOrder] = useDeleteOrderMutation();
   const [approveOrder] = useApproveOrderMutation();
   const [updateOrder] = useUpdateOrderMutation();
 
-  // Fetch data
   const { data: appliancesData, isLoading: appliancesLoading } = useGetAllAppliancesQuery({
     page: 0,
     size: 10,
@@ -91,7 +88,6 @@ const EmployeeDashboard: React.FC = () => {
   const pendingOrders = ordersData?.content?.filter((order: Orders) => !order.approved).length || 0;
   const approvedOrders = ordersData?.content?.filter((order: Orders) => order.approved).length || 0;
 
-  // Statistics cards configuration for Employee
   const statsCards = [
     {
       title: t('dashboard.totalAppliances'),
@@ -119,7 +115,6 @@ const EmployeeDashboard: React.FC = () => {
     },
   ];
 
-  // Quick actions for Employee
   const quickActions = [
     {
       title: t('appliance.addAppliance'),
@@ -421,7 +416,6 @@ const EmployeeDashboard: React.FC = () => {
   );
 };
 
-// Client Dashboard Component
 const ClientDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -437,17 +431,14 @@ const ClientDashboard: React.FC = () => {
   const firstName = useAppSelector((state) => state.auth.firstName);
   const role = useAppSelector((state) => state.auth.role);
 
-  // Mutations
   const [deleteOrder] = useDeleteOrderMutation();
   const [updateOrder] = useUpdateOrderMutation();
 
-  // Fetch popular appliances (larger page for catalog)
   const { data: appliancesData, isLoading: appliancesLoading } = useGetAllAppliancesQuery({
     page: 0,
     size: 20,
   });
 
-  // Fetch user's orders (CLIENT-specific endpoint)
   const { data: ordersData, isLoading: ordersLoading } = useGetOrdersByClientQuery(
     { clientId: userId!, page: 0, size: 100 },
     { skip: !userId }
@@ -462,15 +453,12 @@ const ClientDashboard: React.FC = () => {
   const appliancesList = appliancesData?.content || [];
   const ordersList = ordersData?.content || [];
 
-  // Orders are already filtered by userId on backend
   const recentOrders = ordersList.slice(0, 5);
 
-  // Filter appliances by search query
   const filteredAppliances = appliancesList.filter((appliance: Appliance) =>
     appliance.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Get popular appliances (first 8 items)
   const popularAppliances = searchQuery ? filteredAppliances.slice(0, 8) : appliancesList.slice(0, 8);
 
   const handleViewOrder = (order: Orders) => {
@@ -491,7 +479,7 @@ const ClientDashboard: React.FC = () => {
   const handleEditFromDetail = (id: number) => {
     const order = recentOrders.find((o: Orders) => o.id === id);
     if (order) {
-      setDetailDialogOpen(false); // Close detail dialog first
+      setDetailDialogOpen(false);
       handleEditClick(order);
     }
   };
@@ -722,7 +710,6 @@ const ClientDashboard: React.FC = () => {
   );
 };
 
-// Main Dashboard Component
 export const DashboardPage: React.FC = () => {
   const role = useAppSelector((state) => state.auth.role);
 

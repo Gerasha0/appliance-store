@@ -33,7 +33,6 @@ const ManufacturersPage: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [manufacturerToDelete, setManufacturerToDelete] = useState<Manufacturer | null>(null);
 
-  // Use search query if present, otherwise use regular paginated query
   const shouldSearch = searchQuery.trim().length > 0;
   
   const {
@@ -113,7 +112,7 @@ const ManufacturersPage: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setPage(0); // Reset to first page on search
+    setPage(0);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -122,7 +121,7 @@ const ManufacturersPage: React.FC = () => {
 
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
-    setPage(0); // Reset to first page
+    setPage(0);
   };
 
   const columns: Column<Manufacturer>[] = [

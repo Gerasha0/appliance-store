@@ -48,20 +48,17 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Items selection
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAppliance, setSelectedAppliance] = useState<Appliance | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
-  // Only fetch appliances when dialog is open
   const { data: appliancesData } = useGetAllAppliancesQuery(
     { page: 0, size: 1000 },
     { skip: !open }
   );
   const appliances = appliancesData?.content || [];
 
-  // Filter appliances based on search
   const filteredAppliances = searchQuery
     ? appliances.filter(
         app =>
@@ -70,25 +67,20 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
       )
     : appliances;
 
-  // Calculate total amount
   const totalAmount = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
 
-  // Initialize form with existing order data
   useEffect(() => {
     if (open && order) {
-      // Load existing order items
       const existingItems: OrderItem[] =
         order.orderRows?.map(row => ({
           appliance: row.appliance!,
           quantity: row.quantity,
-          // Ensure amount is a number (it might be BigDecimal from backend)
           subtotal: typeof row.amount === 'number' ? row.amount : Number(row.amount),
         })) || [];
       setOrderItems(existingItems);
     }
   }, [open, order]);
 
-  // Reset form when dialog closes
   useEffect(() => {
     if (!open) {
       setSelectedAppliance(null);
@@ -105,14 +97,12 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
       );
 
       if (existingItemIndex >= 0) {
-        // Update existing item
         const updatedItems = [...orderItems];
         updatedItems[existingItemIndex].quantity += quantity;
         updatedItems[existingItemIndex].subtotal =
           Math.round(updatedItems[existingItemIndex].quantity * selectedAppliance.price * 100) / 100;
         setOrderItems(updatedItems);
       } else {
-        // Add new item
         const newItem: OrderItem = {
           appliance: selectedAppliance,
           quantity,
@@ -121,7 +111,6 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
         setOrderItems([...orderItems, newItem]);
       }
 
-      // Reset selection
       setSelectedAppliance(null);
       setQuantity(1);
       setSearchQuery('');
@@ -159,7 +148,6 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
       return;
     }
 
-    // Ensure we have a valid clientId
     const clientId = order.client?.id || order.clientId;
     if (!clientId) {
       console.error('Client ID is missing', { order });
@@ -171,7 +159,6 @@ export const EditOrderDialog: React.FC<EditOrderDialogProps> = ({
       orderRows: orderItems.map(item => ({
         applianceId: item.appliance.id,
         quantity: item.quantity,
-        // Round amount to 2 decimal places to match backend BigDecimal(10,2) constraint
         amount: Math.round(item.subtotal * 100) / 100,
       })),
     };

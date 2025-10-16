@@ -1,10 +1,8 @@
 import * as yup from 'yup';
 import { Category, PowerType } from './models';
 
-// Name validation pattern that supports Cyrillic and Latin characters
 const namePattern = /^[a-zA-Zа-яА-ЯёЁ]+(([',. -][a-zA-Zа-яА-ЯёЁ ])?[a-zA-Zа-яА-ЯёЁ]*)*$/;
 
-// Login validation schema
 export const loginSchema = yup.object({
   email: yup
     .string()
@@ -17,7 +15,6 @@ export const loginSchema = yup.object({
   password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
 });
 
-// Client validation schema
 export const clientSchema = yup.object({
   firstName: yup
     .string()
@@ -141,7 +138,6 @@ export const clientRegistrationSchema = yup.object({
     ),
 });
 
-// Employee validation schema
 export const employeeSchema = yup.object({
   firstName: yup
     .string()
@@ -186,7 +182,6 @@ export const employeeSchema = yup.object({
     .max(100, 'Position must not exceed 100 characters'),
 });
 
-// Employee registration schema
 export const employeeRegistrationSchema = yup.object({
   firstName: yup
     .string()
@@ -231,7 +226,6 @@ export const employeeRegistrationSchema = yup.object({
     .max(100, 'Position must not exceed 100 characters'),
 });
 
-// Manufacturer validation schema
 export const manufacturerSchema = yup.object({
   name: yup
     .string()
@@ -250,7 +244,6 @@ export const manufacturerSchema = yup.object({
     .max(100, 'Country must not exceed 100 characters'),
 });
 
-// Appliance validation schema
 export const applianceSchema = yup.object({
   name: yup
     .string()
@@ -291,7 +284,6 @@ export const applianceSchema = yup.object({
     .min(0.01, 'Price must be at least 0.01'),
 });
 
-// Order Row validation schema
 export const orderRowSchema = yup.object({
   applianceId: yup.number().required('Appliance is required').positive('Appliance ID must be positive'),
   quantity: yup
@@ -302,7 +294,6 @@ export const orderRowSchema = yup.object({
     .min(1, 'Quantity must be at least 1'),
 });
 
-// Order validation schema
 export const orderSchema = yup.object({
   clientId: yup.number().required('Client is required').positive('Client ID must be positive'),
   orderRows: yup
@@ -312,7 +303,6 @@ export const orderSchema = yup.object({
     .required('Order items are required'),
 });
 
-// Change password schema
 export const changePasswordSchema = yup.object({
   currentPassword: yup.string().required('Current password is required'),
   newPassword: yup

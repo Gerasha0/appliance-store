@@ -53,33 +53,28 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Stepper state
   const [activeStep, setActiveStep] = useState(0);
   const steps = [t('order.selectClient'), t('order.addItems')];
 
-  // Step 1: Client selection
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
-  // Only fetch clients when dialog is open to avoid 403 errors for clients
+
   const { data: clientsData } = useGetClientsPageQuery(
     { page: 0, size: 1000 },
     { skip: !open }
   );
   const clients = clientsData?.content || [];
 
-  // Step 2: Items selection
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAppliance, setSelectedAppliance] = useState<Appliance | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
-  // Only fetch appliances when dialog is open
   const { data: appliancesData } = useGetAllAppliancesQuery(
     { page: 0, size: 1000 },
     { skip: !open }
   );
   const appliances = appliancesData?.content || [];
 
-  // Filter appliances based on search
   const filteredAppliances = searchQuery
     ? appliances.filter(
         app =>
@@ -88,10 +83,8 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
       )
     : appliances;
 
-  // Calculate total amount
   const totalAmount = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
 
-  // Reset form when dialog opens/closes
   useEffect(() => {
     if (!open) {
       setActiveStep(0);
@@ -120,14 +113,12 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
       );
 
       if (existingItemIndex >= 0) {
-        // Update existing item
         const updatedItems = [...orderItems];
         updatedItems[existingItemIndex].quantity += quantity;
         updatedItems[existingItemIndex].subtotal =
           Math.round(updatedItems[existingItemIndex].quantity * selectedAppliance.price * 100) / 100;
         setOrderItems(updatedItems);
       } else {
-        // Add new item
         const newItem: OrderItem = {
           appliance: selectedAppliance,
           quantity,
@@ -136,7 +127,6 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
         setOrderItems([...orderItems, newItem]);
       }
 
-      // Reset selection
       setSelectedAppliance(null);
       setQuantity(1);
       setSearchQuery('');
@@ -170,7 +160,6 @@ export const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
         orderRows: orderItems.map(item => ({
           applianceId: item.appliance.id,
           quantity: item.quantity,
-          // Round amount to 2 decimal places to match backend BigDecimal(10,2) constraint
           amount: Math.round(item.subtotal * 100) / 100,
         })),
       };

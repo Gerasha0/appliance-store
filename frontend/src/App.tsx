@@ -12,7 +12,6 @@ import { RegisterEmployeePage } from '@/pages/RegisterEmployeePage';
 import { UserRole } from '@/types/models';
 import { useI18nSync } from '@/i18n/useI18nSync';
 
-// Lazy load pages for better performance
 const DashboardPage = React.lazy(() => import('@/pages/DashboardPage'));
 const AppliancesPage = React.lazy(() => import('@/pages/AppliancesPage'));
 const OrdersPage = React.lazy(() => import('@/pages/OrdersPage'));
@@ -21,7 +20,6 @@ const EmployeesPage = React.lazy(() => import('@/pages/EmployeesPage'));
 const ClientsPage = React.lazy(() => import('@/pages/ClientsPage'));
 const ProfilePage = React.lazy(() => import('@/pages/ProfilePage'));
 
-// Better loading fallback component
 const LoadingFallback = () => (
   <Box
     sx={{

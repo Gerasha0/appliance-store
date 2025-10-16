@@ -12,8 +12,6 @@ import uiReducer from './slices/uiSlice';
 import cartReducer from './slices/cartSlice';
 import { authMiddleware } from './middleware/authMiddleware';
 
-// Clear ALL localStorage on app load for in-memory database
-// When server restarts, all data is recreated and old tokens/IDs are invalid
 localStorage.clear();
 
 export const store = configureStore({

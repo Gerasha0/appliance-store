@@ -1,7 +1,3 @@
-/**
- * Utils index - Export all utility functions
- */
-
 export * from './notifications';
 export * from './errorHandler';
 export * from './formatters';

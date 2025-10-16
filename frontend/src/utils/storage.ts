@@ -1,12 +1,3 @@
-/**
- * Local storage utilities with type safety and error handling
- */
-
-/**
- * Set item in localStorage with JSON serialization
- * @param key - Storage key
- * @param value - Value to store
- */
 export const setLocalStorage = <T>(key: string, value: T): boolean => {
   try {
     const serializedValue = JSON.stringify(value);
@@ -18,11 +9,6 @@ export const setLocalStorage = <T>(key: string, value: T): boolean => {
   }
 };
 
-/**
- * Get item from localStorage with JSON deserialization
- * @param key - Storage key
- * @param defaultValue - Default value if key doesn't exist
- */
 export const getLocalStorage = <T>(key: string, defaultValue?: T): T | null => {
   try {
     const item = localStorage.getItem(key);
@@ -34,10 +20,6 @@ export const getLocalStorage = <T>(key: string, defaultValue?: T): T | null => {
   }
 };
 
-/**
- * Remove item from localStorage
- * @param key - Storage key
- */
 export const removeLocalStorage = (key: string): boolean => {
   try {
     localStorage.removeItem(key);
@@ -48,9 +30,6 @@ export const removeLocalStorage = (key: string): boolean => {
   }
 };
 
-/**
- * Clear all items from localStorage
- */
 export const clearLocalStorage = (): boolean => {
   try {
     localStorage.clear();
@@ -61,9 +40,6 @@ export const clearLocalStorage = (): boolean => {
   }
 };
 
-/**
- * Check if localStorage is available
- */
 export const isLocalStorageAvailable = (): boolean => {
   try {
     const testKey = '__localStorage_test__';
@@ -75,11 +51,6 @@ export const isLocalStorageAvailable = (): boolean => {
   }
 };
 
-/**
- * Set item in sessionStorage with JSON serialization
- * @param key - Storage key
- * @param value - Value to store
- */
 export const setSessionStorage = <T>(key: string, value: T): boolean => {
   try {
     const serializedValue = JSON.stringify(value);
@@ -91,11 +62,6 @@ export const setSessionStorage = <T>(key: string, value: T): boolean => {
   }
 };
 
-/**
- * Get item from sessionStorage with JSON deserialization
- * @param key - Storage key
- * @param defaultValue - Default value if key doesn't exist
- */
 export const getSessionStorage = <T>(key: string, defaultValue?: T): T | null => {
   try {
     const item = sessionStorage.getItem(key);
@@ -107,10 +73,6 @@ export const getSessionStorage = <T>(key: string, defaultValue?: T): T | null =>
   }
 };
 
-/**
- * Remove item from sessionStorage
- * @param key - Storage key
- */
 export const removeSessionStorage = (key: string): boolean => {
   try {
     sessionStorage.removeItem(key);
@@ -121,9 +83,6 @@ export const removeSessionStorage = (key: string): boolean => {
   }
 };
 
-/**
- * Clear all items from sessionStorage
- */
 export const clearSessionStorage = (): boolean => {
   try {
     sessionStorage.clear();
@@ -134,9 +93,6 @@ export const clearSessionStorage = (): boolean => {
   }
 };
 
-/**
- * Storage keys constants for type safety
- */
 export const StorageKeys = {
   AUTH_TOKEN: 'auth_token',
   USER_DATA: 'user_data',

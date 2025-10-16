@@ -18,43 +18,14 @@ import {
 import type { SelectChangeEvent } from '@mui/material';
 
 export interface PaginationProps {
-  /**
-   * Current page number (0-indexed)
-   */
   page: number;
-  /**
-   * Number of items per page
-   */
   size: number;
-  /**
-   * Total number of pages
-   */
   totalPages: number;
-  /**
-   * Total number of elements
-   */
   totalElements: number;
-  /**
-   * Callback when page changes
-   */
   onPageChange: (page: number) => void;
-  /**
-   * Callback when page size changes
-   */
   onSizeChange: (size: number) => void;
-  /**
-   * Available page size options
-   * @default [10, 25, 50, 100]
-   */
   sizeOptions?: number[];
-  /**
-   * Whether pagination is disabled
-   */
   disabled?: boolean;
-  /**
-   * Maximum number of page buttons to show
-   * @default 5
-   */
   maxPageButtons?: number;
 }
 
@@ -103,12 +74,8 @@ export const Pagination: React.FC<PaginationProps> = ({
     onPageChange(pageNumber);
   };
 
-  /**
-   * Generate array of page numbers to display
-   */
   const getPageNumbers = (): (number | string)[] => {
     if (totalPages <= maxPageButtons) {
-      // Show all pages if total is less than max
       return Array.from({ length: totalPages }, (_, i) => i);
     }
 
@@ -118,7 +85,6 @@ export const Pagination: React.FC<PaginationProps> = ({
     let startPage = Math.max(0, page - halfMax);
     let endPage = Math.min(totalPages - 1, page + halfMax);
 
-    // Adjust if we're at the start or end
     if (page - halfMax < 0) {
       endPage = Math.min(totalPages - 1, maxPageButtons - 1);
     }
@@ -126,7 +92,6 @@ export const Pagination: React.FC<PaginationProps> = ({
       startPage = Math.max(0, totalPages - maxPageButtons);
     }
 
-    // Always show first page
     if (startPage > 0) {
       pages.push(0);
       if (startPage > 1) {
@@ -134,12 +99,10 @@ export const Pagination: React.FC<PaginationProps> = ({
       }
     }
 
-    // Add pages in range
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
 
-    // Always show last page
     if (endPage < totalPages - 1) {
       if (endPage < totalPages - 2) {
         pages.push('...');
@@ -154,7 +117,6 @@ export const Pagination: React.FC<PaginationProps> = ({
   const startItem = totalElements > 0 ? page * size + 1 : 0;
   const endItem = Math.min((page + 1) * size, totalElements);
 
-  // Don't render if there's no data
   if (totalElements === 0) {
     return null;
   }

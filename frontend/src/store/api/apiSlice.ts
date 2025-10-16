@@ -1,14 +1,9 @@
-// Re-export all API hooks from individual API modules
-// This file serves as a central point for importing all API hooks
-
-// Auth API
 export {
   useLoginMutation,
   useRegisterClientMutation,
   useRegisterEmployeeMutation,
 } from './authApi';
 
-// Appliances API
 export {
   useGetAllAppliancesQuery,
   useSearchAppliancesQuery,
@@ -20,7 +15,6 @@ export {
   useDeleteApplianceMutation,
 } from './appliancesApi';
 
-// Manufacturers API
 export {
   useGetAllManufacturersQuery,
   useSearchManufacturersQuery,
@@ -30,7 +24,6 @@ export {
   useDeleteManufacturerMutation,
 } from './manufacturersApi';
 
-// Employees API
 export {
   useGetAllEmployeesQuery,
   useSearchEmployeesQuery,
@@ -40,7 +33,6 @@ export {
   useDeleteEmployeeMutation,
 } from './employeesApi';
 
-// Clients API
 export {
   useGetAllClientsQuery,
   useSearchClientsQuery,
@@ -50,7 +42,6 @@ export {
   useDeleteClientMutation,
 } from './clientsApi';
 
-// Orders API
 export {
   useGetAllOrdersQuery,
   useGetOrdersByClientQuery,
@@ -63,7 +54,6 @@ export {
   useApproveOrderMutation,
 } from './ordersApi';
 
-// Locale API
 export {
   useChangeLocaleMutation,
   useGetCurrentLocaleQuery,
@@ -71,7 +61,6 @@ export {
   useGetLanguagesQuery,
 } from './localeApi';
 
-// Aliases for backward compatibility with "Page" naming convention
 export { useGetAllClientsQuery as useGetClientsPageQuery } from './clientsApi';
 export { useGetAllEmployeesQuery as useGetEmployeesPageQuery } from './employeesApi';
 export { useGetAllManufacturersQuery as useGetManufacturersPageQuery } from './manufacturersApi';

@@ -3,51 +3,10 @@ import { IconButton, Menu, MenuItem, Tooltip, Box, Typography } from '@mui/mater
 import { Language as LanguageIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-/**
- * LanguageSwitcher Component
- * 
- * A reusable component for switching application language between English and Ukrainian.
- * Can be used in AppBar, dialogs, or any other part of the application.
- * 
- * Features:
- * - Icon button with language icon
- * - Dropdown menu with language options
- * - Flags and language names
- * - Highlights currently selected language
- * - Persists language choice in localStorage
- * - Integrates with react-i18next
- * 
- * @example
- * // Basic usage in AppBar
- * <LanguageSwitcher />
- * 
- * @example
- * // With custom color
- * <LanguageSwitcher color="primary" />
- */
-
 interface LanguageSwitcherProps {
-  /**
-   * Color of the icon button
-   * @default 'inherit'
-   */
   color?: 'inherit' | 'primary' | 'secondary' | 'default';
-  
-  /**
-   * Size of the icon button
-   * @default 'medium'
-   */
   size?: 'small' | 'medium' | 'large';
-  
-  /**
-   * Optional className for custom styling
-   */
   className?: string;
-  
-  /**
-   * Whether to show language labels in menu items
-   * @default true
-   */
   showLabels?: boolean;
 }
 

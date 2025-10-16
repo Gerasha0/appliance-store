@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { RootState } from '../store';
 
-// Response types for Locale API
 export interface LocaleChangeResponse {
   success: string;
   locale: string;
@@ -45,7 +44,6 @@ export const localeApi = createApi({
   baseQuery,
   tagTypes: ['Locale'],
   endpoints: (builder) => ({
-    // Change locale/language
     changeLocale: builder.mutation<LocaleChangeResponse, string>({
       query: (lang) => ({
         url: '/locale/change',
@@ -55,19 +53,16 @@ export const localeApi = createApi({
       invalidatesTags: ['Locale'],
     }),
 
-    // Get current locale
     getCurrentLocale: builder.query<LocaleCurrentResponse, void>({
       query: () => '/locale/current',
       providesTags: ['Locale'],
     }),
 
-    // Get translations by category
     getTranslations: builder.query<LocaleTranslationsResponse, LocaleCategory>({
       query: (category) => `/locale/translations/${category}`,
       providesTags: (_result, _error, category) => [{ type: 'Locale', id: category }],
     }),
 
-    // Get available languages
     getLanguages: builder.query<LocaleLanguagesResponse, void>({
       query: () => '/locale/languages',
       providesTags: ['Locale'],
@@ -75,11 +70,9 @@ export const localeApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components
 export const {
   useChangeLocaleMutation,
   useGetCurrentLocaleQuery,
   useGetTranslationsQuery,
   useGetLanguagesQuery,
 } = localeApi;
-

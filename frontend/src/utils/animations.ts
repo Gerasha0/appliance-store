@@ -1,11 +1,3 @@
-/**
- * Animations utility - Reusable animation variants for Framer Motion
- * Can be used with Material-UI components with animation libraries
- */
-
-/**
- * Fade in animation
- */
 export const fadeIn = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
@@ -13,9 +5,6 @@ export const fadeIn = {
   transition: { duration: 0.3 },
 };
 
-/**
- * Slide up animation
- */
 export const slideUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -23,9 +12,6 @@ export const slideUp = {
   transition: { duration: 0.3 },
 };
 
-/**
- * Slide down animation
- */
 export const slideDown = {
   initial: { opacity: 0, y: -20 },
   animate: { opacity: 1, y: 0 },
@@ -33,9 +19,6 @@ export const slideDown = {
   transition: { duration: 0.3 },
 };
 
-/**
- * Scale animation
- */
 export const scale = {
   initial: { opacity: 0, scale: 0.9 },
   animate: { opacity: 1, scale: 1 },
@@ -43,9 +26,6 @@ export const scale = {
   transition: { duration: 0.2 },
 };
 
-/**
- * Slide from left
- */
 export const slideFromLeft = {
   initial: { opacity: 0, x: -50 },
   animate: { opacity: 1, x: 0 },
@@ -53,9 +33,6 @@ export const slideFromLeft = {
   transition: { duration: 0.3 },
 };
 
-/**
- * Slide from right
- */
 export const slideFromRight = {
   initial: { opacity: 0, x: 50 },
   animate: { opacity: 1, x: 0 },
@@ -63,9 +40,6 @@ export const slideFromRight = {
   transition: { duration: 0.3 },
 };
 
-/**
- * Stagger children animation (for lists)
- */
 export const staggerContainer = {
   animate: {
     transition: {
@@ -74,18 +48,12 @@ export const staggerContainer = {
   },
 };
 
-/**
- * Spring animation
- */
 export const spring = {
   type: 'spring',
   stiffness: 300,
   damping: 20,
 };
 
-/**
- * Bounce animation
- */
 export const bounce = {
   initial: { scale: 0 },
   animate: {
@@ -98,9 +66,6 @@ export const bounce = {
   },
 };
 
-/**
- * CSS keyframes for loading animations
- */
 export const cssAnimations = {
   pulse: `
     @keyframes pulse {
@@ -144,9 +109,6 @@ export const cssAnimations = {
   `,
 };
 
-/**
- * Material-UI sx props for animations
- */
 export const muiAnimations = {
   fadeIn: {
     '@keyframes fadeIn': {
@@ -177,4 +139,3 @@ export const muiAnimations = {
     animation: 'spin 1s linear infinite',
   },
 };
-

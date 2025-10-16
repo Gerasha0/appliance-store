@@ -1,4 +1,3 @@
-// Enums
 export const Category = {
   BIG: 'BIG',
   SMALL: 'SMALL',
@@ -21,21 +20,18 @@ export const UserRole = {
 
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
-// Base User interface
 export interface User {
   id: number;
   email: string;
   password?: string;
 }
 
-// Employee interface
 export interface Employee extends User {
   firstName: string;
   lastName: string;
   position: string;
 }
 
-// Client interface
 export interface Client extends User {
   firstName: string;
   lastName: string;
@@ -44,7 +40,6 @@ export interface Client extends User {
   card?: string;
 }
 
-// Manufacturer interface
 export interface Manufacturer {
   id: number;
   name: string;
@@ -52,7 +47,6 @@ export interface Manufacturer {
   country: string;
 }
 
-// Appliance interface
 export interface Appliance {
   id: number;
   name: string;
@@ -67,7 +61,6 @@ export interface Appliance {
   price: number;
 }
 
-// OrderRow interface
 export interface OrderRow {
   id: number;
   ordersId: number;
@@ -77,7 +70,6 @@ export interface OrderRow {
   amount: number;
 }
 
-// Orders interface
 export interface Orders {
   id: number;
   clientId: number;
@@ -89,13 +81,11 @@ export interface Orders {
   totalAmount?: number;
 }
 
-// DTOs for API requests
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
-// Registration DTOs (password required)
 export interface ClientRegistrationDTO {
   email: string;
   password: string;
@@ -114,7 +104,6 @@ export interface EmployeeRegistrationDTO {
   position: string;
 }
 
-// Update DTOs (password optional)
 export interface ClientRequestDTO {
   email: string;
   password?: string;
@@ -159,10 +148,9 @@ export interface OrderRequestDTO {
 export interface OrderRowRequestDTO {
   applianceId: number;
   quantity: number;
-  amount?: number;  // Optional - calculated automatically by backend (price * quantity)
+  amount?: number;
 }
 
-// DTOs for API responses
 export interface JwtResponse {
   token: string;
   email: string;
@@ -178,7 +166,6 @@ export interface ManufacturerResponseDTO extends Manufacturer {}
 export interface ApplianceResponseDTO extends Appliance {}
 export interface OrderResponseDTO extends Orders {}
 
-// Pagination interface
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;
@@ -189,10 +176,8 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
-// Legacy alias for compatibility
 export interface Page<T> extends PageResponse<T> {}
 
-// API Error interface
 export interface ApiError {
   error: string;
   message: string;

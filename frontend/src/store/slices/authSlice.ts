@@ -65,7 +65,6 @@ const authSlice = createSlice({
 
 export const { setCredentials, logout } = authSlice.actions;
 
-// Selectors
 export const selectAuth = (state: RootState) => state.auth;
 export const selectToken = (state: RootState) => state.auth.token;
 export const selectEmail = (state: RootState) => state.auth.email;

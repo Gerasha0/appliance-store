@@ -44,19 +44,15 @@ const OrdersPage: React.FC = () => {
   const role = useAppSelector(state => state.auth.role);
   const userId = useAppSelector(state => state.auth.userId);
   
-  // Pagination state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   
-  // Filter state
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [clientFilter, setClientFilter] = useState<string>('');
   const [employeeFilter, setEmployeeFilter] = useState<string>('');
   
-  // Determine which endpoint to use based on role
   const isEmployee = role === UserRole.EMPLOYEE;
   
-  // Always call both hooks, but skip the one not needed
   const { data: allOrdersResponse, isLoading: isLoadingAll } = useGetAllOrdersQuery(
     { page, size: rowsPerPage },
     { skip: !isEmployee }
@@ -66,11 +62,9 @@ const OrdersPage: React.FC = () => {
     { skip: isEmployee || !userId }
   );
   
-  // Use the appropriate response based on role
   const ordersResponse = isEmployee ? allOrdersResponse : clientOrdersResponse;
   const isLoading = isEmployee ? isLoadingAll : isLoadingClient;
   
-  // Only fetch clients and employees for EMPLOYEE role
   const { data: clientsData } = useGetClientsPageQuery(
     { page: 0, size: 1000 }, 
     { skip: !isEmployee }
@@ -205,10 +199,8 @@ const OrdersPage: React.FC = () => {
     return <LoadingSpinner />;
   }
   
-  // Apply client-side filtering (for EMPLOYEE only, CLIENT sees only own orders anyway)
   let filteredOrders = ordersResponse?.content || [];
   
-  // Only apply filters for employees (clients see only their own orders)
   if (isEmployee) {
     if (statusFilter !== 'all') {
       const isApproved = statusFilter === 'approved';
@@ -223,13 +215,12 @@ const OrdersPage: React.FC = () => {
       filteredOrders = filteredOrders.filter((order: Orders) => order.employee?.id === Number(employeeFilter));
     }
   } else if (statusFilter !== 'all') {
-    // For clients, only apply status filter
     const isApproved = statusFilter === 'approved';
     filteredOrders = filteredOrders.filter((order: Orders) => order.approved === isApproved);
   }
   
   const orders = filteredOrders;
-  const totalElements = filteredOrders.length; // Note: This is filtered count, not total from backend
+  const totalElements = filteredOrders.length;
 
   return (
     <Box>
